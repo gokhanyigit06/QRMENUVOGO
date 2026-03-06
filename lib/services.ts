@@ -131,6 +131,18 @@ export async function createRestaurant(name: string, slug: string, password: str
         }
     }
 
+    // 1. Get next sequential ID (Starts from 3000)
+    const counterRef = doc(db, 'counters', 'restaurants');
+    const counterSnap = await getDoc(counterRef);
+    let nextId = 3001;
+
+    if (!counterSnap.exists()) {
+        await setDoc(counterRef, { lastId: 3001 });
+    } else {
+        nextId = (counterSnap.data().lastId || 3000) + 1;
+        await updateDoc(counterRef, { lastId: nextId });
+    }
+
     const restRef = await addDoc(collection(db, 'restaurants'), {
         name,
         slug,
@@ -139,11 +151,13 @@ export async function createRestaurant(name: string, slug: string, password: str
         custom_domain: customDomain || null,
         plan_type: planType,
         parent_id: parentId,
+        numeric_id: nextId,
         created_at: serverTimestamp()
     });
 
     // Auto-generate a domain if not given
-    const finalDomain = customDomain || `${slug}-${restRef.id.toLowerCase()}-qrmenu.vogolab.com`;
+    // Format: slug-id-qrmenu.vogolab.com
+    const finalDomain = customDomain || `${slug}-${nextId}-qrmenu.vogolab.com`.toLowerCase();
     if (!customDomain) {
         await updateDoc(restRef, { custom_domain: finalDomain });
     }

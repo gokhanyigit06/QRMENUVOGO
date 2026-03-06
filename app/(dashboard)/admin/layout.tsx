@@ -82,7 +82,7 @@ export default function AdminLayout({
                         </div>
 
                         <a
-                            href={`/${restaurant.slug}`}
+                            href={restaurant.custom_domain ? `https://${restaurant.custom_domain}` : `/${restaurant.slug}`}
                             target="_blank"
                             className="group flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-bold text-gray-700 shadow-sm transition-all hover:border-amber-400 hover:text-amber-600 hover:shadow-md active:scale-95"
                         >

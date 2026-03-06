@@ -224,8 +224,10 @@ export default function SysAdminPage() {
                         <table className="w-full text-left text-sm text-gray-500">
                             <thead className="bg-gray-50 text-xs uppercase text-gray-700 border-b border-gray-200">
                                 <tr>
+                                    <th className="px-6 py-4 font-semibold">ID</th>
                                     <th className="px-6 py-4 font-semibold">Restoran</th>
                                     <th className="px-6 py-4 font-semibold">URL Kodu (Slug)</th>
+                                    <th className="px-6 py-4 font-semibold">Özel Domain</th>
                                     <th className="px-6 py-4 font-semibold">Şifre</th>
                                     <th className="px-6 py-4 font-semibold">Kayıt Tarihi</th>
                                     <th className="px-6 py-4 text-right font-semibold">İşlemler</th>
@@ -234,12 +236,20 @@ export default function SysAdminPage() {
                             <tbody className="divide-y divide-gray-100">
                                 {restaurants.map((rest) => (
                                     <tr key={rest.id} className="hover:bg-gray-50/50 transition-colors">
+                                        <td className="px-6 py-4 font-mono text-xs text-amber-600 font-bold">#{rest.numeric_id || '---'}</td>
                                         <td className="px-6 py-4 font-bold text-gray-900">{rest.name}</td>
                                         <td className="px-6 py-4 font-mono text-xs text-gray-600">/{rest.slug}</td>
+                                        <td className="px-6 py-4">
+                                            {rest.custom_domain ? (
+                                                <span className="text-xs text-blue-600 underline truncate block max-w-[150px]">{rest.custom_domain}</span>
+                                            ) : (
+                                                <span className="text-xs text-gray-400">---</span>
+                                            )}
+                                        </td>
                                         <td className="px-6 py-4 font-mono text-xs">{rest.password}</td>
 
-                                        <td className="px-6 py-4">
-                                            {new Date(rest.created_at).toLocaleDateString('tr-TR')}
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {rest.created_at ? new Date(rest.created_at).toLocaleDateString('tr-TR') : '---'}
                                         </td>
                                         <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
                                             <Button
@@ -258,8 +268,8 @@ export default function SysAdminPage() {
                                                 asChild
                                                 className="h-8 gap-1 border-gray-200 bg-white hover:bg-gray-100 hover:text-black font-semibold"
                                             >
-                                                <a href={`/${rest.slug}`} target="_blank">
-                                                    Menüyü Gör
+                                                <a href={rest.custom_domain ? `https://${rest.custom_domain}` : `/${rest.slug}`} target="_blank">
+                                                    Gör
                                                     <ExternalLink className="h-3 w-3" />
                                                 </a>
                                             </Button>
@@ -277,7 +287,7 @@ export default function SysAdminPage() {
                                 ))}
                                 {restaurants.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                                        <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
                                             Henüz hiç restoran yok.
                                         </td>
                                     </tr>
