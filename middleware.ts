@@ -25,8 +25,7 @@ export default function middleware(req: NextRequest) {
     const isMainDomain =
         hostname.includes('localhost') ||
         hostname.includes('vercel.app') ||
-        hostname === 'qrmenu.vogolab.com' ||
-        hostname === 'www.qrmenu.vogolab.com';
+        hostname.includes('vogolab.com');
 
     // 1. Eğer Hostname, bizim ana domainimiz ise karışmıyoruz, normal yönlendirmeye devam etsin (SaaS sayfası veya /admin vb.)
     if (isMainDomain) {
