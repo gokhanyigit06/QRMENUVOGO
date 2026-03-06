@@ -1,0 +1,1 @@
+Kullanıcının projeyi geçici olarak durdurduğu, RAM tüketimi optimizasyonları (Lucide ikonların manuel SVG registry ile değiştirilmesi) yapıldığı bilgisini içerir. Sonraki adım: Testler ve diğer eksik kalan optimizasyonlar uygulanabilir.

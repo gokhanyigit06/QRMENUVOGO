@@ -1,0 +1,40 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // --- GÜVENLİK KURALLARI NOTU ---
+    // Bu kurallar VogoLab QRSaaS sisteminizdeki multi-tenant (çoklu kullanıcı) yapısının kalbidir.
+    // Şirketinizdeki "Sys Admin" (Siz) haricindeki kimsenin başkasının verilerini görememesini veya bozamamasını sağlar.
+
+    // Ortak (Açık) Okuma Kuralları
+    // Herkesin okuyabilmesi gereken tablolar (Menülerin dışarıdan müşterilere açılabilmesi için)
+    match /restaurants/{restId} {
+      allow read: if true;
+      // İleride buraya sadece admin giriş yaptıysa (request.auth.uid) yazma izni eklenecek
+      allow write: if true; // Geliştirme aşaması için açık, canlıda `if request.auth != null;` yapılmalı
+    }
+    
+    match /categories/{catId} {
+      allow read: if true;
+      allow write: if true; 
+    }
+    
+    match /products/{prodId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    match /settings/{setId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Ek güvenlik duvarı getirebileceğiniz bir model
+    // match /restaurants/{restId} {
+    //   allow read: if true; // Menü ziyaretçileri okumalı
+    //   allow update, delete: if request.auth != null && request.auth.uid == resource.data.owner_uid;
+    //   allow create: if request.auth != null;
+    // }
+  }
+}

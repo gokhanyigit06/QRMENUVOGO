@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;700;900&display=swap');
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+@import "shadcn/tailwind.css";
+/* 
+    ---break---
+  */
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --geist-sans: "Outfit", "Geist Sans", sans-serif;
+  --geist-mono: "Geist Mono", monospace;
+  /* 
+    CRITICAL RULE: Do NOT add global HTML tag overrides (e.g., h1 { ... }) here for specific sections like the website.
+    This file affects the ENTIRE application, including the Admin Panel and QR Menu.
+    Use utility classes (e.g., .font-display) or specific page layouts instead.
+  */
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #212121;
+  --card: #ffffff;
+  --card-foreground: #212121;
+  --popover: #ffffff;
+  --popover-foreground: #212121;
+  --primary: #333333;
+  --primary-foreground: #fcfcfc;
+  --secondary: #f7f7f7;
+  --secondary-foreground: #333333;
+  --muted: #f7f7f7;
+  --muted-foreground: #8e8e8e;
+  --accent: #f7f7f7;
+  --accent-foreground: #333333;
+  --destructive: #ef4444;
+  --border: #ebebeb;
+  --input: #ebebeb;
+  --ring: #b5b5b5;
+  --chart-1: #f97316;
+  --chart-2: #0ea5e9;
+  --chart-3: #22c55e;
+  --chart-4: #eab308;
+  --chart-5: #a855f7;
+  --sidebar: #fcfcfc;
+  --sidebar-foreground: #212121;
+  --sidebar-primary: #333333;
+  --sidebar-primary-foreground: #fcfcfc;
+  --sidebar-accent: #f7f7f7;
+  --sidebar-accent-foreground: #333333;
+  --sidebar-border: #ebebeb;
+  --sidebar-ring: #b5b5b5;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  height: auto !important;
+  min-height: 100%;
+  /* Fix for Google Translate & Scroll issues */
+  position: static !important;
+  top: 0px !important;
+}
+
+.skiptranslate {
+  display: none !important;
+}
+
+@theme {
+  --font-sans: var(--geist-sans), "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bebas Neue", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-modern: "Montserrat", sans-serif;
+  --font-elegant: "Brodo", serif;
+  --font-minister-sans: "Source Sans Pro", sans-serif;
+  --font-minister-title: "Evogria", serif;
+  --color-brand: #B83B31;
+  --color-accent: #FAB612;
+
+  /* Botin Website Fonts */
+  --font-botin-serif: var(--font-cormorant), serif;
+  --font-botin-sans: var(--font-jost), sans-serif;
+
+  /* Botin Color Palette */
+  --color-botin-bean: #423427;
+  /* Jacko Bean - Main Dark Background */
+  --color-botin-mist: #75816d;
+  /* Ellis Mist - Secondary Section Background */
+  --color-botin-mud: #976145;
+  /* Mud Ball - Primary Accent/Buttons */
+  --color-botin-owl: #c2c2b6;
+  /* Baby Barn Owl - Subtitles/Secondary Text */
+  --color-botin-dark: #0B0907;
+  /* Rich Dark - Main Background */
+}
+
+body {
+  background-color: var(--background);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* 
+   We removed the global h1, h2... override to prevent it from affecting the main app.
+   Use the 'font-display' utility class for the website headers.
+*/
+.font-display {
+  font-family: var(--font-display) !important;
+}
+
+/* Custom Scrollbar - Only for Desktop to avoid issues on mobile */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+@font-face {
+  font-family: 'Brodo';
+  src: url('/fonts/BrodoThinGrunge.ttf') format('truetype'),
+    url('/fonts/BrodoThinGrunge.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url('/fonts/SourceSansPro-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url('/fonts/SourceSansPro-BlackIt.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Evogria';
+  src: url('/fonts/Evogria.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 
+    ---break---
+  */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* 
+    ---break---
+  */
+
+.dark {
+  --background: #212121;
+  --foreground: #fcfcfc;
+  --card: #333333;
+  --card-foreground: #fcfcfc;
+  --popover: #333333;
+  --popover-foreground: #fcfcfc;
+  --primary: #ebebeb;
+  --primary-foreground: #333333;
+  --secondary: #444444;
+  --secondary-foreground: #fcfcfc;
+  --muted: #444444;
+  --muted-foreground: #b5b5b5;
+  --accent: #444444;
+  --accent-foreground: #fcfcfc;
+  --destructive: #991b1b;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #8e8e8e;
+  --chart-1: #3b82f6;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #f43f5e;
+  --sidebar: #333333;
+  --sidebar-foreground: #fcfcfc;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #fcfcfc;
+  --sidebar-accent: #444444;
+  --sidebar-accent-foreground: #fcfcfc;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #8e8e8e;
+}
+
+/* 
+    ---break---
+  */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
