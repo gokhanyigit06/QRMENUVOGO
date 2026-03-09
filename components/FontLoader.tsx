@@ -7,9 +7,11 @@ export default function FontLoader() {
     const { settings } = useMenu();
 
     useEffect(() => {
+        const allPossibleFonts = ['Inter', 'Montserrat', 'Playfair Display', 'Source Sans Pro'];
         const uniqueFonts = Array.from(new Set([
             settings.fontFamily || 'Inter',
-            settings.categoryFontFamily
+            settings.categoryFontFamily,
+            ...allPossibleFonts // always load available fonts for the admin preview
         ].filter(Boolean) as string[]));
 
         const systemFonts = ['Times New Roman', 'Arial', 'Helvetica', 'Courier New', 'Brodo'];

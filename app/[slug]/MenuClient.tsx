@@ -112,10 +112,44 @@ export default function Home({ initialData }: { initialData?: any }) {
   return (
     <div className={cn(
       "min-h-screen pb-24 transition-colors duration-500",
-      settings.darkMode ? 'bg-gray-950 text-white' : 'bg-gray-50 text-gray-900',
-      settings.themeId === 'elite' && !settings.darkMode ? 'bg-white' : '',
-      settings.themeId === 'elite' ? 'font-minister-sans' : 'font-sans'
-    )}>
+      settings.themeId === 'elite' && !settings.darkMode ? 'bg-white font-minister-sans' : '',
+
+      // Default / Standard Theme
+      (settings.themeId === 'default' || !settings.themeId) && settings.darkMode ? 'bg-gray-950 text-white' : '',
+      (settings.themeId === 'default' || !settings.themeId) && !settings.darkMode ? 'bg-gray-50 text-gray-900' : '',
+
+      // Minimal Theme
+      settings.themeId === 'minimal' && settings.darkMode ? 'bg-zinc-950 text-zinc-100' : '',
+      settings.themeId === 'minimal' && !settings.darkMode ? 'bg-zinc-100 text-zinc-900' : '',
+
+      // Elegance Theme
+      settings.themeId === 'elegance' && settings.darkMode ? 'bg-rose-950 text-rose-50' : '',
+      settings.themeId === 'elegance' && !settings.darkMode ? 'bg-rose-50 text-rose-950' : '',
+
+      // Modern Theme
+      settings.themeId === 'modern' && settings.darkMode ? 'bg-slate-950 text-slate-100' : '',
+      settings.themeId === 'modern' && !settings.darkMode ? 'bg-slate-50 text-slate-900' : '',
+
+      // Vibrant Theme
+      settings.themeId === 'vibrant' && settings.darkMode ? 'bg-amber-950 text-amber-50' : '',
+      settings.themeId === 'vibrant' && !settings.darkMode ? 'bg-amber-50 text-amber-950' : '',
+
+      // Neon Theme
+      settings.themeId === 'neon' && settings.darkMode ? 'bg-black text-fuchsia-100' : '',
+      settings.themeId === 'neon' && !settings.darkMode ? 'bg-zinc-900 text-fuchsia-200' : '', // Neon is implicitly always dark but just in case
+
+      // Rustic Theme
+      settings.themeId === 'rustic' && settings.darkMode ? 'bg-[#1a1410] text-[#e8dccb]' : '',
+      settings.themeId === 'rustic' && !settings.darkMode ? 'bg-[#f4efe6] text-[#4a3623]' : '',
+
+      // Paper Theme
+      settings.themeId === 'paper' && settings.darkMode ? 'bg-stone-900 text-stone-200 border-double' : '',
+      settings.themeId === 'paper' && !settings.darkMode ? 'bg-stone-50 text-stone-900 border-double' : ''
+    )} style={{
+      fontFamily: settings.themeId === 'elite' ? undefined : (settings.fontFamily || 'Inter, sans-serif'),
+      backgroundColor: settings.themeId === 'custom' ? (settings.customBgColor || '#f9fafb') : undefined,
+      color: settings.themeId === 'custom' ? (settings.customTextColor || '#111827') : undefined
+    }}>
       {/* 
          Pop-up Component 
          Checks 'popupActive' from settings
@@ -163,13 +197,15 @@ export default function Home({ initialData }: { initialData?: any }) {
             <div className="w-[1px] h-4 bg-gray-200 hidden xs:block" />
             <button
               onClick={() => setIsAllergenModalOpen(true)}
-              className="text-xs font-bold text-gray-900 uppercase tracking-wide hover:text-amber-600 transition-colors hidden sm:block"
+              className={cn("text-xs font-bold uppercase tracking-wide hover:opacity-70 transition-colors hidden sm:block", settings.themeId === 'custom' ? '' : 'text-gray-900 dark:text-gray-100')}
+              style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}
             >
               {language === 'en' ? 'Allergens' : 'Alerjenler'}
             </button>
             <button
               onClick={() => setLanguage(language === 'tr' ? 'en' : 'tr')}
-              className="flex items-center gap-2 text-xs font-bold text-gray-900 uppercase tracking-wide hover:text-amber-600 transition-colors"
+              className={cn("flex items-center gap-2 text-xs font-bold uppercase tracking-wide hover:opacity-70 transition-colors", settings.themeId === 'custom' ? '' : 'text-gray-900 dark:text-gray-100')}
+              style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}
             >
               {language === 'tr' ? (
                 <><span className="text-sm">🇬🇧</span></>
@@ -216,11 +252,11 @@ export default function Home({ initialData }: { initialData?: any }) {
               {/* Title before list */}
               <div className="mb-4 flex items-center justify-between px-1">
                 {settings.menuTitleText ? (
-                  <p className="text-xs font-medium text-gray-500 text-center w-full uppercase tracking-wider py-2">
+                  <p className="text-xs font-medium opacity-60 text-center w-full uppercase tracking-wider py-2" style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
                     {settings.menuTitleText}
                   </p>
                 ) : (
-                  <h2 className="text-lg font-bold text-gray-800">
+                  <h2 className="text-lg font-bold" style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
                     {language === 'en' ? 'Menu' : 'Menü'}
                   </h2>
                 )}

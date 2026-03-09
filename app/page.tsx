@@ -125,34 +125,37 @@ export default function SaaSMarketingPage() {
       {/* --- THEMES SHOWCASE --- */}
       <section id="themes" className="py-32 px-6 relative overflow-hidden">
         <div className="max-w-7xl mx-auto text-center mb-20 space-y-6">
-          <h2 className="text-4xl md:text-5xl font-bold">Tek Menü, 4 Mükemmel Tasarım</h2>
+          <h2 className="text-4xl md:text-5xl font-bold">Tek Menü, 6 Mükemmel Tasarım</h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">Ürünlerinizi girdikten sonra dilediğiniz zaman tasarımınızı değiştirebilirsiniz. Temalar sadece bir tık uzağınızda.</p>
         </div>
 
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
           {[
             { name: "Minimal", color: "from-zinc-900 to-zinc-800", img: "https://images.unsplash.com/photo-1542282088-fe8426682b8f?q=80&w=500&auto=format&fit=crop" },
             { name: "Elegance", color: "from-rose-950 to-red-950", img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=500&auto=format&fit=crop" },
             { name: "Modern", color: "from-blue-950 to-indigo-950", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=500&auto=format&fit=crop" },
             { name: "Vibrant", color: "from-amber-500/20 to-orange-500/20", img: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=500&auto=format&fit=crop" },
+            { name: "Neon", color: "from-fuchsia-900/50 to-black", img: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=500&auto=format&fit=crop" },
+            { name: "Rustic", color: "from-[#4a3623]/80 to-[#2c241b]", img: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=500&auto=format&fit=crop" },
           ].map((theme, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="relative aspect-[9/16] rounded-3xl overflow-hidden group cursor-pointer border border-white/10"
-            >
-              <img src={theme.img} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={theme.name} />
-              <div className={`absolute inset-0 bg-gradient-to-t ${theme.color} opacity-80`} />
+            <Link key={i} href={`/demo-${theme.name.toLowerCase()}`}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="relative aspect-[9/16] rounded-3xl overflow-hidden group border border-white/10 block w-full"
+              >
+                <img src={theme.img} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={theme.name} />
+                <div className={`absolute inset-0 bg-gradient-to-t ${theme.color} opacity-80`} />
 
-              <div className="absolute inset-x-0 bottom-0 p-6">
-                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold mb-3 inline-block">Tema {i + 1}</span>
-                <h3 className="text-2xl font-bold">{theme.name}</h3>
-                <p className="text-sm text-white/80 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Demoyu İncele <ArrowRight className="inline w-4 h-4" /></p>
-              </div>
-            </motion.div>
+                <div className="absolute inset-x-0 bottom-0 p-6">
+                  <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold mb-3 inline-block">Tema {i + 1}</span>
+                  <h3 className="text-2xl font-bold">{theme.name}</h3>
+                  <p className="text-sm text-white/80 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Demoyu İncele <ArrowRight className="inline w-4 h-4" /></p>
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </section>

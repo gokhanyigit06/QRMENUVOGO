@@ -91,8 +91,8 @@ export interface Product {
 export interface SiteSettings {
   id?: string;
   restaurantId?: string;
-  themeId?: 'default' | 'modern' | 'minimal' | 'elegant' | 'elite';
-  menuLayout?: 'accordion' | 'list' | 'grid' | 'tabs';
+  themeId?: 'default' | 'modern' | 'minimal' | 'elegant' | 'elite' | 'elegance' | 'vibrant' | 'neon' | 'rustic' | 'paper' | 'custom';
+  menuLayout?: 'accordion' | 'list' | 'grid' | 'tabs' | 'masonry' | 'cards' | 'minimal-list' | 'paper';
   themeColor: 'black' | 'red' | 'blue' | 'green' | 'orange' | 'white';
   fontFamily?: string;
   darkMode: boolean;
@@ -113,6 +113,11 @@ export interface SiteSettings {
   categoryFontSize?: 'medium' | 'large' | 'xl';
   categoryFontWeight?: 'normal' | 'bold' | 'black';
   categoryRowHeight?: 'small' | 'medium' | 'large';
+
+  // Custom Theme Settings
+  customBgColor?: string;
+  customTextColor?: string;
+  customAccentColor?: string;
   categoryGap?: 'small' | 'medium' | 'large';
   categoryOverlayOpacity?: number;
   categoryFontFamily?: string;

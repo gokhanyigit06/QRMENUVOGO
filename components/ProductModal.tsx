@@ -60,6 +60,26 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
             ? settings.defaultProductImage
             : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c';
 
+    // Theme Background Logic
+    const getModalStyles = () => {
+        const base = "relative w-full max-w-lg overflow-hidden rounded-2xl shadow-2xl transition-all duration-300 transform ";
+        switch (settings.themeId) {
+            case 'minimal': return base + (settings.darkMode ? "bg-zinc-950 text-zinc-100" : "bg-zinc-100 text-zinc-900");
+            case 'elegance': return base + (settings.darkMode ? "bg-rose-950 text-rose-50" : "bg-rose-50 text-rose-950");
+            case 'modern': return base + (settings.darkMode ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900");
+            case 'vibrant': return base + (settings.darkMode ? "bg-amber-950 text-amber-50" : "bg-amber-50 text-amber-950");
+            case 'neon': return base + (settings.darkMode ? "bg-black text-fuchsia-100" : "bg-zinc-900 text-fuchsia-200");
+            case 'rustic': return base + (settings.darkMode ? "bg-[#1a1410] text-[#e8dccb]" : "bg-[#f4efe6] text-[#4a3623]");
+            case 'paper': return base + (settings.darkMode ? "bg-stone-900 text-stone-200" : "bg-[#f9f6f0] text-stone-900");
+            case 'custom': return base + "border border-black/10"; // Custom handles colors via style tags
+            default: return base + (settings.darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900");
+        }
+    };
+
+    // Text Fallback (if not handled by parent class)
+    const textColor = settings.themeId === 'custom' ? settings.customTextColor : undefined;
+    const bgColor = settings.themeId === 'custom' ? settings.customBgColor : undefined;
+
     return (
         <div className={cn(
             "fixed inset-0 z-[60] flex items-center justify-center px-4 transition-all duration-300",
@@ -74,14 +94,15 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
             {/* Modal Content */}
             <div
                 className={cn(
-                    "relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl transition-all duration-300 transform",
+                    getModalStyles(),
                     isOpen ? "scale-100 translate-y-0" : "scale-95 translate-y-8"
                 )}
+                style={{ backgroundColor: bgColor, color: textColor }}
             >
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-md backdrop-blur transition-transform hover:scale-110 active:scale-95"
+                    className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/20 text-white shadow-md backdrop-blur transition-transform hover:scale-110 active:scale-95"
                 >
                     <X className="h-6 w-6" />
                 </button>
@@ -99,7 +120,7 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
 
                 {/* Details */}
                 <div className="p-8">
-                    <h2 className="font-serif text-3xl font-black leading-tight tracking-wide text-gray-900 mb-2">
+                    <h2 className="text-3xl font-black leading-tight tracking-wide mb-2 opacity-90">
                         {displayName.toLocaleUpperCase('tr-TR')}
                     </h2>
 
@@ -125,17 +146,17 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
                     </div>
 
                     {displayDescription && (
-                        <p className="text-lg text-gray-600 leading-relaxed font-medium">
+                        <p className="text-lg leading-relaxed font-medium opacity-70">
                             {displayDescription}
                         </p>
                     )}
 
                     {/* Variants if any */}
                     {product.variants && product.variants.length > 0 && (
-                        <div className="mt-6 space-y-3 bg-gray-50 p-4 rounded-xl">
+                        <div className="mt-6 space-y-3 p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5">
                             {product.variants.map((variant, idx) => (
                                 <div key={idx} className="flex items-center justify-between text-base">
-                                    <span className="font-bold text-gray-700">{variant.name}</span>
+                                    <span className="font-bold opacity-90">{variant.name}</span>
                                     <span className={cn("font-bold text-lg", activeColorClass)}>
                                         {variant.price} ₺
                                     </span>

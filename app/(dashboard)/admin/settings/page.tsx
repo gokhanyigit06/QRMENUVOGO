@@ -260,6 +260,14 @@ export default function SettingsPage() {
                                         {[
                                             { id: 'default', name: 'Standart', desc: 'Klasik Şık', color: 'from-gray-100 to-gray-200' },
                                             { id: 'elite', name: 'Elite', desc: 'Segmented', color: 'from-emerald-50 to-emerald-100' },
+                                            { id: 'minimal', name: 'Minimal', desc: 'Koyu Efsane', color: 'from-zinc-900 to-zinc-800' },
+                                            { id: 'elegance', name: 'Elegance', desc: 'Kırmızı Şıklık', color: 'from-rose-950 to-red-950' },
+                                            { id: 'modern', name: 'Modern', desc: 'Mavi Karizma', color: 'from-blue-950 to-indigo-950' },
+                                            { id: 'vibrant', name: 'Vibrant', desc: 'Turuncu Enerji', color: 'from-amber-500/80 to-orange-500/80' },
+                                            { id: 'neon', name: 'Neon', desc: 'Siber Geceler', color: 'from-fuchsia-600 to-purple-900 border border-fuchsia-400' },
+                                            { id: 'rustic', name: 'Rustic', desc: 'Doğal Kafe', color: 'from-[#8b5a2b] to-[#4a3623]' },
+                                            { id: 'paper', name: 'Paper', desc: 'Lüks Kağıt Menü', color: 'from-[#f9f6f0] to-[#e8dec0] border border-stone-300' },
+                                            { id: 'custom', name: 'Özel Tasarım', desc: 'Kendi Paletinizi Yaratın', color: 'from-purple-400 via-pink-400 to-amber-400 border border-purple-200' },
                                         ].map((t) => (
                                             <button
                                                 key={t.id}
@@ -286,6 +294,67 @@ export default function SettingsPage() {
                                             </button>
                                         ))}
                                     </div>
+
+                                    {localSettings.themeId === 'custom' && (
+                                        <div className="mt-6 p-4 bg-gray-50 border border-gray-100 rounded-xl space-y-4">
+                                            <h4 className="font-bold text-sm text-gray-900 flex items-center gap-2">
+                                                <Palette className="w-4 h-4 text-purple-500" /> Özel Renk Paleti (Custom)
+                                            </h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs font-bold text-gray-600">Arka Plan Rengi</Label>
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            type="color"
+                                                            value={localSettings.customBgColor || '#ffffff'}
+                                                            onChange={(e) => handleChange('customBgColor', e.target.value)}
+                                                            className="w-12 h-10 p-1 cursor-pointer rounded-md"
+                                                        />
+                                                        <Input
+                                                            type="text"
+                                                            value={localSettings.customBgColor || '#ffffff'}
+                                                            onChange={(e) => handleChange('customBgColor', e.target.value)}
+                                                            className="font-mono text-xs uppercase"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs font-bold text-gray-600">Başlık/Metin Rengi</Label>
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            type="color"
+                                                            value={localSettings.customTextColor || '#000000'}
+                                                            onChange={(e) => handleChange('customTextColor', e.target.value)}
+                                                            className="w-12 h-10 p-1 cursor-pointer rounded-md"
+                                                        />
+                                                        <Input
+                                                            type="text"
+                                                            value={localSettings.customTextColor || '#000000'}
+                                                            onChange={(e) => handleChange('customTextColor', e.target.value)}
+                                                            className="font-mono text-xs uppercase"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs font-bold text-gray-600">Vurgu/Aksan Rengi</Label>
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            type="color"
+                                                            value={localSettings.customAccentColor || '#f59e0b'}
+                                                            onChange={(e) => handleChange('customAccentColor', e.target.value)}
+                                                            className="w-12 h-10 p-1 cursor-pointer rounded-md"
+                                                        />
+                                                        <Input
+                                                            type="text"
+                                                            value={localSettings.customAccentColor || '#f59e0b'}
+                                                            onChange={(e) => handleChange('customAccentColor', e.target.value)}
+                                                            className="font-mono text-xs uppercase"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
 
@@ -304,6 +373,10 @@ export default function SettingsPage() {
                                             { id: 'list', name: 'Düz Liste', icon: '📄' },
                                             { id: 'tabs', name: 'Sekmeli', icon: '📑' },
                                             { id: 'grid', name: 'Izgara', icon: '🔳' },
+                                            { id: 'masonry', name: 'Masonry', icon: '🧱' },
+                                            { id: 'cards', name: 'Kutu Kart', icon: '🎴' },
+                                            { id: 'minimal-list', name: 'Sade (Liste)', icon: '📝' },
+                                            { id: 'paper', name: 'Lüks Kağıt', icon: '📜' },
                                         ].map((l) => (
                                             <button
                                                 key={l.id}
@@ -354,11 +427,11 @@ export default function SettingsPage() {
                                                     <SelectValue placeholder="Font Seçin" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="Inter">Inter (Standard)</SelectItem>
-                                                    <SelectItem value="Montserrat">Montserrat (Modern)</SelectItem>
-                                                    <SelectItem value="Playfair Display">Playfair (Elegant)</SelectItem>
-                                                    <SelectItem value="Brodo">Brodo (Stylish)</SelectItem>
-                                                    <SelectItem value="Source Sans Pro">Source Sans (Elite)</SelectItem>
+                                                    <SelectItem value="Inter" style={{ fontFamily: 'Inter, sans-serif' }}>Inter (Standard)</SelectItem>
+                                                    <SelectItem value="Montserrat" style={{ fontFamily: 'Montserrat, sans-serif' }}>Montserrat (Modern)</SelectItem>
+                                                    <SelectItem value="Playfair Display" style={{ fontFamily: '"Playfair Display", serif' }}>Playfair (Elegant)</SelectItem>
+                                                    <SelectItem value="Brodo" style={{ fontFamily: 'Brodo, sans-serif' }}>Brodo (Stylish)</SelectItem>
+                                                    <SelectItem value="Source Sans Pro" style={{ fontFamily: '"Source Sans Pro", sans-serif' }}>Source Sans (Elite)</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
