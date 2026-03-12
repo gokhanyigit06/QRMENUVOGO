@@ -530,6 +530,9 @@ export async function getSettings(restaurantId: string) {
         categoryFontFamily: data.category_font_family || 'Inter',
         categoryLetterSpacing: data.category_letter_spacing || 'normal',
         categoryCharConvert: data.category_char_convert || false,
+        customBgColor: data.custom_bg_color || '',
+        customTextColor: data.custom_text_color || '',
+        customAccentColor: data.custom_accent_color || '',
         productTitleColor: data.product_title_color || '#111827',
         productDescriptionColor: data.product_description_color || '#6b7280',
         productPriceColor: data.product_price_color || '#d97706',
@@ -587,6 +590,9 @@ export async function updateSettings(restaurantId: string, settings: Partial<Sit
     if (settings.socialWhatsapp !== undefined) dbUpdates.social_whatsapp = settings.socialWhatsapp;
     if (settings.footerText !== undefined) dbUpdates.footer_text = settings.footerText;
     if (settings.footerCopyright !== undefined) dbUpdates.footer_copyright = settings.footerCopyright;
+    if (settings.customBgColor !== undefined) dbUpdates.custom_bg_color = settings.customBgColor;
+    if (settings.customTextColor !== undefined) dbUpdates.custom_text_color = settings.customTextColor;
+    if (settings.customAccentColor !== undefined) dbUpdates.custom_accent_color = settings.customAccentColor;
 
     await updateDoc(doc(db, 'settings', restaurantId), dbUpdates);
 }
