@@ -309,11 +309,11 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
     return (
         <div
             onClick={onClick}
-            className={cn(getThemeCardStyles(), layoutMode === 'masonry' ? 'break-inside-avoid mb-4' : '')}
+            className={cn(getThemeCardStyles())}
         >
 
             {/* Large Top Image */}
-            <div className="relative aspect-square w-full bg-white">
+            <div className="relative aspect-square w-full bg-gray-100 dark:bg-[#1a1a2e]">
                 <Image
                     src={imageSrc}
                     alt={displayName}

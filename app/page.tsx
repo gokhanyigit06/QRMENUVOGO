@@ -131,12 +131,36 @@ export default function SaaSMarketingPage() {
 
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
           {[
-            { name: "Minimal", color: "from-zinc-900 to-zinc-800", img: "https://images.unsplash.com/photo-1542282088-fe8426682b8f?q=80&w=500&auto=format&fit=crop" },
-            { name: "Elegance", color: "from-rose-950 to-red-950", img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=500&auto=format&fit=crop" },
-            { name: "Modern", color: "from-blue-950 to-indigo-950", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=500&auto=format&fit=crop" },
-            { name: "Vibrant", color: "from-amber-500/20 to-orange-500/20", img: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=500&auto=format&fit=crop" },
-            { name: "Neon", color: "from-fuchsia-900/50 to-black", img: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=500&auto=format&fit=crop" },
-            { name: "Rustic", color: "from-[#4a3623]/80 to-[#2c241b]", img: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=500&auto=format&fit=crop" },
+            {
+              name: "Minimal", color: "from-zinc-900 to-zinc-800",
+              img: "https://images.unsplash.com/photo-1542282088-fe8426682b8f?q=80&w=500&auto=format&fit=crop",
+              feature: "Tab Navigasyonu", featureDesc: "Kategori bazlı sekme menüsü"
+            },
+            {
+              name: "Elegance", color: "from-rose-950 to-red-950",
+              img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=500&auto=format&fit=crop",
+              feature: "Banner & Tanıtım", featureDesc: "Hero banner + üst yazı (PRO)"
+            },
+            {
+              name: "Modern", color: "from-blue-950 to-indigo-950",
+              img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=500&auto=format&fit=crop",
+              feature: "Ürün Özellikleri", featureDesc: "İndirim • Alerjen • Varyant • Etiket"
+            },
+            {
+              name: "Vibrant", color: "from-amber-500/20 to-orange-500/20",
+              img: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=500&auto=format&fit=crop",
+              feature: "Masonry Layout", featureDesc: "Çok kategori + dinamik grid"
+            },
+            {
+              name: "Neon", color: "from-fuchsia-900/50 to-black",
+              img: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=500&auto=format&fit=crop",
+              feature: "Bar & Gece Menüsü", featureDesc: "Kokteyl listesi + karanlık tema"
+            },
+            {
+              name: "Rustic", color: "from-[#4a3623]/80 to-[#2c241b]",
+              img: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=500&auto=format&fit=crop",
+              feature: "Kadeh / Şişe Varyant", featureDesc: "İçecek varyantları + şarap listesi"
+            },
           ].map((theme, i) => (
             <Link key={i} href={`/demo-${theme.name.toLowerCase()}`}>
               <motion.div
@@ -152,6 +176,8 @@ export default function SaaSMarketingPage() {
                 <div className="absolute inset-x-0 bottom-0 p-6">
                   <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold mb-3 inline-block">Tema {i + 1}</span>
                   <h3 className="text-2xl font-bold">{theme.name}</h3>
+                  <p className="text-xs font-semibold text-amber-400 mt-1">{theme.feature}</p>
+                  <p className="text-xs text-white/70 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">{theme.featureDesc}</p>
                   <p className="text-sm text-white/80 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Demoyu İncele <ArrowRight className="inline w-4 h-4" /></p>
                 </div>
               </motion.div>
@@ -168,33 +194,87 @@ export default function SaaSMarketingPage() {
             <p className="text-gray-400">Gizli ücret, kurulum bedeli veya komisyon yok.</p>
           </div>
 
-          <div className="p-1 rounded-3xl bg-gradient-to-br from-amber-500/40 via-orange-500/40 to-transparent">
-            <div className="bg-[#0A0A0A] rounded-[22px] p-8 md:p-12 text-center md:text-left md:flex items-center justify-between">
-              <div className="space-y-6 mb-8 md:mb-0">
-                <h3 className="text-3xl font-bold">QR Menü Paketi</h3>
-                <div className="flex flex-col gap-3">
-                  {[
-                    "Tüm 4 Premium Tema",
-                    "Sınırsız Kategori & Ürün",
-                    "Kendi Logonuz ve Renkleriniz",
-                    "Öncelikli Destek",
-                  ].map((feat, i) => (
-                    <div key={i} className="flex items-center gap-3 text-gray-300">
-                      <CheckCircle2 className="w-5 h-5 text-amber-500" />
-                      <span>{feat}</span>
-                    </div>
-                  ))}
-                </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* BASIC PLAN */}
+            <div className="bg-[#0A0A0A] rounded-3xl p-8 border border-white/10 flex flex-col hover:border-white/20 transition-colors">
+              <h3 className="text-2xl font-bold mb-2">BASIC</h3>
+              <p className="text-gray-400 text-sm mb-6">Dijital menüye yeni başlayanlar için temel çözümler.</p>
+              <div className="text-4xl font-bold text-white mb-8">₺199<span className="text-sm text-gray-500 font-medium">/ay</span></div>
+
+              <div className="flex flex-col gap-4 mb-8 flex-1">
+                {[
+                  "Sınırsız Kategori & Ürün",
+                  "Klasik Menü Yerleşimleri",
+                  "Çoklu Dil Desteği",
+                  "Standart Ayarlar ve Temalar"
+                ].map((feat, i) => (
+                  <div key={i} className="flex items-center gap-3 text-gray-300 text-sm">
+                    <CheckCircle2 className="w-5 h-5 text-gray-500 shrink-0" />
+                    <span>{feat}</span>
+                  </div>
+                ))}
               </div>
 
-              <div className="flex flex-col items-center md:items-end justify-center min-w-[200px]">
-                <div className="text-5xl font-bold text-white mb-2">₺499<span className="text-lg text-gray-500 font-medium">/ay</span></div>
-                <p className="text-sm text-amber-500 font-medium mb-6">Yıllık alımda %20 indirim</p>
-                <Link href="/register" className="w-full text-center px-8 py-4 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition-colors">
-                  Satın Al
-                </Link>
-              </div>
+              <Link href="/register?plan=BASIC" className="w-full text-center px-6 py-3 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 transition-colors">
+                Basic ile Başla
+              </Link>
             </div>
+
+            {/* PRO PLAN */}
+            <div className="bg-gradient-to-b from-amber-500/20 to-orange-500/5 rounded-3xl p-8 border border-amber-500/50 flex flex-col relative transform md:-translate-y-4 shadow-2xl shadow-amber-500/10">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full uppercase tracking-wider">
+                En Çok Tercih Edilen
+              </div>
+              <h3 className="text-2xl font-bold mb-2 text-amber-500">PRO</h3>
+              <p className="text-amber-200/60 text-sm mb-6">Markasını yansıtmak isteyen profesyonel işletmeler.</p>
+              <div className="text-4xl font-bold text-white mb-8">₺499<span className="text-sm text-gray-500 font-medium">/ay</span></div>
+
+              <div className="flex flex-col gap-4 mb-8 flex-1">
+                {[
+                  "BASIC paketteki her şey",
+                  "Tüm Premium Temalar",
+                  "Özel Renk Paleti Tasarımı",
+                  "Ana Sayfa Kampanya Bannerları",
+                  "Özel Alan Adı (qr.restoran.com)"
+                ].map((feat, i) => (
+                  <div key={i} className="flex items-start gap-3 text-gray-200 text-sm">
+                    <CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" />
+                    <span>{feat}</span>
+                  </div>
+                ))}
+              </div>
+
+              <Link href="/register?plan=PRO" className="w-full text-center px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold hover:scale-105 transition-transform shadow-[0_0_20px_-5px_rgba(245,158,11,0.5)]">
+                Pro'ya Geç
+              </Link>
+            </div>
+
+            {/* PLUS PLAN */}
+            <div className="bg-[#0A0A0A] rounded-3xl p-8 border border-white/10 flex flex-col hover:border-white/20 transition-colors">
+              <h3 className="text-2xl font-bold mb-2 text-emerald-400">PLUS</h3>
+              <p className="text-gray-400 text-sm mb-6">Masa siparişi ve yönetim araçları arayanlar için.</p>
+              <div className="text-4xl font-bold text-white mb-8">₺999<span className="text-sm text-gray-500 font-medium">/ay</span></div>
+
+              <div className="flex flex-col gap-4 mb-8 flex-1">
+                {[
+                  "PRO paketteki her şey",
+                  "Masadan Canlı Sipariş Alma Modülü",
+                  "Garson Çağırma / Hesap İsteme",
+                  "Gelişmiş Analytics İstatistikleri",
+                  "Şube & Franchise Yönetimi"
+                ].map((feat, i) => (
+                  <div key={i} className="flex items-start gap-3 text-gray-300 text-sm">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                    <span>{feat}</span>
+                  </div>
+                ))}
+              </div>
+
+              <Link href="/register?plan=PLUS" className="w-full text-center px-6 py-3 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 transition-colors">
+                Plus ile Katlayın
+              </Link>
+            </div>
+
           </div>
         </div>
       </section>

@@ -21,6 +21,28 @@ export default function CategoryList({ categories, products, language }: Categor
 
     const sortedCategories = [...categories].sort((a, b) => (a.order || 0) - (b.order || 0));
 
+    // Kategori layout_mode'una ve sitewide menuLayout'a göre ürün layoutMode'u belirle
+    function getProductLayoutMode(siteLayout: string | undefined, catLayout: string | undefined): string {
+        const sl = siteLayout || '';
+        const cl = catLayout || 'grid';
+        // list/list-no-image kategoriler, masonry/grid/cards sitewide ayarını geçersiz kılar
+        if (['list', 'list-no-image'].includes(cl) && ['masonry', 'grid', 'cards'].includes(sl)) return cl;
+        // list-no-image kategori, sitewide list ayarını geçersiz kılar
+        if (cl === 'list-no-image' && sl === 'list') return 'list-no-image';
+        // Sitewide ayar öncelikli
+        if (['masonry', 'cards', 'minimal-list', 'paper', 'list', 'grid'].includes(sl)) return sl;
+        return cl;
+    }
+
+    // Container CSS sınıfını belirle: liste tabanlı → tek sütun, resimli → çok sütun
+    function getContainerClass(siteLayout: string | undefined, catLayout: string | undefined): string {
+        const effective = getProductLayoutMode(siteLayout, catLayout);
+        if (['list', 'list-no-image', 'minimal-list', 'paper'].includes(effective)) {
+            return 'grid grid-cols-1 gap-3';
+        }
+        return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4';
+    }
+
     const handleProductClick = (product: Product) => {
         setSelectedProduct(product);
         setIsModalOpen(true);
@@ -50,21 +72,85 @@ export default function CategoryList({ categories, products, language }: Categor
 
                 return (
                     <section key={category.id} id={`cat-${category.id}`} className="space-y-6">
-                        <div className="flex items-center gap-4 px-2">
-                            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
-                            <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-widest">
-                                {language === 'en' && category.nameEn ? category.nameEn : category.name}
-                            </h2>
-                            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
-                        </div>
+                        {/* THEME DISTINCTIVE CATEGORY HEADERS */}
+                        {settings.themeId === 'minimal' && (
+                            <div className="px-2 pb-2 mb-6 border-b border-zinc-200 dark:border-zinc-800">
+                                <h2 className="text-2xl font-light tracking-[0.2em] uppercase text-zinc-900 dark:text-zinc-100">
+                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
+                                </h2>
+                            </div>
+                        )}
+                        {settings.themeId === 'elegance' && (
+                            <div className="flex items-center gap-6 px-4 py-8 mb-4">
+                                <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-rose-900/30 dark:to-rose-100/30" />
+                                <h2 className="text-3xl font-serif italic text-rose-950 dark:text-rose-50 tracking-wider">
+                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
+                                </h2>
+                                <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-rose-900/30 dark:to-rose-100/30" />
+                            </div>
+                        )}
+                        {settings.themeId === 'modern' && (
+                            <div className="px-2 mb-6 flex items-center justify-between">
+                                <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
+                                </h2>
+                                <div className="h-2 w-12 bg-sky-500 rounded-full" />
+                            </div>
+                        )}
+                        {settings.themeId === 'neon' && (
+                            <div className="flex items-center gap-4 px-2 mb-8">
+                                <div className="h-px flex-1 bg-fuchsia-500/50 shadow-[0_0_10px_rgba(217,70,239,0.5)]" />
+                                <h2 className="text-2xl font-black text-white uppercase tracking-widest drop-shadow-[0_0_8px_rgba(217,70,239,0.8)]">
+                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
+                                </h2>
+                                <div className="h-px flex-1 bg-fuchsia-500/50 shadow-[0_0_10px_rgba(217,70,239,0.5)]" />
+                            </div>
+                        )}
+                        {settings.themeId === 'paper' && (
+                            <div className="text-center px-4 py-6 mb-2">
+                                <h2 className="text-2xl font-serif font-bold text-stone-900 dark:text-stone-200 uppercase tracking-widest border-y border-stone-300 dark:border-stone-700 py-3 inline-block">
+                                    ~ {language === 'en' && category.nameEn ? category.nameEn : category.name} ~
+                                </h2>
+                            </div>
+                        )}
+                        {settings.themeId === 'rustic' && (
+                            <div className="flex items-center gap-4 px-2 mb-6">
+                                <div className="h-1 flex-1 bg-amber-900/10 dark:bg-amber-100/10 rounded-full" />
+                                <h2 className="text-2xl font-serif font-bold text-[#4a3623] dark:text-[#e8dccb] uppercase">
+                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
+                                </h2>
+                                <div className="h-1 flex-1 bg-amber-900/10 dark:bg-amber-100/10 rounded-full" />
+                            </div>
+                        )}
+                        {settings.themeId === 'vibrant' && (
+                            <div className="px-2 mb-6 block text-center">
+                                <h2 className="inline-block px-6 py-2 bg-amber-500 text-white rounded-xl text-xl font-bold uppercase tracking-wide shadow-md">
+                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
+                                </h2>
+                            </div>
+                        )}
+                        {/* DEFAULT / CUSTOM FALLBACK HEADER */}
+                        {(!settings.themeId || !['minimal', 'elegance', 'modern', 'neon', 'paper', 'rustic', 'vibrant'].includes(settings.themeId)) && (
+                            <div className="flex items-center gap-4 px-2 mb-6">
+                                <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
+                                <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-widest" style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
+                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
+                                </h2>
+                                <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
+                            </div>
+                        )}
 
-                        <div className="grid gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3">
+
+                        <div className={cn(
+                            "p-2",
+                            getContainerClass(settings.menuLayout, category.layout_mode)
+                        )}>
                             {categoryProducts.map((product) => (
                                 <ProductCard
                                     key={product.id}
                                     product={product}
                                     language={language}
-                                    layoutMode={category.layout_mode || 'grid'}
+                                    layoutMode={getProductLayoutMode(settings.menuLayout, category.layout_mode) as any}
                                     onClick={() => handleProductClick(product)}
                                 />
                             ))}
