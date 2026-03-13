@@ -18,21 +18,26 @@ export default function middleware(req: NextRequest) {
     const url = req.nextUrl;
 
     // Bulunduğumuz ortamın Host değeri (örn: mickeyscafe.com veya qrsystem.vercel.app)
-    const hostname = req.headers.get('host') || '';
+    const hostname = req.headers.get('host')?.replace(/:\d+$/, '') || '';
 
-    // Sistem Ana Domain'leri (Localhost veya Vercel sağladığınız ana uygulamanın domainleri)
-    // Buraya projenin kendi ana app domainini (örn: qrmenu.vogolab.com) ekleyebilirsiniz.
+    // Sistem Ana Domain'leri - SADECE ana uygulama hostları.
+    // Otomatik oluşturulan restoran subdomain'leri (volkancafe-3005-qrmenu.vogolab.com) burada OLMAMALI.
+    const MAIN_DOMAINS = [
+        'localhost',
+        'qrmenu.vogolab.com',
+        'www.qrmenu.vogolab.com',
+    ];
+
     const isMainDomain =
-        hostname.includes('localhost') ||
-        hostname.includes('vercel.app') ||
-        hostname.includes('vogolab.com');
+        MAIN_DOMAINS.some(d => hostname === d || hostname.startsWith(d + ':')) ||
+        hostname.endsWith('.vercel.app');
 
     // 1. Eğer Hostname, bizim ana domainimiz ise karışmıyoruz, normal yönlendirmeye devam etsin (SaaS sayfası veya /admin vb.)
     if (isMainDomain) {
         return NextResponse.next();
     }
 
-    // 2. Eğer bir Restoran KENDİ DOMAIN'ine girmişse (örn: mickeyscafe.com):
+    // 2. Eğer bir Restoran KENDİ DOMAIN'ine girmişse (örn: mickeyscafe.com veya volkancafe-3005-qrmenu.vogolab.com):
     // Arka planda gizlice "/d/mickeyscafe.com" dizinine yönlendirip (rewrite) menüsünü sunacağız.
     return NextResponse.rewrite(new URL(`/d/${hostname}${url.pathname}`, req.url));
 }

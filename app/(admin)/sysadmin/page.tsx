@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import * as Services from '@/lib/services';
-import { LayoutDashboard, LogOut, Plus, ShieldCheck, Trash2, ExternalLink, ArrowRight, Globe, Lock } from 'lucide-react';
+import { LayoutDashboard, LogOut, Plus, ShieldCheck, Trash2, ExternalLink, ArrowRight, Globe, Lock, Crown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -22,7 +22,9 @@ export default function SysAdminPage() {
     const [newName, setNewName] = useState('');
     const [newSlug, setNewSlug] = useState('');
     const [newPassword, setNewPassword] = useState('123456');
+    const [newPlan, setNewPlan] = useState<'BASIC' | 'PRO' | 'PLUS'>('BASIC');
     const [loading, setLoading] = useState(false);
+    const [updatingPlanId, setUpdatingPlanId] = useState<string | null>(null);
 
     // MASTER PASSWORD (In production, use ENV var checks or real auth)
     const MASTER_KEY = 'supersecret';
@@ -51,7 +53,7 @@ export default function SysAdminPage() {
         e.preventDefault();
         setLoading(true);
         try {
-            await Services.createRestaurant(newName, newSlug, newPassword);
+            await Services.createRestaurant(newName, newSlug, newPassword, newPlan);
             alert('Restoran başarıyla oluşturuldu!');
             setShowForm(false);
             setNewName('');
@@ -62,6 +64,19 @@ export default function SysAdminPage() {
             alert('Hata: ' + error.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handlePlanChange = async (restaurantId: string, plan: 'BASIC' | 'PRO' | 'PLUS') => {
+        setUpdatingPlanId(restaurantId);
+        try {
+            await Services.updateRestaurantPlan(restaurantId, plan);
+            setRestaurants(prev => prev.map(r => r.id === restaurantId ? { ...r, plan_type: plan } : r));
+        } catch (error) {
+            console.error(error);
+            alert('Plan güncellenemedi.');
+        } finally {
+            setUpdatingPlanId(null);
         }
     };
 
@@ -176,7 +191,7 @@ export default function SysAdminPage() {
                             <CardTitle className="text-lg font-bold text-gray-900">Yeni Restoran Kurulumu</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={handleCreate} className="grid gap-4 md:grid-cols-4 items-end">
+                            <form onSubmit={handleCreate} className="grid gap-4 md:grid-cols-3 items-end">
                                 <div className="space-y-2">
                                     <Label htmlFor="newName">Restoran Adı</Label>
                                     <Input
@@ -206,6 +221,18 @@ export default function SysAdminPage() {
                                         onChange={e => setNewPassword(e.target.value)}
                                     />
                                 </div>
+                                <div className="space-y-2">
+                                    <Label>Başlangıç Paketi</Label>
+                                    <select
+                                        value={newPlan}
+                                        onChange={e => setNewPlan(e.target.value as any)}
+                                        className="w-full border rounded-lg px-3 py-2 text-sm"
+                                    >
+                                        <option value="BASIC">BASIC</option>
+                                        <option value="PRO">PRO</option>
+                                        <option value="PLUS">PLUS</option>
+                                    </select>
+                                </div>
                                 <Button
                                     type="submit"
                                     disabled={loading}
@@ -229,6 +256,7 @@ export default function SysAdminPage() {
                                     <th className="px-6 py-4 font-semibold">URL Kodu (Slug)</th>
                                     <th className="px-6 py-4 font-semibold">Özel Domain</th>
                                     <th className="px-6 py-4 font-semibold">Şifre</th>
+                                    <th className="px-6 py-4 font-semibold">Paket</th>
                                     <th className="px-6 py-4 font-semibold">Kayıt Tarihi</th>
                                     <th className="px-6 py-4 text-right font-semibold">İşlemler</th>
                                 </tr>
@@ -247,6 +275,23 @@ export default function SysAdminPage() {
                                             )}
                                         </td>
                                         <td className="px-6 py-4 font-mono text-xs">{rest.password}</td>
+
+                                        <td className="px-6 py-4">
+                                            <select
+                                                value={rest.plan_type || 'BASIC'}
+                                                disabled={updatingPlanId === rest.id}
+                                                onChange={e => handlePlanChange(rest.id, e.target.value as any)}
+                                                className={`text-xs font-black rounded-full border-2 px-3 py-1 cursor-pointer transition-all ${(rest.plan_type || 'BASIC') === 'PLUS' ? 'border-emerald-400 text-emerald-700 bg-emerald-50' :
+                                                        (rest.plan_type || 'BASIC') === 'PRO' ? 'border-amber-400 text-amber-700 bg-amber-50' :
+                                                            'border-gray-300 text-gray-600 bg-gray-50'
+                                                    }`}
+                                            >
+                                                <option value="BASIC">BASIC</option>
+                                                <option value="PRO">PRO</option>
+                                                <option value="PLUS">PLUS</option>
+                                            </select>
+                                            {updatingPlanId === rest.id && <span className="text-[10px] text-gray-400 ml-1">...</span>}
+                                        </td>
 
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             {rest.created_at ? new Date(rest.created_at).toLocaleDateString('tr-TR') : '---'}
@@ -268,11 +313,23 @@ export default function SysAdminPage() {
                                                 asChild
                                                 className="h-8 gap-1 border-gray-200 bg-white hover:bg-gray-100 hover:text-black font-semibold"
                                             >
-                                                <a href={rest.custom_domain ? `https://${rest.custom_domain}` : `/${rest.slug}`} target="_blank">
-                                                    Gör
+                                                <a href={`/${rest.slug}`} target="_blank">
+                                                    Menü
                                                     <ExternalLink className="h-3 w-3" />
                                                 </a>
                                             </Button>
+                                            {rest.custom_domain && (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    asChild
+                                                    className="h-8 gap-1 border-blue-200 bg-blue-50 hover:bg-blue-100 hover:text-blue-800 font-semibold text-blue-700"
+                                                >
+                                                    <a href={`https://${rest.custom_domain}`} target="_blank">
+                                                        <Globe className="h-3 w-3" />
+                                                    </a>
+                                                </Button>
+                                            )}
                                             <Button
                                                 variant="ghost"
                                                 size="icon"

@@ -155,13 +155,6 @@ export async function createRestaurant(name: string, slug: string, password: str
         created_at: serverTimestamp()
     });
 
-    // Auto-generate a domain if not given
-    // Format: slug-id-qrmenu.vogolab.com
-    const finalDomain = customDomain || `${slug}-${nextId}-qrmenu.vogolab.com`.toLowerCase();
-    if (!customDomain) {
-        await updateDoc(restRef, { custom_domain: finalDomain });
-    }
-
     // Create Default Settings
     await setDoc(doc(db, 'settings', restRef.id), {
         restaurant_id: restRef.id,
@@ -544,7 +537,7 @@ export async function getSettings(restaurantId: string) {
         socialTwitter: data.social_twitter,
         socialWhatsapp: data.social_whatsapp,
         footerText: data.footer_text,
-        footerCopyright: data.footer_copyright,
+        footerCopyright: data.footer_copyright
     } as SiteSettings;
 }
 

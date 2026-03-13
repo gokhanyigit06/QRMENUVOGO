@@ -269,7 +269,7 @@ export default function Home({ initialData }: { initialData?: any }) {
                   products={products}
                   language={language}
                 />
-              ) : (settings.menuLayout === 'list' || settings.menuLayout === 'grid') ? (
+              ) : ['list', 'grid', 'masonry', 'cards', 'minimal-list', 'paper'].includes(settings.menuLayout || '') ? (
                 <CategoryList
                   categories={categories}
                   products={products}

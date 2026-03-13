@@ -4,7 +4,7 @@
 import { useMenu } from '@/lib/store';
 import * as Services from '@/lib/services';
 
-import { Eye, EyeOff, Save, Upload, Globe, Palette, Layout } from 'lucide-react';
+import { Eye, EyeOff, Save, Upload, Globe, Palette, Layout, Lock } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
@@ -17,8 +17,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 
+import { hasFeatureAccess } from '@/lib/data';
+
 export default function SettingsPage() {
-    const { settings, updateSettings, uploadImage } = useMenu();
+    const { settings, updateSettings, uploadImage, restaurant } = useMenu();
     // Local state for editing before save
     const [localSettings, setLocalSettings] = useState(settings);
     const [isUploading, setIsUploading] = useState(false);
@@ -130,6 +132,27 @@ export default function SettingsPage() {
         setLocalSettings(prev => ({ ...prev, [key]: value }));
     };
 
+    const handleThemeChange = (themeId: string) => {
+        const themePresets: Record<string, any> = {
+            minimal: { fontFamily: 'Montserrat', darkMode: true, productTitleColor: '#f4f4f5', productDescriptionColor: '#a1a1aa', productPriceColor: '#ffffff' },
+            elegance: { fontFamily: 'Playfair Display', darkMode: true, productTitleColor: '#fff1f2', productDescriptionColor: '#fda4af', productPriceColor: '#fbbf24' },
+            modern: { fontFamily: 'Inter', darkMode: true, productTitleColor: '#f8fafc', productDescriptionColor: '#94a3b8', productPriceColor: '#38bdf8' },
+            vibrant: { fontFamily: 'Inter', darkMode: false, productTitleColor: '#78350f', productDescriptionColor: '#92400e', productPriceColor: '#ea580c' },
+            neon: { fontFamily: 'Inter', darkMode: true, productTitleColor: '#fae8ff', productDescriptionColor: '#e879f9', productPriceColor: '#22d3ee' },
+            rustic: { fontFamily: 'Playfair Display', darkMode: false, productTitleColor: '#4a3623', productDescriptionColor: '#8b5a2b', productPriceColor: '#c2410c' },
+            paper: { fontFamily: 'Playfair Display', darkMode: false, productTitleColor: '#1c1917', productDescriptionColor: '#57534e', productPriceColor: '#000000' },
+            default: { fontFamily: 'Inter', darkMode: false, productTitleColor: '#111827', productDescriptionColor: '#6b7280', productPriceColor: '#10b981' },
+            custom: {} // Preserve whatever they already entered for Custom colors
+        };
+        const preset = themePresets[themeId] || themePresets.default;
+
+        setLocalSettings(prev => ({
+            ...prev,
+            themeId,
+            ...preset
+        }));
+    };
+
     const handleBannerUrlChange = (index: number, value: string) => {
         const newUrls = [...localSettings.bannerUrls];
         newUrls[index] = value;
@@ -195,6 +218,12 @@ export default function SettingsPage() {
         { name: 'Kırmızı', value: 'red', class: 'bg-red-600' },
         { name: 'Yeşil', value: 'green', class: 'bg-green-600' },
     ];
+
+    const canUsePremiumThemes = hasFeatureAccess(restaurant?.plan_type, 'premiumThemes');
+    const canUseAdvancedLayouts = hasFeatureAccess(restaurant?.plan_type, 'advancedLayouts');
+    const canUseCustomColors = hasFeatureAccess(restaurant?.plan_type, 'customColors');
+    const canUseBanners = hasFeatureAccess(restaurant?.plan_type, 'banners');
+    const canUseCustomDomain = hasFeatureAccess(restaurant?.plan_type, 'customDomain');
 
     return (
         <div className="space-y-6 pb-20 max-w-[1200px] mx-auto w-full overflow-x-hidden p-4 md:p-6">
@@ -271,10 +300,18 @@ export default function SettingsPage() {
                                         ].map((t) => (
                                             <button
                                                 key={t.id}
-                                                onClick={() => handleChange('themeId', t.id)}
+                                                onClick={() => {
+                                                    const isPremiumTheme = !['default', 'minimal'].includes(t.id);
+                                                    if (isPremiumTheme && !canUsePremiumThemes) {
+                                                        alert('Bu tema PRO veya PLUS paket gerektirir. Paketinizi yükseltiniz.');
+                                                        return;
+                                                    }
+                                                    handleThemeChange(t.id);
+                                                }}
                                                 className={cn(
                                                     "relative group rounded-xl border-2 transition-all p-1 bg-white",
-                                                    localSettings.themeId === t.id ? 'border-amber-500 ring-2 ring-amber-200' : 'border-gray-100 hover:border-gray-200'
+                                                    localSettings.themeId === t.id ? 'border-amber-500 ring-2 ring-amber-200' : 'border-gray-100 hover:border-gray-200',
+                                                    !['default', 'minimal'].includes(t.id) && !canUsePremiumThemes ? 'opacity-60 grayscale' : ''
                                                 )}
                                             >
                                                 <div className={cn("aspect-[4/5] rounded-lg bg-gradient-to-br flex flex-col items-center justify-center gap-2 p-4 mb-2", t.color)}>
@@ -283,7 +320,10 @@ export default function SettingsPage() {
                                                     <div className="w-full aspect-square bg-white/80 rounded-md shadow-sm mt-2" />
                                                 </div>
                                                 <div className="text-left px-2 pb-2">
-                                                    <div className="text-xs font-black text-gray-900 leading-none">{t.name}</div>
+                                                    <div className="text-xs font-black text-gray-900 leading-none flex items-center gap-1">
+                                                        {t.name}
+                                                        {!['default', 'minimal'].includes(t.id) && !canUsePremiumThemes && <Lock className="w-3 h-3 text-red-500" />}
+                                                    </div>
                                                     <div className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tighter">{t.desc}</div>
                                                 </div>
                                                 {localSettings.themeId === t.id && (
@@ -296,7 +336,13 @@ export default function SettingsPage() {
                                     </div>
 
                                     {localSettings.themeId === 'custom' && (
-                                        <div className="mt-6 p-4 bg-gray-50 border border-gray-100 rounded-xl space-y-4">
+                                        <div className="mt-6 p-4 bg-gray-50 border border-gray-100 rounded-xl space-y-4 relative overflow-hidden">
+                                            {!canUseCustomColors && (
+                                                <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center">
+                                                    <Lock className="w-8 h-8 text-gray-400 mb-2" />
+                                                    <p className="text-sm font-bold text-gray-800">Özel Tasarım PRO pakette</p>
+                                                </div>
+                                            )}
                                             <h4 className="font-bold text-sm text-gray-900 flex items-center gap-2">
                                                 <Palette className="w-4 h-4 text-purple-500" /> Özel Renk Paleti (Custom)
                                             </h4>
@@ -377,19 +423,30 @@ export default function SettingsPage() {
                                             { id: 'cards', name: 'Kutu Kart', icon: '🎴' },
                                             { id: 'minimal-list', name: 'Sade (Liste)', icon: '📝' },
                                             { id: 'paper', name: 'Lüks Kağıt', icon: '📜' },
-                                        ].map((l) => (
-                                            <button
-                                                key={l.id}
-                                                onClick={() => handleChange('menuLayout', l.id)}
-                                                className={cn(
-                                                    "flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all",
-                                                    localSettings.menuLayout === l.id ? 'border-black bg-black text-white' : 'border-gray-100 bg-gray-50 hover:bg-gray-100'
-                                                )}
-                                            >
-                                                <span className="text-2xl">{l.icon}</span>
-                                                <span className="text-[10px] font-black uppercase tracking-widest">{l.name}</span>
-                                            </button>
-                                        ))}
+                                        ].map((l) => {
+                                            const isAdvanced = ['masonry', 'cards', 'paper', 'grid'].includes(l.id);
+                                            return (
+                                                <button
+                                                    key={l.id}
+                                                    onClick={() => {
+                                                        if (isAdvanced && !canUseAdvancedLayouts) {
+                                                            alert('Bu yerleşim PRO paket gerektirir.');
+                                                            return;
+                                                        }
+                                                        handleChange('menuLayout', l.id);
+                                                    }}
+                                                    className={cn(
+                                                        "flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all relative",
+                                                        localSettings.menuLayout === l.id ? 'border-black bg-black text-white' : 'border-gray-100 bg-gray-50 hover:bg-gray-100',
+                                                        isAdvanced && !canUseAdvancedLayouts ? 'opacity-60 grayscale' : ''
+                                                    )}
+                                                >
+                                                    {isAdvanced && !canUseAdvancedLayouts && <Lock className="absolute top-2 right-2 w-3 h-3 text-red-500" />}
+                                                    <span className="text-2xl">{l.icon}</span>
+                                                    <span className="text-[10px] font-black uppercase tracking-widest text-center">{l.name}</span>
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -541,8 +598,16 @@ export default function SettingsPage() {
                     )}
 
                     {activeTab === 'home' && (
-                        <div className="space-y-6 animate-in fade-in duration-300">
-                            <Card className="shadow-sm border-gray-200">
+                        <div className="space-y-6 animate-in fade-in duration-300 relative">
+                            {!canUseBanners && (
+                                <div className="absolute inset-0 bg-white/70 backdrop-blur-sm z-20 flex flex-col items-center pt-24 rounded-xl">
+                                    <Lock className="w-10 h-10 text-gray-400 mb-2" />
+                                    <p className="text-lg font-bold text-gray-900">Ana Sayfa Banner Yönetimi PRO Pakette</p>
+                                    <p className="text-sm text-gray-600 mt-2">Müşterilerinize kampanyalarınızı bannerlar ile duyurun.</p>
+                                </div>
+                            )}
+
+                            <Card className={cn("shadow-sm border-gray-200", !canUseBanners && "opacity-50 blur-[2px]")}>
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <div className="space-y-1">
                                         <CardTitle className="text-lg">Ana Sayfa Banner</CardTitle>
@@ -606,8 +671,14 @@ export default function SettingsPage() {
                     )}
 
                     {activeTab === 'advanced' && (
-                        <div className="space-y-6 animate-in fade-in duration-300">
-                            <Card className="border-blue-100 bg-blue-50/20">
+                        <div className="space-y-6 animate-in fade-in duration-300 relative">
+                            <Card className="border-blue-100 bg-blue-50/20 relative overflow-hidden">
+                                {!canUseCustomDomain && (
+                                    <div className="absolute inset-0 bg-white/70 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+                                        <Lock className="w-8 h-8 text-blue-400 mb-2" />
+                                        <p className="text-sm font-bold text-blue-900">Özel Alan Adı PRO Pakette</p>
+                                    </div>
+                                )}
                                 <CardHeader>
                                     <CardTitle className="text-lg flex items-center gap-2">
                                         <Globe className="h-5 w-5 text-blue-600" />

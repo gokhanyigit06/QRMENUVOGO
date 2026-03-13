@@ -42,16 +42,10 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
     const displayName = language === 'en' && product.nameEn ? product.nameEn : product.name;
     const displayDescription = language === 'en' && product.descriptionEn ? product.descriptionEn : product.description;
 
-    // Theme Color Logic
-    const themeTextColors: Record<string, string> = {
-        black: 'text-amber-600',
-        white: 'text-black',
-        blue: 'text-blue-600',
-        orange: 'text-orange-600',
-        red: 'text-red-600',
-        green: 'text-green-600'
-    };
-    const activeColorClass = themeTextColors[settings.themeColor || 'black'] || 'text-amber-600';
+    // Theme Color Logic replaced by dynamic settings
+    const priceColor = settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor;
+    const titleColor = settings.themeId === 'custom' ? settings.customTextColor : settings.productTitleColor;
+    const descColor = settings.themeId === 'custom' ? settings.customTextColor : settings.productDescriptionColor;
 
     // Image Source Logic
     const imageSrc = (product.image && product.image.length > 5)
@@ -120,7 +114,7 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
 
                 {/* Details */}
                 <div className="p-8">
-                    <h2 className="text-3xl font-black leading-tight tracking-wide mb-2 opacity-90">
+                    <h2 className="text-3xl font-black leading-tight tracking-wide mb-2 opacity-90" style={{ color: titleColor }}>
                         {displayName.toLocaleUpperCase('tr-TR')}
                     </h2>
 
@@ -130,7 +124,7 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
                         ) : (
                             product.discountPrice ? (
                                 <>
-                                    <span className={cn("text-3xl font-bold", activeColorClass)}>
+                                    <span className={cn("text-3xl font-bold")} style={{ color: priceColor }}>
                                         ₺{product.discountPrice}
                                     </span>
                                     <span className="text-lg text-gray-400 line-through font-medium">
@@ -138,7 +132,7 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
                                     </span>
                                 </>
                             ) : (
-                                <span className={cn("text-3xl font-bold", activeColorClass)}>
+                                <span className={cn("text-3xl font-bold")} style={{ color: priceColor }}>
                                     ₺{product.price}
                                 </span>
                             )
@@ -146,7 +140,7 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
                     </div>
 
                     {displayDescription && (
-                        <p className="text-lg leading-relaxed font-medium opacity-70">
+                        <p className="text-lg leading-relaxed font-medium opacity-70" style={{ color: descColor }}>
                             {displayDescription}
                         </p>
                     )}
@@ -156,8 +150,8 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
                         <div className="mt-6 space-y-3 p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5">
                             {product.variants.map((variant, idx) => (
                                 <div key={idx} className="flex items-center justify-between text-base">
-                                    <span className="font-bold opacity-90">{variant.name}</span>
-                                    <span className={cn("font-bold text-lg", activeColorClass)}>
+                                    <span className="font-bold opacity-90" style={{ color: titleColor }}>{variant.name}</span>
+                                    <span className={cn("font-bold text-lg")} style={{ color: priceColor }}>
                                         {variant.price} ₺
                                     </span>
                                 </div>

@@ -37,6 +37,43 @@ export interface Restaurant {
   parent_id?: string | null; // Boş ise Marka Sahibi, Dolu ise bir Şube
 }
 
+export const PLAN_LIMITS = {
+  BASIC: {
+    premiumThemes: false,
+    advancedLayouts: false, // Masonry, Kutu Kart, Lüks Kağıt
+    customColors: false,
+    banners: false,
+    popups: false,
+    customDomain: false,
+    ordering: false,
+  },
+  PRO: {
+    premiumThemes: true,
+    advancedLayouts: true,
+    customColors: true,
+    banners: true,
+    popups: true,
+    customDomain: true,
+    ordering: false,
+  },
+  PLUS: {
+    premiumThemes: true,
+    advancedLayouts: true,
+    customColors: true,
+    banners: true,
+    popups: true,
+    customDomain: true,
+    ordering: true,
+  }
+};
+
+export type FeatureKey = keyof typeof PLAN_LIMITS['BASIC'];
+
+export function hasFeatureAccess(plan: 'BASIC' | 'PRO' | 'PLUS' | undefined, feature: FeatureKey) {
+  const currentPlan = plan || 'BASIC';
+  return PLAN_LIMITS[currentPlan][feature];
+}
+
 export interface Category {
   id: string;
   restaurantId?: string;

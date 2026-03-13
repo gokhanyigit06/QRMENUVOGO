@@ -1,0 +1,1029 @@
+﻿diff --git a/app/(dashboard)/admin/settings/page.tsx b/app/(dashboard)/admin/settings/page.tsx
+index 6c3f3e6..c1b0691 100644
+--- a/app/(dashboard)/admin/settings/page.tsx
++++ b/app/(dashboard)/admin/settings/page.tsx
+@@ -260,6 +260,14 @@ export default function SettingsPage() {
+                                         {[
+                                             { id: 'default', name: 'Standart', desc: 'Klasik ┼Ş─▒k', color: 'from-gray-100 to-gray-200' },
+                                             { id: 'elite', name: 'Elite', desc: 'Segmented', color: 'from-emerald-50 to-emerald-100' },
++                                            { id: 'minimal', name: 'Minimal', desc: 'Koyu Efsane', color: 'from-zinc-900 to-zinc-800' },
++                                            { id: 'elegance', name: 'Elegance', desc: 'K─▒rm─▒z─▒ ┼Ş─▒kl─▒k', color: 'from-rose-950 to-red-950' },
++                                            { id: 'modern', name: 'Modern', desc: 'Mavi Karizma', color: 'from-blue-950 to-indigo-950' },
++                                            { id: 'vibrant', name: 'Vibrant', desc: 'Turuncu Enerji', color: 'from-amber-500/80 to-orange-500/80' },
++                                            { id: 'neon', name: 'Neon', desc: 'Siber Geceler', color: 'from-fuchsia-600 to-purple-900 border border-fuchsia-400' },
++                                            { id: 'rustic', name: 'Rustic', desc: 'Do─şal Kafe', color: 'from-[#8b5a2b] to-[#4a3623]' },
++                                            { id: 'paper', name: 'Paper', desc: 'L├╝ks Ka─ş─▒t Men├╝', color: 'from-[#f9f6f0] to-[#e8dec0] border border-stone-300' },
++                                            { id: 'custom', name: '├ûzel Tasar─▒m', desc: 'Kendi Paletinizi Yarat─▒n', color: 'from-purple-400 via-pink-400 to-amber-400 border border-purple-200' },
+                                         ].map((t) => (
+                                             <button
+                                                 key={t.id}
+@@ -286,6 +294,67 @@ export default function SettingsPage() {
+                                             </button>
+                                         ))}
+                                     </div>
++
++                                    {localSettings.themeId === 'custom' && (
++                                        <div className="mt-6 p-4 bg-gray-50 border border-gray-100 rounded-xl space-y-4">
++                                            <h4 className="font-bold text-sm text-gray-900 flex items-center gap-2">
++                                                <Palette className="w-4 h-4 text-purple-500" /> ├ûzel Renk Paleti (Custom)
++                                            </h4>
++                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
++                                                <div className="space-y-2">
++                                                    <Label className="text-xs font-bold text-gray-600">Arka Plan Rengi</Label>
++                                                    <div className="flex gap-2">
++                                                        <Input
++                                                            type="color"
++                                                            value={localSettings.customBgColor || '#ffffff'}
++                                                            onChange={(e) => handleChange('customBgColor', e.target.value)}
++                                                            className="w-12 h-10 p-1 cursor-pointer rounded-md"
++                                                        />
++                                                        <Input
++                                                            type="text"
++                                                            value={localSettings.customBgColor || '#ffffff'}
++                                                            onChange={(e) => handleChange('customBgColor', e.target.value)}
++                                                            className="font-mono text-xs uppercase"
++                                                        />
++                                                    </div>
++                                                </div>
++                                                <div className="space-y-2">
++                                                    <Label className="text-xs font-bold text-gray-600">Ba┼şl─▒k/Metin Rengi</Label>
++                                                    <div className="flex gap-2">
++                                                        <Input
++                                                            type="color"
++                                                            value={localSettings.customTextColor || '#000000'}
++                                                            onChange={(e) => handleChange('customTextColor', e.target.value)}
++                                                            className="w-12 h-10 p-1 cursor-pointer rounded-md"
++                                                        />
++                                                        <Input
++                                                            type="text"
++                                                            value={localSettings.customTextColor || '#000000'}
++                                                            onChange={(e) => handleChange('customTextColor', e.target.value)}
++                                                            className="font-mono text-xs uppercase"
++                                                        />
++                                                    </div>
++                                                </div>
++                                                <div className="space-y-2">
++                                                    <Label className="text-xs font-bold text-gray-600">Vurgu/Aksan Rengi</Label>
++                                                    <div className="flex gap-2">
++                                                        <Input
++                                                            type="color"
++                                                            value={localSettings.customAccentColor || '#f59e0b'}
++                                                            onChange={(e) => handleChange('customAccentColor', e.target.value)}
++                                                            className="w-12 h-10 p-1 cursor-pointer rounded-md"
++                                                        />
++                                                        <Input
++                                                            type="text"
++                                                            value={localSettings.customAccentColor || '#f59e0b'}
++                                                            onChange={(e) => handleChange('customAccentColor', e.target.value)}
++                                                            className="font-mono text-xs uppercase"
++                                                        />
++                                                    </div>
++                                                </div>
++                                            </div>
++                                        </div>
++                                    )}
+                                 </CardContent>
+                             </Card>
+ 
+@@ -304,6 +373,10 @@ export default function SettingsPage() {
+                                             { id: 'list', name: 'D├╝z Liste', icon: '­şôä' },
+                                             { id: 'tabs', name: 'Sekmeli', icon: '­şôæ' },
+                                             { id: 'grid', name: 'Izgara', icon: '­şö│' },
++                                            { id: 'masonry', name: 'Masonry', icon: '­şğ▒' },
++                                            { id: 'cards', name: 'Kutu Kart', icon: '­şÄ┤' },
++                                            { id: 'minimal-list', name: 'Sade (Liste)', icon: '­şôØ' },
++                                            { id: 'paper', name: 'L├╝ks Ka─ş─▒t', icon: '­şô£' },
+                                         ].map((l) => (
+                                             <button
+                                                 key={l.id}
+@@ -354,11 +427,11 @@ export default function SettingsPage() {
+                                                     <SelectValue placeholder="Font Se├ğin" />
+                                                 </SelectTrigger>
+                                                 <SelectContent>
+-                                                    <SelectItem value="Inter">Inter (Standard)</SelectItem>
+-                                                    <SelectItem value="Montserrat">Montserrat (Modern)</SelectItem>
+-                                                    <SelectItem value="Playfair Display">Playfair (Elegant)</SelectItem>
+-                                                    <SelectItem value="Brodo">Brodo (Stylish)</SelectItem>
+-                                                    <SelectItem value="Source Sans Pro">Source Sans (Elite)</SelectItem>
++                                                    <SelectItem value="Inter" style={{ fontFamily: 'Inter, sans-serif' }}>Inter (Standard)</SelectItem>
++                                                    <SelectItem value="Montserrat" style={{ fontFamily: 'Montserrat, sans-serif' }}>Montserrat (Modern)</SelectItem>
++                                                    <SelectItem value="Playfair Display" style={{ fontFamily: '"Playfair Display", serif' }}>Playfair (Elegant)</SelectItem>
++                                                    <SelectItem value="Brodo" style={{ fontFamily: 'Brodo, sans-serif' }}>Brodo (Stylish)</SelectItem>
++                                                    <SelectItem value="Source Sans Pro" style={{ fontFamily: '"Source Sans Pro", sans-serif' }}>Source Sans (Elite)</SelectItem>
+                                                 </SelectContent>
+                                             </Select>
+                                         </div>
+diff --git a/app/[slug]/MenuClient.tsx b/app/[slug]/MenuClient.tsx
+index 8666398..07847f7 100644
+--- a/app/[slug]/MenuClient.tsx
++++ b/app/[slug]/MenuClient.tsx
+@@ -112,10 +112,44 @@ export default function Home({ initialData }: { initialData?: any }) {
+   return (
+     <div className={cn(
+       "min-h-screen pb-24 transition-colors duration-500",
+-      settings.darkMode ? 'bg-gray-950 text-white' : 'bg-gray-50 text-gray-900',
+-      settings.themeId === 'elite' && !settings.darkMode ? 'bg-white' : '',
+-      settings.themeId === 'elite' ? 'font-minister-sans' : 'font-sans'
+-    )}>
++      settings.themeId === 'elite' && !settings.darkMode ? 'bg-white font-minister-sans' : '',
++
++      // Default / Standard Theme
++      (settings.themeId === 'default' || !settings.themeId) && settings.darkMode ? 'bg-gray-950 text-white' : '',
++      (settings.themeId === 'default' || !settings.themeId) && !settings.darkMode ? 'bg-gray-50 text-gray-900' : '',
++
++      // Minimal Theme
++      settings.themeId === 'minimal' && settings.darkMode ? 'bg-zinc-950 text-zinc-100' : '',
++      settings.themeId === 'minimal' && !settings.darkMode ? 'bg-zinc-100 text-zinc-900' : '',
++
++      // Elegance Theme
++      settings.themeId === 'elegance' && settings.darkMode ? 'bg-rose-950 text-rose-50' : '',
++      settings.themeId === 'elegance' && !settings.darkMode ? 'bg-rose-50 text-rose-950' : '',
++
++      // Modern Theme
++      settings.themeId === 'modern' && settings.darkMode ? 'bg-slate-950 text-slate-100' : '',
++      settings.themeId === 'modern' && !settings.darkMode ? 'bg-slate-50 text-slate-900' : '',
++
++      // Vibrant Theme
++      settings.themeId === 'vibrant' && settings.darkMode ? 'bg-amber-950 text-amber-50' : '',
++      settings.themeId === 'vibrant' && !settings.darkMode ? 'bg-amber-50 text-amber-950' : '',
++
++      // Neon Theme
++      settings.themeId === 'neon' && settings.darkMode ? 'bg-black text-fuchsia-100' : '',
++      settings.themeId === 'neon' && !settings.darkMode ? 'bg-zinc-900 text-fuchsia-200' : '', // Neon is implicitly always dark but just in case
++
++      // Rustic Theme
++      settings.themeId === 'rustic' && settings.darkMode ? 'bg-[#1a1410] text-[#e8dccb]' : '',
++      settings.themeId === 'rustic' && !settings.darkMode ? 'bg-[#f4efe6] text-[#4a3623]' : '',
++
++      // Paper Theme
++      settings.themeId === 'paper' && settings.darkMode ? 'bg-stone-900 text-stone-200 border-double' : '',
++      settings.themeId === 'paper' && !settings.darkMode ? 'bg-stone-50 text-stone-900 border-double' : ''
++    )} style={{
++      fontFamily: settings.themeId === 'elite' ? undefined : (settings.fontFamily || 'Inter, sans-serif'),
++      backgroundColor: settings.themeId === 'custom' ? (settings.customBgColor || '#f9fafb') : undefined,
++      color: settings.themeId === 'custom' ? (settings.customTextColor || '#111827') : undefined
++    }}>
+       {/* 
+          Pop-up Component 
+          Checks 'popupActive' from settings
+@@ -163,13 +197,15 @@ export default function Home({ initialData }: { initialData?: any }) {
+             <div className="w-[1px] h-4 bg-gray-200 hidden xs:block" />
+             <button
+               onClick={() => setIsAllergenModalOpen(true)}
+-              className="text-xs font-bold text-gray-900 uppercase tracking-wide hover:text-amber-600 transition-colors hidden sm:block"
++              className={cn("text-xs font-bold uppercase tracking-wide hover:opacity-70 transition-colors hidden sm:block", settings.themeId === 'custom' ? '' : 'text-gray-900 dark:text-gray-100')}
++              style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}
+             >
+               {language === 'en' ? 'Allergens' : 'Alerjenler'}
+             </button>
+             <button
+               onClick={() => setLanguage(language === 'tr' ? 'en' : 'tr')}
+-              className="flex items-center gap-2 text-xs font-bold text-gray-900 uppercase tracking-wide hover:text-amber-600 transition-colors"
++              className={cn("flex items-center gap-2 text-xs font-bold uppercase tracking-wide hover:opacity-70 transition-colors", settings.themeId === 'custom' ? '' : 'text-gray-900 dark:text-gray-100')}
++              style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}
+             >
+               {language === 'tr' ? (
+                 <><span className="text-sm">­şç¼­şçğ</span></>
+@@ -216,11 +252,11 @@ export default function Home({ initialData }: { initialData?: any }) {
+               {/* Title before list */}
+               <div className="mb-4 flex items-center justify-between px-1">
+                 {settings.menuTitleText ? (
+-                  <p className="text-xs font-medium text-gray-500 text-center w-full uppercase tracking-wider py-2">
++                  <p className="text-xs font-medium opacity-60 text-center w-full uppercase tracking-wider py-2" style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
+                     {settings.menuTitleText}
+                   </p>
+                 ) : (
+-                  <h2 className="text-lg font-bold text-gray-800">
++                  <h2 className="text-lg font-bold" style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
+                     {language === 'en' ? 'Menu' : 'Men├╝'}
+                   </h2>
+                 )}
+diff --git a/app/[slug]/page.tsx b/app/[slug]/page.tsx
+index 139706b..9f84a40 100644
+--- a/app/[slug]/page.tsx
++++ b/app/[slug]/page.tsx
+@@ -2,6 +2,7 @@
+ import { getRestaurantBySlug, getCategories, getProducts, getSettings } from "@/lib/services";
+ import MenuClient from "./MenuClient";
+ import { notFound } from "next/navigation";
++import { getDemoData } from "@/lib/demoData";
+ 
+ // --- ISR: Beher saatte bir yenile (3600 saniye) ---
+ export const revalidate = 3600;
+@@ -13,20 +14,36 @@ interface PageProps {
+ export default async function Page({ params }: PageProps) {
+     const { slug } = await params;
+ 
+-    // 1. Fetch Restaurant
+-    const restaurant = await getRestaurantBySlug(slug);
+-
+-    if (!restaurant) {
+-        notFound();
++    // 1. Fetch Restaurant Check Demo State First
++    let restaurant;
++    let categories;
++    let products;
++    let settings;
++
++    if (slug.startsWith('demo-')) {
++        const demoData = getDemoData(slug);
++        restaurant = demoData.restaurant;
++        categories = demoData.categories;
++        products = demoData.products;
++        settings = demoData.settings;
++    } else {
++        restaurant = await getRestaurantBySlug(slug);
++
++        if (!restaurant) {
++            notFound();
++        }
++
++        // 2. Fetch all other data in parallel for speed
++        const [fetchedCategories, fetchedProducts, fetchedSettings] = await Promise.all([
++            getCategories(restaurant.id),
++            getProducts(restaurant.id),
++            getSettings(restaurant.id)
++        ]);
++        categories = fetchedCategories;
++        products = fetchedProducts;
++        settings = fetchedSettings;
+     }
+ 
+-    // 2. Fetch all other data in parallel for speed
+-    const [categories, products, settings] = await Promise.all([
+-        getCategories(restaurant.id),
+-        getProducts(restaurant.id),
+-        getSettings(restaurant.id)
+-    ]);
+-
+     // 3. Pass to Client Component
+     // We'll also pass this to the MenuProvider via local hydration or props
+     return (
+diff --git a/app/page.tsx b/app/page.tsx
+index 9cedc24..a7e72e8 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -125,34 +125,37 @@ export default function SaaSMarketingPage() {
+       {/* --- THEMES SHOWCASE --- */}
+       <section id="themes" className="py-32 px-6 relative overflow-hidden">
+         <div className="max-w-7xl mx-auto text-center mb-20 space-y-6">
+-          <h2 className="text-4xl md:text-5xl font-bold">Tek Men├╝, 4 M├╝kemmel Tasar─▒m</h2>
++          <h2 className="text-4xl md:text-5xl font-bold">Tek Men├╝, 6 M├╝kemmel Tasar─▒m</h2>
+           <p className="text-gray-400 text-lg max-w-2xl mx-auto">├£r├╝nlerinizi girdikten sonra diledi─şiniz zaman tasar─▒m─▒n─▒z─▒ de─şi┼ştirebilirsiniz. Temalar sadece bir t─▒k uza─ş─▒n─▒zda.</p>
+         </div>
+ 
+-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-6">
++        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+           {[
+             { name: "Minimal", color: "from-zinc-900 to-zinc-800", img: "https://images.unsplash.com/photo-1542282088-fe8426682b8f?q=80&w=500&auto=format&fit=crop" },
+             { name: "Elegance", color: "from-rose-950 to-red-950", img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=500&auto=format&fit=crop" },
+             { name: "Modern", color: "from-blue-950 to-indigo-950", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=500&auto=format&fit=crop" },
+             { name: "Vibrant", color: "from-amber-500/20 to-orange-500/20", img: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=500&auto=format&fit=crop" },
++            { name: "Neon", color: "from-fuchsia-900/50 to-black", img: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=500&auto=format&fit=crop" },
++            { name: "Rustic", color: "from-[#4a3623]/80 to-[#2c241b]", img: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=500&auto=format&fit=crop" },
+           ].map((theme, i) => (
+-            <motion.div
+-              key={i}
+-              initial={{ opacity: 0, scale: 0.95 }}
+-              whileInView={{ opacity: 1, scale: 1 }}
+-              viewport={{ once: true }}
+-              transition={{ delay: i * 0.1 }}
+-              className="relative aspect-[9/16] rounded-3xl overflow-hidden group cursor-pointer border border-white/10"
+-            >
+-              <img src={theme.img} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={theme.name} />
+-              <div className={`absolute inset-0 bg-gradient-to-t ${theme.color} opacity-80`} />
+-
+-              <div className="absolute inset-x-0 bottom-0 p-6">
+-                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold mb-3 inline-block">Tema {i + 1}</span>
+-                <h3 className="text-2xl font-bold">{theme.name}</h3>
+-                <p className="text-sm text-white/80 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Demoyu ─░ncele <ArrowRight className="inline w-4 h-4" /></p>
+-              </div>
+-            </motion.div>
++            <Link key={i} href={`/demo-${theme.name.toLowerCase()}`}>
++              <motion.div
++                initial={{ opacity: 0, scale: 0.95 }}
++                whileInView={{ opacity: 1, scale: 1 }}
++                viewport={{ once: true }}
++                transition={{ delay: i * 0.1 }}
++                className="relative aspect-[9/16] rounded-3xl overflow-hidden group border border-white/10 block w-full"
++              >
++                <img src={theme.img} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={theme.name} />
++                <div className={`absolute inset-0 bg-gradient-to-t ${theme.color} opacity-80`} />
++
++                <div className="absolute inset-x-0 bottom-0 p-6">
++                  <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold mb-3 inline-block">Tema {i + 1}</span>
++                  <h3 className="text-2xl font-bold">{theme.name}</h3>
++                  <p className="text-sm text-white/80 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Demoyu ─░ncele <ArrowRight className="inline w-4 h-4" /></p>
++                </div>
++              </motion.div>
++            </Link>
+           ))}
+         </div>
+       </section>
+diff --git a/components/FontLoader.tsx b/components/FontLoader.tsx
+index cf0bb27..4be2c06 100644
+--- a/components/FontLoader.tsx
++++ b/components/FontLoader.tsx
+@@ -7,9 +7,11 @@ export default function FontLoader() {
+     const { settings } = useMenu();
+ 
+     useEffect(() => {
++        const allPossibleFonts = ['Inter', 'Montserrat', 'Playfair Display', 'Source Sans Pro'];
+         const uniqueFonts = Array.from(new Set([
+             settings.fontFamily || 'Inter',
+-            settings.categoryFontFamily
++            settings.categoryFontFamily,
++            ...allPossibleFonts // always load available fonts for the admin preview
+         ].filter(Boolean) as string[]));
+ 
+         const systemFonts = ['Times New Roman', 'Arial', 'Helvetica', 'Courier New', 'Brodo'];
+diff --git a/components/ProductCard.tsx b/components/ProductCard.tsx
+index 9dbe31d..75caae9 100644
+--- a/components/ProductCard.tsx
++++ b/components/ProductCard.tsx
+@@ -9,7 +9,7 @@ interface ProductCardProps {
+     product: Product;
+     language: 'tr' | 'en';
+     onClick?: () => void;
+-    layoutMode?: 'grid' | 'list' | 'list-no-image' | 'medium';
++    layoutMode?: 'grid' | 'list' | 'list-no-image' | 'medium' | 'masonry' | 'cards' | 'minimal-list' | 'paper';
+ }
+ 
+ export default function ProductCard({ product, language, onClick, layoutMode = 'grid' }: ProductCardProps) {
+@@ -72,16 +72,135 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
+         return title;
+     };
+ 
++    const getThemeCardStyles = () => {
++        const base = "group flex flex-col overflow-hidden transition-all duration-300 cursor-pointer ";
++        switch (settings.themeId) {
++            case 'minimal': return base + "rounded-none border-b border-zinc-200 dark:border-zinc-800 bg-transparent hover:bg-zinc-50 dark:hover:bg-zinc-900/50";
++            case 'elegance': return base + "rounded-2xl border border-rose-900/10 shadow-lg backdrop-blur-sm bg-white/90 dark:bg-black/50 hover:shadow-xl hover:border-rose-900/30";
++            case 'modern': return base + "rounded-3xl border-transparent shadow-xl bg-white dark:bg-slate-900 hover:shadow-2xl hover:-translate-y-1";
++            case 'vibrant': return base + "rounded-xl border border-amber-500/30 shadow-[0_4px_15px_-3px_rgba(245,158,11,0.2)] bg-white dark:bg-amber-950/20 hover:scale-[1.02] hover:border-amber-500/60";
++            case 'neon': return base + "rounded-xl border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.2)] bg-zinc-950 hover:shadow-[0_0_25px_rgba(217,70,239,0.5)]";
++            case 'rustic': return base + "rounded-none border-y-2 border-amber-900/10 bg-[#fdfbf7] dark:bg-[#2c241b] shadow-sm hover:shadow-md";
++            case 'paper': return base + "border-b border-stone-200/50 hover:bg-black/5 dark:hover:bg-white/5 bg-transparent";
++            case 'custom': return base + "rounded-xl border border-black/5 hover:border-black/10 shadow-sm hover:shadow-md bg-white/50 backdrop-blur-sm";
++            default: return base + "rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md";
++        }
++    };
++
++    // RENDER: PAPER (High End Minimal Text Only)
++    if (layoutMode === 'paper') {
++        return (
++            <div
++                onClick={onClick}
++                className={cn(getThemeCardStyles(), "py-4 flex flex-col items-center justify-center text-center")}
++            >
++                <h3 className={cn("font-serif tracking-widest uppercase mb-1", titleSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productTitleColor }}>
++                    {formatTitle(displayName)}
++                </h3>
++                {displayDescription && (
++                    <p className={cn("italic font-serif opacity-70 max-w-[80%] mx-auto mb-2", descriptionSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productDescriptionColor }}>
++                        {displayDescription}
++                    </p>
++                )}
++                {(product.price !== undefined && product.price !== null && (!product.variants || product.variants.length === 0)) && (
++                    product.discountPrice ? (
++                        <div className="flex items-center gap-3 mt-1">
++                            <span className={cn("font-serif line-through opacity-50", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>{product.price}Ôé║</span>
++                            <span className={cn("font-serif font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>{product.discountPrice}Ôé║</span>
++                        </div>
++                    ) : (
++                        <span className={cn("font-serif mt-1", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>
++                            {product.price} Ôé║
++                        </span>
++                    )
++                )}
++            </div>
++        )
++    }
++
++    // RENDER: MINIMAL LIST (Text Only Cafe Style)
++    if (layoutMode === 'minimal-list') {
++        return (
++            <div
++                onClick={onClick}
++                className={cn(getThemeCardStyles(), "py-3 border-b border-black/5 dark:border-white/5 last:border-0 rounded-none bg-transparent hover:bg-black/5")}
++            >
++                <div className="flex justify-between items-baseline w-full">
++                    <h3 className={cn("font-medium tracking-tight", titleSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productTitleColor }}>
++                        {displayName}
++                    </h3>
++                    <div className="flex-1 mx-4 border-b border-dotted border-black/20 dark:border-white/20"></div>
++                    <div className="flex items-baseline shrink-0">
++                        {(product.price !== undefined && product.price !== null && (!product.variants || product.variants.length === 0)) && (
++                            product.discountPrice ? (
++                                <>
++                                    <span className={cn("line-through opacity-50 mr-2 text-xs")} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>{product.price}Ôé║</span>
++                                    <span className={cn("font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>{product.discountPrice}Ôé║</span>
++                                </>
++                            ) : (
++                                <span className={cn("font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>
++                                    {product.price} Ôé║
++                                </span>
++                            )
++                        )}
++                    </div>
++                </div>
++                {displayDescription && (
++                    <p className={cn("mt-1 opacity-60 text-left", descriptionSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productDescriptionColor }}>
++                        {displayDescription}
++                    </p>
++                )}
++            </div>
++        )
++    }
++
++    // RENDER: CARDS (Large Image Box)
++    if (layoutMode === 'cards') {
++        return (
++            <div
++                onClick={onClick}
++                className={getThemeCardStyles()}
++            >
++                <div className="relative aspect-video w-full bg-gray-100">
++                    <Image
++                        src={imageSrc}
++                        alt={displayName}
++                        fill
++                        unoptimized
++                        className="object-cover transition-transform duration-700 group-hover:scale-110"
++                    />
++                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
++
++                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
++                        <h3 className={cn("font-bold leading-tight tracking-wide mb-1", titleSize)}>
++                            {formatTitle(displayName.toLocaleUpperCase('tr-TR'))}
++                        </h3>
++                        {(product.price !== undefined && product.price !== null && (!product.variants || product.variants.length === 0)) && (
++                            product.discountPrice ? (
++                                <div className="flex items-center gap-2">
++                                    <span className={cn("font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor }}>{product.discountPrice} Ôé║</span>
++                                    <span className="text-sm line-through opacity-70">{product.price} Ôé║</span>
++                                </div>
++                            ) : (
++                                <span className={cn("font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor }}>{product.price} Ôé║</span>
++                            )
++                        )}
++                    </div>
++                </div>
++            </div>
++        )
++    }
++
+     // RENDER: LIST-NO-IMAGE (Minimal / Cocktail Style)
+     if (layoutMode === 'list-no-image') {
+         return (
+             <div
+                 onClick={onClick}
+-                className="group flex flex-col overflow-hidden rounded-xl bg-white border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer p-4 md:p-6"
++                className={cn(getThemeCardStyles(), "p-4 md:p-6")}
+             >
+                 <div className="flex items-center justify-between gap-4">
+                     <h3
+-                        className={cn("font-serif font-bold leading-tight tracking-wide", titleSize)}
++                        className={cn("font-bold leading-tight tracking-wide", titleSize)}
+                         style={{ color: settings.productTitleColor }}
+                     >
+                         {formatTitle(displayName.toLocaleUpperCase('tr-TR'))}
+@@ -126,11 +245,11 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
+         return (
+             <div
+                 onClick={onClick}
+-                className="group flex flex-col overflow-hidden rounded-xl bg-white border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer p-4 md:p-6"
++                className={cn(getThemeCardStyles(), "p-4 md:p-6")}
+             >
+                 {/* Header */}
+                 <h3
+-                    className={cn("font-serif font-bold leading-tight tracking-wide mb-3 pb-3 border-b border-gray-100 border-dashed", titleSize)}
++                    className={cn("font-bold leading-tight tracking-wide mb-3 pb-3 border-b border-gray-100 border-dashed", titleSize)}
+                     style={{ color: settings.productTitleColor }}
+                 >
+                     {formatTitle(displayName.toLocaleUpperCase('tr-TR'))}
+@@ -141,7 +260,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
+                     <div className="space-y-2">
+                         {product.variants.map((variant, idx) => (
+                             <div key={idx} className="flex items-center justify-between">
+-                                <span className="text-sm font-medium text-gray-600 flex items-center gap-2">
++                                <span className={cn("text-sm font-medium flex items-center gap-2", settings.themeId === 'custom' ? '' : 'text-gray-600 dark:text-gray-400')} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
+                                     {/* Simple Icon Logic based on variant name keywords */}
+                                     {(variant.name.toLowerCase().includes('kadeh') || variant.name.toLowerCase().includes('glass') || variant.name.includes('cl')) && (
+                                         <svg className="w-3 h-3 opacity-50" viewBox="0 0 24 24" fill="currentColor"><path d="M11 21h2v-2h-2v2zm1-18c-2.76 0-5 2.24-5 5v5c0 1.29.39 2.49 1.05 3.48L7 19v2h10v-2l-1.05-2.52C16.61 15.49 17 14.29 17 11V6c0-2.76-2.24-5-5-5z" /></svg>
+@@ -151,7 +270,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
+                                     )}
+                                     {variant.name}
+                                 </span>
+-                                <span className="font-bold text-gray-900">
++                                <span className={cn("font-bold")} style={{ color: settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor }}>
+                                     {variant.price} Ôé║
+                                 </span>
+                             </div>
+@@ -186,11 +305,11 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
+         );
+     }
+ 
+-    // RENDER: GRID (Standard with Image)
++    // RENDER: GRID & MASONRY (Standard with Image)
+     return (
+         <div
+             onClick={onClick}
+-            className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer"
++            className={cn(getThemeCardStyles(), layoutMode === 'masonry' ? 'break-inside-avoid mb-4' : '')}
+         >
+ 
+             {/* Large Top Image */}
+@@ -214,7 +333,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
+                 {/* Title and Price Row */}
+                 <div className="mb-2 flex items-start justify-between gap-4">
+                     <h3
+-                        className={cn("font-serif font-bold leading-tight tracking-wide", titleSize)}
++                        className={cn("font-bold leading-tight tracking-wide", titleSize)}
+                         style={{ color: settings.productTitleColor }}
+                     >
+                         {formatTitle(displayName.toLocaleUpperCase('tr-TR'))}
+@@ -276,10 +395,10 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
+                     <div className="mb-4 mt-2 space-y-2 border-t border-dashed border-gray-200 pt-3">
+                         {product.variants.map((variant, idx) => (
+                             <div key={idx} className="flex items-center justify-between text-sm">
+-                                <span className="font-bold text-gray-700">{variant.name}</span>
++                                <span className={cn("font-bold", settings.themeId === 'custom' ? '' : 'text-gray-700 dark:text-gray-300')} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>{variant.name}</span>
+                                 <span
+                                     className={cn("font-bold text-base")}
+-                                    style={{ color: settings.productPriceColor }}
++                                    style={{ color: settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor }}
+                                 >
+                                     {variant.price} Ôé║
+                                 </span>
+diff --git a/components/ProductModal.tsx b/components/ProductModal.tsx
+index 2a0a6d0..1285255 100644
+--- a/components/ProductModal.tsx
++++ b/components/ProductModal.tsx
+@@ -60,6 +60,26 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
+             ? settings.defaultProductImage
+             : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c';
+ 
++    // Theme Background Logic
++    const getModalStyles = () => {
++        const base = "relative w-full max-w-lg overflow-hidden rounded-2xl shadow-2xl transition-all duration-300 transform ";
++        switch (settings.themeId) {
++            case 'minimal': return base + (settings.darkMode ? "bg-zinc-950 text-zinc-100" : "bg-zinc-100 text-zinc-900");
++            case 'elegance': return base + (settings.darkMode ? "bg-rose-950 text-rose-50" : "bg-rose-50 text-rose-950");
++            case 'modern': return base + (settings.darkMode ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900");
++            case 'vibrant': return base + (settings.darkMode ? "bg-amber-950 text-amber-50" : "bg-amber-50 text-amber-950");
++            case 'neon': return base + (settings.darkMode ? "bg-black text-fuchsia-100" : "bg-zinc-900 text-fuchsia-200");
++            case 'rustic': return base + (settings.darkMode ? "bg-[#1a1410] text-[#e8dccb]" : "bg-[#f4efe6] text-[#4a3623]");
++            case 'paper': return base + (settings.darkMode ? "bg-stone-900 text-stone-200" : "bg-[#f9f6f0] text-stone-900");
++            case 'custom': return base + "border border-black/10"; // Custom handles colors via style tags
++            default: return base + (settings.darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900");
++        }
++    };
++
++    // Text Fallback (if not handled by parent class)
++    const textColor = settings.themeId === 'custom' ? settings.customTextColor : undefined;
++    const bgColor = settings.themeId === 'custom' ? settings.customBgColor : undefined;
++
+     return (
+         <div className={cn(
+             "fixed inset-0 z-[60] flex items-center justify-center px-4 transition-all duration-300",
+@@ -74,14 +94,15 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
+             {/* Modal Content */}
+             <div
+                 className={cn(
+-                    "relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl transition-all duration-300 transform",
++                    getModalStyles(),
+                     isOpen ? "scale-100 translate-y-0" : "scale-95 translate-y-8"
+                 )}
++                style={{ backgroundColor: bgColor, color: textColor }}
+             >
+                 {/* Close Button */}
+                 <button
+                     onClick={onClose}
+-                    className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-md backdrop-blur transition-transform hover:scale-110 active:scale-95"
++                    className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/20 text-white shadow-md backdrop-blur transition-transform hover:scale-110 active:scale-95"
+                 >
+                     <X className="h-6 w-6" />
+                 </button>
+@@ -99,7 +120,7 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
+ 
+                 {/* Details */}
+                 <div className="p-8">
+-                    <h2 className="font-serif text-3xl font-black leading-tight tracking-wide text-gray-900 mb-2">
++                    <h2 className="text-3xl font-black leading-tight tracking-wide mb-2 opacity-90">
+                         {displayName.toLocaleUpperCase('tr-TR')}
+                     </h2>
+ 
+@@ -125,17 +146,17 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
+                     </div>
+ 
+                     {displayDescription && (
+-                        <p className="text-lg text-gray-600 leading-relaxed font-medium">
++                        <p className="text-lg leading-relaxed font-medium opacity-70">
+                             {displayDescription}
+                         </p>
+                     )}
+ 
+                     {/* Variants if any */}
+                     {product.variants && product.variants.length > 0 && (
+-                        <div className="mt-6 space-y-3 bg-gray-50 p-4 rounded-xl">
++                        <div className="mt-6 space-y-3 p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5">
+                             {product.variants.map((variant, idx) => (
+                                 <div key={idx} className="flex items-center justify-between text-base">
+-                                    <span className="font-bold text-gray-700">{variant.name}</span>
++                                    <span className="font-bold opacity-90">{variant.name}</span>
+                                     <span className={cn("font-bold text-lg", activeColorClass)}>
+                                         {variant.price} Ôé║
+                                     </span>
+diff --git a/lib/data.ts b/lib/data.ts
+index 67ab9d3..ce7cc82 100644
+--- a/lib/data.ts
++++ b/lib/data.ts
+@@ -91,8 +91,8 @@ export interface Product {
+ export interface SiteSettings {
+   id?: string;
+   restaurantId?: string;
+-  themeId?: 'default' | 'modern' | 'minimal' | 'elegant' | 'elite';
+-  menuLayout?: 'accordion' | 'list' | 'grid' | 'tabs';
++  themeId?: 'default' | 'modern' | 'minimal' | 'elegant' | 'elite' | 'elegance' | 'vibrant' | 'neon' | 'rustic' | 'paper' | 'custom';
++  menuLayout?: 'accordion' | 'list' | 'grid' | 'tabs' | 'masonry' | 'cards' | 'minimal-list' | 'paper';
+   themeColor: 'black' | 'red' | 'blue' | 'green' | 'orange' | 'white';
+   fontFamily?: string;
+   darkMode: boolean;
+@@ -113,6 +113,11 @@ export interface SiteSettings {
+   categoryFontSize?: 'medium' | 'large' | 'xl';
+   categoryFontWeight?: 'normal' | 'bold' | 'black';
+   categoryRowHeight?: 'small' | 'medium' | 'large';
++
++  // Custom Theme Settings
++  customBgColor?: string;
++  customTextColor?: string;
++  customAccentColor?: string;
+   categoryGap?: 'small' | 'medium' | 'large';
+   categoryOverlayOpacity?: number;
+   categoryFontFamily?: string;
+diff --git a/lib/demoData.ts b/lib/demoData.ts
+new file mode 100644
+index 0000000..b24fa8e
+--- /dev/null
++++ b/lib/demoData.ts
+@@ -0,0 +1,140 @@
++import { Product, Category, SiteSettings, Restaurant } from './data';
++
++const demoRestaurant: Restaurant = {
++    id: 'demo-rest-id',
++    name: 'QRSaaS Demo Restoran',
++    slug: 'demo',
++    plan_type: 'PLUS',
++    created_at: new Date().toISOString()
++};
++
++const demoCategories: Category[] = [
++    {
++        id: 'cat-1',
++        restaurantId: 'demo-rest-id',
++        name: 'Ana Yemekler',
++        nameEn: 'Main Courses',
++        order: 1,
++        slug: 'ana-yemekler',
++        layout_mode: 'grid',
++        segment: 'food',
++        station_name: 'Mutfak'
++    },
++    {
++        id: 'cat-2',
++        restaurantId: 'demo-rest-id',
++        name: 'Tatl─▒lar',
++        nameEn: 'Desserts',
++        order: 2,
++        slug: 'tatlilar',
++        layout_mode: 'list',
++        segment: 'food',
++        station_name: 'Tatl─▒'
++    },
++    {
++        id: 'cat-3',
++        restaurantId: 'demo-rest-id',
++        name: '─░├ğecekler',
++        nameEn: 'Beverages',
++        order: 3,
++        slug: 'icecekler',
++        layout_mode: 'list-no-image',
++        segment: 'drink',
++        station_name: 'Bar'
++    }
++];
++
++const demoProducts: Product[] = [
++    {
++        id: 'p-1',
++        restaurantId: 'demo-rest-id',
++        categoryId: 'cat-1',
++        name: 'Truffle Mantarl─▒ Penne',
++        nameEn: 'Truffle Mushroom Penne',
++        description: '├ûzel krema sosu ve parmesan peyniri ile.',
++        descriptionEn: 'With special cream sauce and parmesan.',
++        price: 320,
++        image: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?q=80&w=500',
++        allergens: ['milk', 'wheat'],
++        sortOrder: 1,
++        isActive: true
++    },
++    {
++        id: 'p-2',
++        restaurantId: 'demo-rest-id',
++        categoryId: 'cat-1',
++        name: 'Angus Burger',
++        nameEn: 'Angus Burger',
++        description: '180gr dana k├Âfte, cheddar, karamelize so─şan.',
++        descriptionEn: '180g beef patty, cheddar, caramelized onions.',
++        price: 450,
++        discountPrice: 380,
++        image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=500',
++        allergens: ['wheat', 'session'],
++        sortOrder: 2,
++        isActive: true
++    },
++    {
++        id: 'p-3',
++        restaurantId: 'demo-rest-id',
++        categoryId: 'cat-2',
++        name: 'San Sebastian',
++        nameEn: 'San Sebastian',
++        description: 'Orijinal yan─▒k ─░spanyol cheesecake.',
++        descriptionEn: 'Original burnt Spanish cheesecake.',
++        price: 220,
++        image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?q=80&w=500',
++        sortOrder: 1,
++        isActive: true
++    },
++    {
++        id: 'p-4',
++        restaurantId: 'demo-rest-id',
++        categoryId: 'cat-3',
++        name: 'Signature Latte',
++        nameEn: 'Signature Latte',
++        description: '',
++        descriptionEn: '',
++        price: 130,
++        image: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?q=80&w=500',
++        sortOrder: 1,
++        isActive: true
++    }
++];
++
++export function getDemoData(themeSlug: string) {
++    const themeId = themeSlug.replace('demo-', '');
++
++    const settings: SiteSettings = {
++        restaurantId: 'demo-rest-id',
++        themeId: themeId as SiteSettings['themeId'],
++        menuLayout: 'accordion',
++        themeColor: 'black',
++        popupActive: false,
++        popupUrl: '',
++        logoUrl: '',
++        logoWidth: 150,
++        fontFamily: themeId === 'elegance' ? 'Playfair Display' : (themeId === 'minimal' ? 'Montserrat' : 'Inter'),
++        darkMode: ['minimal', 'elegance', 'modern', 'neon'].includes(themeId),
++        bannerActive: true,
++        bannerUrls: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200'],
++        siteName: 'QR Demo Men├╝',
++        siteDescription: `${themeId.toUpperCase()} TEMASI`,
++        categoryFontSize: 'large',
++        categoryFontWeight: 'bold',
++        categoryRowHeight: 'medium',
++        productTitleColor: ['minimal', 'elegance', 'modern', 'neon'].includes(themeId) ? '#ffffff' : '#111827',
++        productDescriptionColor: ['minimal', 'elegance', 'modern', 'neon'].includes(themeId) ? '#9ca3af' : '#6b7280',
++        productPriceColor: themeId === 'vibrant' ? '#d97706' : (['elegance'].includes(themeId) ? '#fbbf24' : '#10b981'),
++        productTitleSize: 'large',
++        productDescriptionSize: 'medium',
++        productPriceSize: 'large',
++    };
++
++    return {
++        restaurant: demoRestaurant,
++        categories: demoCategories,
++        products: demoProducts,
++        settings
++    };
++}
+diff --git a/package-lock.json b/package-lock.json
+index 5bdf3be..0504ab5 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -114,6 +114,7 @@
+       "integrity": "sha512-e7jT4DxYvIDLk1ZHmU/m/mB19rex9sv0c2ftBtjSBv+kVM/902eh0fINUzD7UwLLNR+jU585GxUJ8/EBfAM5fw==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@babel/code-frame": "^7.27.1",
+         "@babel/generator": "^7.28.5",
+@@ -542,6 +543,7 @@
+       "resolved": "https://registry.npmjs.org/@dnd-kit/core/-/core-6.3.1.tgz",
+       "integrity": "sha512-xkGBRQQab4RLwgXxoqETICr6S5JlogafbhNsidmrkVv2YRs5MLwpjoF2qpiGjQt8S9AoxtIV603s0GIUpY5eYQ==",
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@dnd-kit/accessibility": "^3.1.1",
+         "@dnd-kit/utilities": "^3.2.2",
+@@ -735,6 +737,7 @@
+       "integrity": "sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "engines": {
+         "node": ">=12"
+       },
+@@ -1036,6 +1039,7 @@
+       "resolved": "https://registry.npmjs.org/@firebase/app/-/app-0.14.9.tgz",
+       "integrity": "sha512-3gtUX0e584MYkKBQMgSECMvE1Dwzg+eONefDQ0wxVSe5YMBsZwdN5pL7UapwWBlV8+i8QCztF9TP947tEjZAGA==",
+       "license": "Apache-2.0",
++      "peer": true,
+       "dependencies": {
+         "@firebase/component": "0.7.1",
+         "@firebase/logger": "0.5.0",
+@@ -1102,6 +1106,7 @@
+       "resolved": "https://registry.npmjs.org/@firebase/app-compat/-/app-compat-0.5.9.tgz",
+       "integrity": "sha512-e5LzqjO69/N2z7XcJeuMzIp4wWnW696dQeaHAUpQvGk89gIWHAIvG6W+mA3UotGW6jBoqdppEJ9DnuwbcBByug==",
+       "license": "Apache-2.0",
++      "peer": true,
+       "dependencies": {
+         "@firebase/app": "0.14.9",
+         "@firebase/component": "0.7.1",
+@@ -1117,7 +1122,8 @@
+       "version": "0.9.3",
+       "resolved": "https://registry.npmjs.org/@firebase/app-types/-/app-types-0.9.3.tgz",
+       "integrity": "sha512-kRVpIl4vVGJ4baogMDINbyrIOtOxqhkZQg4jTq3l8Lw6WSk0xfpEYzezFu+Kl4ve4fbPl79dvwRtaFqAC/ucCw==",
+-      "license": "Apache-2.0"
++      "license": "Apache-2.0",
++      "peer": true
+     },
+     "node_modules/@firebase/auth": {
+       "version": "1.12.1",
+@@ -1568,6 +1574,7 @@
+       "integrity": "sha512-/gnejm7MKkVIXnSJGpc9L2CvvvzJvtDPeAEq5jAwgVlf/PeNxot+THx/bpD20wQ8uL5sz0xqgXy1nisOYMU+mw==",
+       "hasInstallScript": true,
+       "license": "Apache-2.0",
++      "peer": true,
+       "dependencies": {
+         "tslib": "^2.1.0"
+       },
+@@ -2770,6 +2777,7 @@
+       "integrity": "sha512-2I0gnIVPtfnMw9ee9h1dJG7tp81+8Ob3OJb3Mv37rx5L40/b0i7djjCVvGOVqc9AEIQyvyu1i6ypKdFw8R8gQw==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "engines": {
+         "node": "^14.21.3 || >=16"
+       },
+@@ -5160,6 +5168,7 @@
+       "integrity": "sha512-MWtvHrGZLFttgeEj28VXHxpmwYbor/ATPYbBfSFZEIRK0ecCFLl2Qo55z52Hss+UV9CRN7trSeq1zbgx7YDWWg==",
+       "devOptional": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "csstype": "^3.2.2"
+       }
+@@ -5170,6 +5179,7 @@
+       "integrity": "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==",
+       "devOptional": true,
+       "license": "MIT",
++      "peer": true,
+       "peerDependencies": {
+         "@types/react": "^19.2.0"
+       }
+@@ -5275,6 +5285,7 @@
+       "integrity": "sha512-hM5faZwg7aVNa819m/5r7D0h0c9yC4DUlWAOvHAtISdFTc8xB86VmX5Xqabrama3wIPJ/q9RbGS1worb6JfnMg==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@typescript-eslint/scope-manager": "8.50.1",
+         "@typescript-eslint/types": "8.50.1",
+@@ -5801,6 +5812,7 @@
+       "integrity": "sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "bin": {
+         "acorn": "bin/acorn"
+       },
+@@ -6444,6 +6456,7 @@
+         }
+       ],
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "baseline-browser-mapping": "^2.9.0",
+         "caniuse-lite": "^1.0.30001759",
+@@ -7756,6 +7769,7 @@
+       "integrity": "sha512-LEyamqS7W5HB3ujJyvi0HQK/dtVINZvd5mAAp9eT5S/ujByGjiZLCzPcHVzuXbpJDJF/cxwHlfceVUDZ2lnSTw==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@eslint-community/eslint-utils": "^4.8.0",
+         "@eslint-community/regexpp": "^4.12.1",
+@@ -7941,6 +7955,7 @@
+       "integrity": "sha512-whOE1HFo/qJDyX4SnXzP4N6zOWn79WhnCUY/iDR0mPfQZO8wcYE4JClzI2oZrhBnnMUCBCHZhO6VQyoBU95mZA==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@rtsao/scc": "^1.1.0",
+         "array-includes": "^3.1.9",
+@@ -8280,6 +8295,7 @@
+       "integrity": "sha512-hIS4idWWai69NezIdRt2xFVofaF4j+6INOpJlVOLDO8zXGpUVEVzIYk12UUi2JzjEzWL3IOAxcTubgz9Po0yXw==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "accepts": "^2.0.0",
+         "body-parser": "^2.2.1",
+@@ -9599,6 +9615,7 @@
+       "integrity": "sha512-hi9afu8g0lfJVLolxElAZGANCTTl6bewIdsRNhaywfP9K8BPf++F2z6OLrYGIinUwpRKzbZHMhPwvc0ZEpAwGw==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "engines": {
+         "node": ">=16.9.0"
+       }
+@@ -12592,6 +12609,7 @@
+       "resolved": "https://registry.npmjs.org/react/-/react-19.2.3.tgz",
+       "integrity": "sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA==",
+       "license": "MIT",
++      "peer": true,
+       "engines": {
+         "node": ">=0.10.0"
+       }
+@@ -12601,6 +12619,7 @@
+       "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-19.2.3.tgz",
+       "integrity": "sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==",
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "scheduler": "^0.27.0"
+       },
+@@ -12612,13 +12631,15 @@
+       "version": "16.13.1",
+       "resolved": "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz",
+       "integrity": "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==",
+-      "license": "MIT"
++      "license": "MIT",
++      "peer": true
+     },
+     "node_modules/react-redux": {
+       "version": "9.2.0",
+       "resolved": "https://registry.npmjs.org/react-redux/-/react-redux-9.2.0.tgz",
+       "integrity": "sha512-ROY9fvHhwOD9ySfrF0wmvu//bKCQ6AeZZq1nJNtbDC+kk5DuSuNX/n6YWYF/SYy7bSba4D4FSz8DJeKY/S/r+g==",
+       "license": "MIT",
++      "peer": true,
+       "dependencies": {
+         "@types/use-sync-external-store": "^0.0.6",
+         "use-sync-external-store": "^1.4.0"
+@@ -12772,7 +12793,8 @@
+       "version": "5.0.1",
+       "resolved": "https://registry.npmjs.org/redux/-/redux-5.0.1.tgz",
+       "integrity": "sha512-M9/ELqF6fy8FwmkpnF0S3YKOqMyoWJ4+CS5Efg2ct3oY9daQvd/Pc71FpGZsVsbl3Cpb+IIcjBDUnnyBdQbq4w==",
+-      "license": "MIT"
++      "license": "MIT",
++      "peer": true
+     },
+     "node_modules/redux-thunk": {
+       "version": "3.1.0",
+@@ -14035,7 +14057,8 @@
+       "version": "4.1.18",
+       "resolved": "https://registry.npmjs.org/tailwindcss/-/tailwindcss-4.1.18.tgz",
+       "integrity": "sha512-4+Z+0yiYyEtUVCScyfHCxOYP06L5Ne+JiHhY2IjR2KWMIWhJOYZKLSGZaP5HkZ8+bY0cxfzwDE5uOmzFXyIwxw==",
+-      "license": "MIT"
++      "license": "MIT",
++      "peer": true
+     },
+     "node_modules/tailwindcss-animate": {
+       "version": "1.0.7",
+@@ -14253,6 +14276,7 @@
+       "integrity": "sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "engines": {
+         "node": ">=12"
+       },
+@@ -14517,6 +14541,7 @@
+       "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
+       "dev": true,
+       "license": "Apache-2.0",
++      "peer": true,
+       "bin": {
+         "tsc": "bin/tsc",
+         "tsserver": "bin/tsserver"
+@@ -15318,6 +15343,7 @@
+       "integrity": "sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==",
+       "dev": true,
+       "license": "MIT",
++      "peer": true,
+       "funding": {
+         "url": "https://github.com/sponsors/colinhacks"
+       }
