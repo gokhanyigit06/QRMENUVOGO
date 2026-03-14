@@ -1309,27 +1309,64 @@ export default function SaaSMarketingPage() {
                 {/* Features Rows */}
                 <div className="flex flex-col gap-0 px-6">
                   {[
-                    { label: "Özel Menü Temaları", starter: true, growth: true, ent: true },
-                    { label: "Menü Kategorileri", starter: "20 Adet", growth: "Sınırsız", ent: "Sınırsız" },
-                    { label: "Medya Alanı", starter: "20 GB", growth: "40 GB", ent: "Sınırsız" },
-                    { label: "POS Entegrasyonları", starter: true, growth: true, ent: true },
-                    { label: "Sipariş Otomasyonları", starter: null, growth: true, ent: true },
-                    { label: "Gelişmiş Raporlama", starter: null, growth: true, ent: true },
-                    { label: "Öncelikli Destek", starter: true, growth: true, ent: true },
-                    { label: "Çoklu Şube Yönetimi", starter: null, growth: true, ent: true },
-                    { label: "Özel Güvenlik Ayarları", starter: null, growth: null, ent: true },
-                    { label: "Geliştirici API Erişimi", starter: null, growth: null, ent: true }
+                    { category: "Temel Menü ve Ürün Özellikleri" },
+                    { label: "Sınırsız Kategori Ekleme", starter: true, growth: true, ent: true },
+                    { label: "Sınırsız Ürün Ekleme", starter: true, growth: true, ent: true },
+                    { label: "Ürün Görseli Yükleme", starter: true, growth: true, ent: true },
+                    { label: "Ürün Açıklaması ve İçerik Detayı Ekleme", starter: true, growth: true, ent: true },
+                    { label: "İndirimli Fiyat / Çizgili Fiyat Gösterimi", starter: true, growth: true, ent: true },
+                    { label: "Kategori İkonları ve Renklendirme", starter: true, growth: true, ent: true },
+                    { label: "Kategorilere Göre Sıralama (Order)", starter: true, growth: true, ent: true },
+                    { label: "Alerjen Uyarı Modülü Ekleme", starter: true, growth: true, ent: true },
+                    
+                    { category: "Tasarım ve Kişiselleştirme (Tema Özellikleri)" },
+                    { label: "Standart Kutu (Grid) Görünümü", starter: true, growth: true, ent: true },
+                    { label: "Standart Liste (List) Görünümü", starter: true, growth: true, ent: true },
+                    { label: "Görselsiz Liste (Minimal) Görünümü", starter: true, growth: true, ent: true },
+                    { label: "Elite Şablon (Pürüzsüz / Masonry) Görünümü", starter: null, growth: true, ent: true },
+                    { label: "Dinamik Renk Motoru (Sınırsız Renk Seçimi)", starter: null, growth: true, ent: true },
+                    { label: "Markaya Özel Font Atama (Tipografi)", starter: null, growth: true, ent: true },
+                    { label: "Dark Mode (Karanlık Mod) Desteği", starter: null, growth: true, ent: true },
+                    { label: "Komponent Köşe Yuvarlatma (Border-Radius)", starter: null, growth: true, ent: true },
+                    { label: "Karakter Boşluğu ve Tipografi Ayarları", starter: null, growth: true, ent: true },
+                    { label: "Dinamik Harf Dönüşümleri", starter: null, growth: true, ent: true },
+
+                    { category: "Müşteri Deneyimi (Frontend Özellikleri)" },
+                    { label: "Detaylı Ürün İnceleme Odası (Modal)", starter: true, growth: true, ent: true },
+                    { label: "Footer Sosyal Medya İkonları ve Bağlantıları", starter: true, growth: true, ent: true },
+                    { label: "Akıllı Kaydırma (Accordion / Tabs)", starter: true, growth: true, ent: true },
+                    { label: "Özel Karşılama Ekranı (Hero Banner) Yükleme", starter: null, growth: true, ent: true },
+                    { label: "Yönlendirmeli Pop-up (Açılır Bildirim) Modülü", starter: null, growth: true, ent: true },
+                    { label: "Yabancı Dil için Anlık Google Translate", starter: null, growth: null, ent: true },
+                    { label: "Telefon Diline Göre Otomatik Dil Algılama", starter: null, growth: null, ent: true },
+                    { label: "Google Maps (Harita) ve Lokasyon", starter: null, growth: null, ent: true },
+                    { label: "Müşteriye Özel Mesai Dışı Ekranı", starter: null, growth: null, ent: true },
+
+                    { category: "Yönetim ve İstatistik (Backend Özellikleri)" },
+                    { label: "Kendi Özel Alan Adınızı (Domain) Bağlama", starter: null, growth: true, ent: true },
+                    { label: "QR Kod Oluşturucu ve Tasarım Aracı", starter: null, growth: true, ent: true },
+                    { label: "Toplu Fiyat ve Kategori Güncelleme (Bulk Edit)", starter: null, growth: true, ent: true },
+                    { label: "Basıma Hazır PDF Menü Çıktısı Alma (Export)", starter: null, growth: null, ent: true },
+                    { label: "Toplam Ziyaretçi Analizi (Hits/Page Views)", starter: null, growth: null, ent: true },
+                    { label: "Ürün Bazlı Görüntülenme (Tıklanma) İstatistikleri", starter: null, growth: null, ent: true },
+                    { label: "Çoklu Şube Açma ve Veri Kopyalama", starter: null, growth: null, ent: true }
                   ].map((row, idx) => (
-                    <div key={idx} className="grid grid-cols-4 gap-4 py-5 items-center">
+                    row.category ? (
+                      <div key={idx} className="grid grid-cols-4 gap-4 py-4 items-center mt-4 border-b border-black/10">
+                        <div className="col-span-4 text-[#1A1A1A] text-[18px] font-extrabold text-left bg-gradient-to-r from-gray-50 to-transparent p-2 rounded-r-xl border-l-4 border-[#FCD34D]">
+                          {row.category}
+                        </div>
+                      </div>
+                    ) : (
+                    <div key={idx} className="grid grid-cols-4 gap-4 py-5 items-center border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
                       <div className="col-span-1 text-[#1A1A1A] text-[15px] font-medium flex items-center gap-2">
                         {row.label}
-                        <div className="w-4 h-4 rounded-full border border-gray-300 text-gray-400 flex items-center justify-center text-[10px] cursor-help" title="Detaylı bilgi için üstüne gelin">?</div>
                       </div>
                       
                       {/* Starter Column */}
                       <div className="col-span-1 flex justify-center text-[15px] font-medium text-gray-600">
                         {row.starter === true ? (
-                          <div className="w-[20px] h-[20px] rounded-full bg-[#FCD34D] flex items-center justify-center">
+                          <div className="w-[20px] h-[20px] rounded-full bg-[#FCD34D] flex items-center justify-center shadow-sm">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                           </div>
                         ) : row.starter === null ? (
@@ -1342,7 +1379,7 @@ export default function SaaSMarketingPage() {
                       {/* Growth Column */}
                       <div className="col-span-1 flex justify-center text-[15px] font-medium text-gray-600">
                         {row.growth === true ? (
-                          <div className="w-[20px] h-[20px] rounded-full bg-[#FCD34D] flex items-center justify-center">
+                          <div className="w-[20px] h-[20px] rounded-full bg-[#FCD34D] flex items-center justify-center shadow-sm">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                           </div>
                         ) : row.growth === null ? (
@@ -1355,7 +1392,7 @@ export default function SaaSMarketingPage() {
                       {/* Enterprise Column */}
                       <div className="col-span-1 flex justify-center text-[15px] font-medium text-gray-600">
                         {row.ent === true ? (
-                          <div className="w-[20px] h-[20px] rounded-full bg-[#FCD34D] flex items-center justify-center">
+                          <div className="w-[20px] h-[20px] rounded-full bg-[#FCD34D] flex items-center justify-center shadow-sm">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                           </div>
                         ) : row.ent === null ? (
@@ -1365,6 +1402,7 @@ export default function SaaSMarketingPage() {
                         )}
                       </div>
                     </div>
+                    )
                   ))}
                 </div>
               </div>
