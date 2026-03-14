@@ -73,13 +73,6 @@ export default function CategoryList({ categories, products, language }: Categor
                 return (
                     <section key={category.id} id={`cat-${category.id}`} className="space-y-6">
                         {/* THEME DISTINCTIVE CATEGORY HEADERS */}
-                        {settings.themeId === 'minimal' && (
-                            <div className="px-2 pb-2 mb-6 border-b border-[var(--theme-border)]">
-                                <h2 className="text-2xl font-light tracking-[0.2em] uppercase text-[var(--theme-text)]">
-                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
-                                </h2>
-                            </div>
-                        )}
                         {settings.themeId === 'elegance' && (
                             <div className="flex items-center gap-6 px-4 py-8 mb-4">
                                 <div className="h-[1px] flex-1 bg-[var(--theme-primary)] opacity-30" />
@@ -87,23 +80,6 @@ export default function CategoryList({ categories, products, language }: Categor
                                     {language === 'en' && category.nameEn ? category.nameEn : category.name}
                                 </h2>
                                 <div className="h-[1px] flex-1 bg-[var(--theme-primary)] opacity-30" />
-                            </div>
-                        )}
-                        {settings.themeId === 'modern' && (
-                            <div className="px-2 mb-6 flex items-center justify-between">
-                                <h2 className="text-3xl font-black text-[var(--theme-text)] uppercase tracking-tight">
-                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
-                                </h2>
-                                <div className="h-2 w-12 bg-[var(--theme-primary)] rounded-full" />
-                            </div>
-                        )}
-                        {settings.themeId === 'neon' && (
-                            <div className="flex items-center gap-4 px-2 mb-8">
-                                <div className="h-px flex-1 bg-fuchsia-500/50 shadow-[0_0_10px_rgba(217,70,239,0.5)]" />
-                                <h2 className="text-2xl font-black text-white uppercase tracking-widest drop-shadow-[0_0_8px_rgba(217,70,239,0.8)]">
-                                    {language === 'en' && category.nameEn ? category.nameEn : category.name}
-                                </h2>
-                                <div className="h-px flex-1 bg-fuchsia-500/50 shadow-[0_0_10px_rgba(217,70,239,0.5)]" />
                             </div>
                         )}
                         {settings.themeId === 'paper' && (
@@ -130,7 +106,7 @@ export default function CategoryList({ categories, products, language }: Categor
                             </div>
                         )}
                         {/* DEFAULT / CUSTOM FALLBACK HEADER */}
-                        {(!settings.themeId || !['minimal', 'elegance', 'modern', 'neon', 'paper', 'rustic', 'vibrant'].includes(settings.themeId)) && (
+                        {(!settings.themeId || !['elegance', 'paper', 'rustic', 'vibrant', 'elite'].includes(settings.themeId)) && (
                             <div className="flex items-center gap-4 px-2 mb-6">
                                 <div className="h-px flex-1 bg-[var(--theme-border)]" />
                                 <h2 className="text-xl font-black text-[var(--theme-text)] uppercase tracking-widest">

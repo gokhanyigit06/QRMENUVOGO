@@ -4,6 +4,7 @@ import { Product } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 import Image from 'next/image';
+import PlaceholderImage from './PlaceholderImage';
 import { useEffect, useState } from 'react';
 import { useMenu } from '@/lib/store';
 import { trackProductView } from '@/lib/services';
@@ -48,11 +49,10 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
     const descColor = settings.themeId === 'custom' ? settings.customTextColor : 'var(--theme-muted-text)';
 
     // Image Source Logic
+    const hasImage = (product.image && product.image.length > 5) || (settings.defaultProductImage && settings.defaultProductImage.length > 5);
     const imageSrc = (product.image && product.image.length > 5)
         ? product.image
-        : (settings.defaultProductImage && settings.defaultProductImage.length > 5)
-            ? settings.defaultProductImage
-            : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c';
+        : settings.defaultProductImage;
 
     // Theme Background Logic
     const getModalStyles = () => {
@@ -92,13 +92,17 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
 
                 {/* Product Image */}
                 <div className="relative aspect-square w-full bg-[var(--theme-muted)]">
-                    <Image
-                        src={imageSrc}
-                        alt={displayName}
-                        fill
-                        unoptimized
-                        className="object-cover"
-                    />
+                    {hasImage ? (
+                        <Image
+                            src={imageSrc!}
+                            alt={displayName}
+                            fill
+                            unoptimized
+                            className="object-cover"
+                        />
+                    ) : (
+                        <PlaceholderImage alt={displayName} />
+                    )}
                 </div>
 
                 {/* Details */}

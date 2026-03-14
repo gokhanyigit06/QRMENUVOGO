@@ -134,11 +134,8 @@ export default function SettingsPage() {
 
     const handleThemeChange = (themeId: string) => {
         const themePresets: Record<string, any> = {
-            minimal: { fontFamily: 'Montserrat', darkMode: true },
             elegance: { fontFamily: 'Playfair Display', darkMode: true },
-            modern: { fontFamily: 'Inter', darkMode: true },
             vibrant: { fontFamily: 'Inter', darkMode: false },
-            neon: { fontFamily: 'Inter', darkMode: true },
             rustic: { fontFamily: 'Playfair Display', darkMode: false },
             paper: { fontFamily: 'Playfair Display', darkMode: false },
             default: { fontFamily: 'Inter', darkMode: false },
@@ -348,11 +345,8 @@ export default function SettingsPage() {
                                         {[
                                             { id: 'default', name: 'Standart', desc: 'Klasik Şık', color: 'from-gray-100 to-gray-200' },
                                             { id: 'elite', name: 'Elite', desc: 'Segmented', color: 'from-emerald-50 to-emerald-100' },
-                                            { id: 'minimal', name: 'Minimal', desc: 'Koyu Efsane', color: 'from-zinc-900 to-zinc-800' },
                                             { id: 'elegance', name: 'Elegance', desc: 'Kırmızı Şıklık', color: 'from-rose-950 to-red-950' },
-                                            { id: 'modern', name: 'Modern', desc: 'Mavi Karizma', color: 'from-blue-950 to-indigo-950' },
                                             { id: 'vibrant', name: 'Vibrant', desc: 'Turuncu Enerji', color: 'from-amber-500/80 to-orange-500/80' },
-                                            { id: 'neon', name: 'Neon', desc: 'Siber Geceler', color: 'from-fuchsia-600 to-purple-900 border border-fuchsia-400' },
                                             { id: 'rustic', name: 'Rustic', desc: 'Doğal Kafe', color: 'from-[#8b5a2b] to-[#4a3623]' },
                                             { id: 'paper', name: 'Paper', desc: 'Lüks Kağıt Menü', color: 'from-[#f9f6f0] to-[#e8dec0] border border-stone-300' },
                                             { id: 'custom', name: 'Özel Tasarım', desc: 'Kendi Paletinizi Yaratın', color: 'from-purple-400 via-pink-400 to-amber-400 border border-purple-200' },
@@ -360,7 +354,7 @@ export default function SettingsPage() {
                                             <button
                                                 key={t.id}
                                                 onClick={() => {
-                                                    const isPremiumTheme = !['default', 'minimal'].includes(t.id);
+                                                    const isPremiumTheme = t.id !== 'default';
                                                     if (isPremiumTheme && !canUsePremiumThemes) {
                                                         alert('Bu tema PRO veya PLUS paket gerektirir. Paketinizi yükseltiniz.');
                                                         return;
@@ -370,7 +364,7 @@ export default function SettingsPage() {
                                                 className={cn(
                                                     "relative group rounded-xl border-2 transition-all p-1 bg-white",
                                                     localSettings.themeId === t.id ? 'border-amber-500 ring-2 ring-amber-200' : 'border-gray-100 hover:border-gray-200',
-                                                    !['default', 'minimal'].includes(t.id) && !canUsePremiumThemes ? 'opacity-60 grayscale' : ''
+                                                    t.id !== 'default' && !canUsePremiumThemes ? 'opacity-60 grayscale' : ''
                                                 )}
                                             >
                                                 <div className={cn("aspect-[4/5] rounded-lg bg-gradient-to-br flex flex-col items-center justify-center gap-2 p-4 mb-2", t.color)}>
@@ -381,7 +375,7 @@ export default function SettingsPage() {
                                                 <div className="text-left px-2 pb-2">
                                                     <div className="text-xs font-black text-gray-900 leading-none flex items-center gap-1">
                                                         {t.name}
-                                                        {!['default', 'minimal'].includes(t.id) && !canUsePremiumThemes && <Lock className="w-3 h-3 text-red-500" />}
+                                                        {t.id !== 'default' && !canUsePremiumThemes && <Lock className="w-3 h-3 text-red-500" />}
                                                     </div>
                                                     <div className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tighter">{t.desc}</div>
                                                 </div>
@@ -531,10 +525,10 @@ export default function SettingsPage() {
                                                     <SelectItem value="Open Sans" style={{ fontFamily: '"Open Sans", sans-serif' }}>Open Sans (Okunabilir)</SelectItem>
                                                     <SelectItem value="Source Sans Pro" style={{ fontFamily: '"Source Sans Pro", sans-serif' }}>Source Sans Pro (Elite)</SelectItem>
                                                     {/* Modern */}
-                                                    <SelectItem value="Montserrat" style={{ fontFamily: 'Montserrat, sans-serif' }}>Montserrat (Modern)</SelectItem>
+                                                    <SelectItem value="Montserrat" style={{ fontFamily: 'Montserrat, sans-serif' }}>Montserrat</SelectItem>
                                                     <SelectItem value="Poppins" style={{ fontFamily: 'Poppins, sans-serif' }}>Poppins (Geometrik)</SelectItem>
                                                     <SelectItem value="Outfit" style={{ fontFamily: 'Outfit, sans-serif' }}>Outfit (Çağdaş)</SelectItem>
-                                                    <SelectItem value="DM Sans" style={{ fontFamily: '"DM Sans", sans-serif' }}>DM Sans (Minimal)</SelectItem>
+                                                    <SelectItem value="DM Sans" style={{ fontFamily: '"DM Sans", sans-serif' }}>DM Sans</SelectItem>
                                                     <SelectItem value="Raleway" style={{ fontFamily: 'Raleway, sans-serif' }}>Raleway (Zarif & İnce)</SelectItem>
                                                     <SelectItem value="Josefin Sans" style={{ fontFamily: '"Josefin Sans", sans-serif' }}>Josefin Sans (Retro Butik)</SelectItem>
                                                     <SelectItem value="Barlow" style={{ fontFamily: 'Barlow, sans-serif' }}>Barlow (Endüstriyel)</SelectItem>

@@ -9,6 +9,7 @@ import { useMenu } from '@/lib/store';
 import { trackProductView } from '@/lib/services';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import PlaceholderImage from './PlaceholderImage';
 
 interface EliteLayoutProps {
     categories: Category[];
@@ -157,9 +158,9 @@ export default function EliteLayout({ categories, products, language }: EliteLay
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
                                         ) : (
-                                            <div className="w-full h-full bg-[var(--theme-primary)] flex items-center justify-center text-[var(--theme-primary-text)]/50">
-                                                <span className="text-[10px] font-bold">MINISTER</span>
-                                            </div>
+                                            <PlaceholderImage 
+                                              alt={product.name} 
+                                            />
                                         )}
                                     </div>
 

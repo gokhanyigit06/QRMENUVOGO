@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 import { getRestaurantBySlug } from '@/lib/services';
 import { auth } from '@/lib/firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { ChefHat, Lock, User, Mail, ArrowLeft } from 'lucide-react';
+import { ChefHat, Lock, User, Mail, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -29,20 +30,16 @@ export default function LoginPage() {
         setError('');
 
         try {
-            // 1. Restoranı bul ve şifreyi kontrol et
             const restaurant = await getRestaurantBySlug(slug);
 
             if (!restaurant) {
                 throw new Error('Restoran bulunamadı.');
             }
 
-            // Basit şifre kontrolü (Düz metin - Restaurant interface'ine göre)
-            // Not: Firebase'den gelen veride password alanı olduğunu varsayıyoruz (Supabase'den öyle geliyordu)
             if ((restaurant as any).password !== password) {
                 throw new Error('Hatalı şifre.');
             }
 
-            // 2. Başarılı! Giriş bilgisini kaydet (LocalStorage)
             localStorage.setItem('qr_admin_session', JSON.stringify({
                 restaurantId: restaurant.id,
                 slug: restaurant.slug,
@@ -50,7 +47,6 @@ export default function LoginPage() {
                 loginTime: new Date().toISOString()
             }));
 
-            // 3. Admin paneline yönlendir
             router.push('/admin');
 
         } catch (err: any) {
@@ -83,33 +79,40 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-            <Card className="w-full max-w-md shadow-xl border-gray-100 rounded-2xl">
-                <CardHeader className="text-center pb-8">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black text-white shadow-lg">
-                        <ChefHat className="h-8 w-8" />
+        <div className="flex min-h-screen items-center justify-center bg-[#CCCFD9]/20 px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+            {/* Decorative Elements */}
+            <div className="absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 bg-[#5A37A6]/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 -ml-24 -mb-24 w-96 h-96 bg-[#8F6CD9]/10 rounded-full blur-3xl" />
+
+            <Card className="w-full max-w-md shadow-2xl border-[#CCCFD9] rounded-[2.5rem] bg-white relative z-10 border-solid">
+                <CardHeader className="text-center pb-8 pt-10">
+                    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#5A37A6] to-[#8F6CD9] text-white shadow-xl shadow-[#5A37A6]/20 rotate-3">
+                        <ChefHat className="h-10 w-10" />
                     </div>
-                    <CardTitle className="text-3xl font-bold tracking-tight text-gray-900">
-                        {showForgotPass ? 'Şifremi Unuttum' : 'Yönetici Girişi'}
+                    <CardTitle className="text-3xl font-black tracking-tight text-[#402814]">
+                        {showForgotPass ? 'Şifre Kurtarma' : 'İşletme Girişi'}
                     </CardTitle>
-                    <CardDescription className="text-gray-600 mt-2">
+                    <CardDescription className="text-[#402814]/60 mt-3 font-medium">
                         {showForgotPass
                             ? 'Sisteme kayıtlı e-posta adresinizi girin.'
                             : 'QR Menü sisteminizi yönetmek için giriş yapın.'}
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-8 pb-10">
                     {showForgotPass ? (
                         <form className="space-y-6" onSubmit={handleResetPassword}>
                             {resetSuccess ? (
-                                <div className="rounded-lg bg-emerald-50 p-4 text-sm text-emerald-600 text-center font-medium border border-emerald-100">
-                                    Şifre sıfırlama bağlantısı e-posta adresinize gönderildi. Lütfen gelen kutunuzu (ve gereksiz klasörünü) kontrol edin.
-                                    <div className="mt-4">
+                                <div className="rounded-2xl bg-emerald-50 p-6 text-sm text-emerald-700 text-center font-bold border border-emerald-100 animate-in zoom-in-95">
+                                    <div className="bg-emerald-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <Mail className="w-6 h-6" />
+                                    </div>
+                                    Şifre sıfırlama bağlantısı gönderildi. <br/> Lütfen mail kutunuzu kontrol edin.
+                                    <div className="mt-6">
                                         <Button
                                             type="button"
                                             variant="outline"
                                             onClick={() => { setShowForgotPass(false); setResetSuccess(false); }}
-                                            className="w-full"
+                                            className="w-full rounded-xl border-[#CCCFD9] font-bold h-12"
                                         >
                                             Giriş Ekranına Dön
                                         </Button>
@@ -119,10 +122,10 @@ export default function LoginPage() {
                                 <>
                                     <div className="space-y-4">
                                         <div className="space-y-2">
-                                            <Label htmlFor="resetEmail" className="sr-only">E-Posta</Label>
-                                            <div className="relative">
-                                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                    <Mail className="h-5 w-5 text-gray-400" />
+                                            <Label htmlFor="resetEmail" className="text-xs font-black uppercase text-[#402814]/40 ml-1">E-Posta Adresi</Label>
+                                            <div className="relative group">
+                                                <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-[#CCCFD9]/50 group-focus-within:text-[#5A37A6] transition-colors">
+                                                    <Mail className="h-5 w-5" />
                                                 </div>
                                                 <Input
                                                     id="resetEmail"
@@ -130,34 +133,34 @@ export default function LoginPage() {
                                                     required
                                                     value={resetEmail}
                                                     onChange={(e) => setResetEmail(e.target.value)}
-                                                    className="pl-10 py-6 rounded-xl bg-gray-50/50"
-                                                    placeholder="E-Posta Adresi"
+                                                    className="pl-11 h-14 rounded-2xl border-[#CCCFD9] bg-gray-50/50 focus:ring-[#5A37A6]/10"
+                                                    placeholder="mail@isletme.com"
                                                 />
                                             </div>
                                         </div>
                                     </div>
 
                                     {error && (
-                                        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600 text-center font-medium border border-red-100">
+                                        <div className="rounded-xl bg-red-50 p-4 text-sm text-red-600 text-center font-bold border border-red-100">
                                             {error}
                                         </div>
                                     )}
 
-                                    <div className="flex gap-3 overflow-hidden p-1">
+                                    <div className="flex gap-4">
                                         <Button
                                             type="button"
                                             variant="outline"
                                             onClick={() => { setShowForgotPass(false); setError(''); }}
-                                            className="h-14 w-14 shrink-0 rounded-xl flex items-center justify-center p-0 border-gray-200"
+                                            className="h-14 w-14 shrink-0 rounded-2xl border-[#CCCFD9] hover:bg-gray-50 transition-all"
                                         >
-                                            <ArrowLeft className="w-5 h-5 text-gray-500" />
+                                            <ArrowLeft className="w-5 h-5 text-[#402814]/40" />
                                         </Button>
                                         <Button
                                             type="submit"
                                             disabled={loading}
-                                            className="flex-1 h-14 text-base font-semibold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 bg-black text-white"
+                                            className="flex-1 h-14 text-base font-black rounded-2xl shadow-lg shadow-[#5A37A6]/10 bg-[#5A37A6] hover:bg-[#8F6CD9] text-white transition-all active:scale-[0.98]"
                                         >
-                                            {loading ? 'Gönderiliyor' : 'Bağlantı Gönder'}
+                                            {loading ? 'Gönderiliyor...' : 'Sıfırlama Linki Gönder'}
                                         </Button>
                                     </div>
                                 </>
@@ -165,12 +168,12 @@ export default function LoginPage() {
                         </form>
                     ) : (
                         <form className="space-y-6" onSubmit={handleLogin}>
-                            <div className="space-y-4">
+                            <div className="space-y-5">
                                 <div className="space-y-2">
-                                    <Label htmlFor="slug" className="sr-only">Restoran Kodu</Label>
-                                    <div className="relative">
-                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <User className="h-5 w-5 text-gray-400" />
+                                    <Label htmlFor="slug" className="text-xs font-black uppercase text-[#402814]/40 ml-1">Restoran Kodu</Label>
+                                    <div className="relative group">
+                                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-[#CCCFD9]/50 group-focus-within:text-[#5A37A6] transition-colors">
+                                            <User className="h-5 w-5" />
                                         </div>
                                         <Input
                                             id="slug"
@@ -178,16 +181,16 @@ export default function LoginPage() {
                                             required
                                             value={slug}
                                             onChange={(e) => setSlug(e.target.value)}
-                                            className="pl-10 py-6 rounded-xl bg-gray-50/50"
-                                            placeholder="Restoran Kodu (Örn: mickeys)"
+                                            className="pl-11 h-14 rounded-2xl border-[#CCCFD9] bg-gray-50/50 focus:ring-[#5A37A6]/10 font-bold text-[#402814]"
+                                            placeholder="mickeys-pizza"
                                         />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="password" className="sr-only">Şifre</Label>
-                                    <div className="relative">
-                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <Lock className="h-5 w-5 text-gray-400" />
+                                    <Label htmlFor="password" className="text-xs font-black uppercase text-[#402814]/40 ml-1">Şifre</Label>
+                                    <div className="relative group">
+                                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-[#CCCFD9]/50 group-focus-within:text-[#5A37A6] transition-colors">
+                                            <Lock className="h-5 w-5" />
                                         </div>
                                         <Input
                                             id="password"
@@ -195,25 +198,25 @@ export default function LoginPage() {
                                             required
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="pl-10 py-6 rounded-xl bg-gray-50/50"
-                                            placeholder="Şifre"
+                                            className="pl-11 h-14 rounded-2xl border-[#CCCFD9] bg-gray-50/50 focus:ring-[#5A37A6]/10 font-bold"
+                                            placeholder="••••••••"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-end text-sm">
+                            <div className="flex items-center justify-end">
                                 <button
                                     type="button"
                                     onClick={() => { setShowForgotPass(true); setError(''); }}
-                                    className="font-medium text-black hover:underline"
+                                    className="text-xs font-bold text-[#5A37A6] hover:text-[#8F6CD9] transition-colors"
                                 >
-                                    Şifremi unuttum?
+                                    Şifrenizi mi unuttunuz?
                                 </button>
                             </div>
 
                             {error && (
-                                <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600 text-center font-medium border border-red-100">
+                                <div className="rounded-xl bg-[#A60D0D]/5 p-4 text-xs text-[#A60D0D] text-center font-bold border border-[#A60D0D]/10">
                                     {error}
                                 </div>
                             )}
@@ -221,7 +224,7 @@ export default function LoginPage() {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-6 text-base font-semibold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+                                className="w-full h-14 text-base font-black rounded-2xl shadow-xl shadow-[#5A37A6]/20 bg-[#5A37A6] hover:bg-[#8F6CD9] text-white transition-all active:scale-[0.98]"
                             >
                                 {loading ? (
                                     <span className="flex items-center gap-2">
@@ -232,15 +235,15 @@ export default function LoginPage() {
                                         Kontrol Ediliyor...
                                     </span>
                                 ) : (
-                                    'Giriş Yap'
+                                    'Yönetim Paneline Giriş'
                                 )}
                             </Button>
                         </form>
                     )}
                 </CardContent>
-                <CardFooter className="flex-col pb-8">
-                    <div className="text-center text-xs text-gray-400 w-full space-y-1">
-                        <p>© 2026 QRSaaS Yönetim Paneli</p>
+                <CardFooter className="flex-col pb-10">
+                    <div className="text-center text-[10px] text-[#402814]/30 w-full space-y-1 font-bold uppercase tracking-tight">
+                        <p>© 2026 QRSaaS Yönetim Çözümleri</p>
                     </div>
                 </CardFooter>
             </Card>

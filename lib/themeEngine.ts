@@ -50,35 +50,7 @@ export const themes: Record<string, ThemeDefinition> = {
       }
     }
   },
-  minimal: {
-    id: 'minimal',
-    name: 'Minimal',
-    fontFamily: 'Inter, sans-serif',
-    variables: {
-      light: {
-        '--theme-bg': '#f4f4f5',        // zinc-100
-        '--theme-text': '#18181b',      // zinc-900
-        '--theme-primary': '#27272a',   // zinc-800
-        '--theme-primary-text': '#ffffff',
-        '--theme-card-bg': '#ffffff',
-        '--theme-card-text': '#18181b',
-        '--theme-border': '#e4e4e7',    // zinc-200
-        '--theme-muted': '#f4f4f5',
-        '--theme-muted-text': '#71717a'
-      },
-      dark: {
-        '--theme-bg': '#09090b',        // zinc-950
-        '--theme-text': '#f4f4f5',      // zinc-100
-        '--theme-primary': '#f4f4f5',
-        '--theme-primary-text': '#09090b',
-        '--theme-card-bg': '#18181b',
-        '--theme-card-text': '#f4f4f5',
-        '--theme-border': '#27272a',
-        '--theme-muted': '#27272a',
-        '--theme-muted-text': '#a1a1aa'
-      }
-    }
-  },
+
   elegance: {
     id: 'elegance',
     name: 'Elegance',
@@ -108,35 +80,7 @@ export const themes: Record<string, ThemeDefinition> = {
       }
     }
   },
-  modern: {
-    id: 'modern',
-    name: 'Modern',
-    fontFamily: '"Outfit", sans-serif',
-    variables: {
-      light: {
-        '--theme-bg': '#f8fafc',        // slate-50
-        '--theme-text': '#0f172a',      // slate-900
-        '--theme-primary': '#0ea5e9',   // sky-500
-        '--theme-primary-text': '#ffffff',
-        '--theme-card-bg': '#ffffff',
-        '--theme-card-text': '#0f172a',
-        '--theme-border': '#e2e8f0',    // slate-200
-        '--theme-muted': '#f1f5f9',
-        '--theme-muted-text': '#64748b'
-      },
-      dark: {
-        '--theme-bg': '#020617',        // slate-950
-        '--theme-text': '#f1f5f9',      // slate-100
-        '--theme-primary': '#38bdf8',   // sky-400
-        '--theme-primary-text': '#020617',
-        '--theme-card-bg': '#0f172a',   // slate-900
-        '--theme-card-text': '#f1f5f9',
-        '--theme-border': '#1e293b',
-        '--theme-muted': '#1e293b',
-        '--theme-muted-text': '#94a3b8'
-      }
-    }
-  },
+
   vibrant: {
     id: 'vibrant',
     name: 'Vibrant',
@@ -166,36 +110,7 @@ export const themes: Record<string, ThemeDefinition> = {
       }
     }
   },
-  neon: {
-    id: 'neon',
-    name: 'Neon',
-    fontFamily: '"Montserrat", sans-serif',
-    variables: {
-      // Neon is basically always dark visually
-      light: {
-        '--theme-bg': '#18181b',        // zinc-900
-        '--theme-text': '#fae8ff',      // fuchsia-100
-        '--theme-primary': '#d946ef',   // fuchsia-500
-        '--theme-primary-text': '#ffffff',
-        '--theme-card-bg': '#27272a',   // zinc-800
-        '--theme-card-text': '#fae8ff',
-        '--theme-border': '#a21caf',    // fuchsia-700
-        '--theme-muted': '#3f3f46',
-        '--theme-muted-text': '#f0abfc'
-      },
-      dark: {
-        '--theme-bg': '#000000',        // black
-        '--theme-text': '#fae8ff',      // fuchsia-100
-        '--theme-primary': '#e879f9',   // fuchsia-400
-        '--theme-primary-text': '#000000',
-        '--theme-card-bg': '#18181b',   // zinc-900
-        '--theme-card-text': '#fae8ff',
-        '--theme-border': '#a21caf',    // fuchsia-700
-        '--theme-muted': '#27272a',
-        '--theme-muted-text': '#f0abfc'
-      }
-    }
-  },
+
   rustic: {
     id: 'rustic',
     name: 'Rustic',

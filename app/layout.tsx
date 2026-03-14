@@ -1,23 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { MenuProvider } from "@/lib/store";
 import FontLoader from "@/components/FontLoader";
-import SmoothScroll from "@/components/SmoothScroll";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "QR Menu - Lezzetli Seçenekler",
-  description: "Dijital menümüzden siparişinizi verin.",
+  description: "Dijital menümüzden siparişinizi verin. ",
 };
 
 export default function RootLayout({
@@ -26,11 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="tr">
+      <body className={`${inter.className} antialiased`}>
         <MenuProvider>
           <FontLoader />
           {children}

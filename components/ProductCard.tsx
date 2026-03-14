@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { Flame, Leaf, Wheat } from 'lucide-react'; // Icons for tags
 import { ALLERGENS } from '@/lib/allergens';
 import Image from 'next/image';
+import PlaceholderImage from './PlaceholderImage';
 
 interface ProductCardProps {
     product: Product;
@@ -47,12 +48,11 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
         xl: 'text-2xl'
     }[settings.productPriceSize || 'large'];
 
-    // Fallback image logic
+    // IMAGE LOGIC
+    const hasImage = (product.image && product.image.length > 5) || (settings.defaultProductImage && settings.defaultProductImage.length > 5);
     const imageSrc = (product.image && product.image.length > 5)
         ? product.image
-        : (settings.defaultProductImage && settings.defaultProductImage.length > 5)
-            ? settings.defaultProductImage
-            : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c';
+        : settings.defaultProductImage;
 
     // Helper to format title (break line on parenthesis)
     const formatTitle = (title: string) => {
@@ -75,11 +75,8 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
     const getThemeCardStyles = () => {
         const base = "group flex flex-col overflow-hidden transition-all duration-300 cursor-pointer text-[var(--theme-card-text)] ";
         switch (settings.themeId) {
-            case 'minimal': return base + "rounded-none border-b border-[var(--theme-border)] bg-transparent hover:bg-[var(--theme-muted)]";
             case 'elegance': return base + "rounded-2xl border border-[var(--theme-border)] shadow-lg backdrop-blur-sm bg-[var(--theme-card-bg)]/90 hover:shadow-xl hover:border-[var(--theme-primary)]";
-            case 'modern': return base + "rounded-3xl border border-transparent shadow-xl bg-[var(--theme-card-bg)] hover:shadow-2xl hover:-translate-y-1";
             case 'vibrant': return base + "rounded-xl border border-[var(--theme-border)] shadow-[0_4px_15px_-3px_var(--theme-primary)] bg-[var(--theme-card-bg)] hover:scale-[1.02] hover:border-[var(--theme-primary)]";
-            case 'neon': return base + "rounded-xl border border-[var(--theme-border)] shadow-[0_0_15px_var(--theme-primary)] bg-[var(--theme-card-bg)] hover:shadow-[0_0_25px_var(--theme-primary)]";
             case 'rustic': return base + "rounded-none border-y-2 border-[var(--theme-border)] bg-[var(--theme-card-bg)] shadow-sm hover:shadow-md";
             case 'paper': return base + "border-b border-[var(--theme-border)] hover:bg-[var(--theme-muted)] bg-transparent";
             case 'custom': return base + "rounded-xl border border-[var(--theme-border)] hover:border-[var(--theme-primary)] shadow-sm hover:shadow-md bg-[var(--theme-card-bg)]/50 backdrop-blur-sm";
@@ -162,13 +159,17 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                 className={getThemeCardStyles()}
             >
                 <div className="relative aspect-video w-full bg-[var(--theme-muted)]">
-                    <Image
-                        src={imageSrc}
-                        alt={displayName}
-                        fill
-                        unoptimized
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+                    {hasImage ? (
+                        <Image
+                            src={imageSrc!}
+                            alt={displayName}
+                            fill
+                            unoptimized
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                    ) : (
+                        <PlaceholderImage alt={displayName} />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
                     <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
@@ -314,13 +315,17 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
 
             {/* Large Top Image */}
             <div className="relative aspect-square w-full bg-[var(--theme-muted)]">
-                <Image
-                    src={imageSrc}
-                    alt={displayName}
-                    fill
-                    unoptimized
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                {hasImage ? (
+                    <Image
+                        src={imageSrc!}
+                        alt={displayName}
+                        fill
+                        unoptimized
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                ) : (
+                    <PlaceholderImage alt={displayName} />
+                )}
                 {product.discountPrice && (
                     <div className="absolute top-3 left-3 rounded-md bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-sm">
                         {language === 'en' ? 'Sale' : 'İndirim'}

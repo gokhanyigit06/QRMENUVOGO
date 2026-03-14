@@ -214,16 +214,19 @@ export default function CategoryAccordion({ categories, products, language }: Ca
                                 >
                                     {/* ... background image ... */}
                                     <div className="absolute inset-0 z-0">
-                                        <Image
-                                            src={category.image || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5'}
-                                            alt={displayName}
-                                            fill
-                                            unoptimized
-                                            className={cn(
-                                                "object-cover transition-opacity duration-300",
-                                                // isOpen ? "scale-105" : "scale-100" // Reduced scale, removed blur for performance
-                                            )}
-                                        />
+                                        {category.image ? (
+                                            <Image
+                                                src={category.image}
+                                                alt={displayName}
+                                                fill
+                                                unoptimized
+                                                className={cn(
+                                                    "object-cover transition-opacity duration-300",
+                                                )}
+                                            />
+                                        ) : (
+                                            <div className="absolute inset-0 bg-[var(--theme-primary)] opacity-50" />
+                                        )}
                                         {/* Dynamic Gradient Overlay based on state */}
                                         <div
                                             className={cn(

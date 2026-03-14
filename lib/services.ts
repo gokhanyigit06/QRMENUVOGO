@@ -109,6 +109,49 @@ export async function getAllRestaurants() {
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 
+export async function getSystemStats() {
+    // Total Restaurants
+    const restaurantsRef = collection(db, 'restaurants');
+    const totalRestaurants = (await getCountFromServer(restaurantsRef)).data().count;
+
+    // Total Page Views (last 30 days summary)
+    // In a real high-traffic app, we'd use a summary doc, but for now we count
+    const viewsRef = collection(db, 'page_views');
+    const totalViews = (await getCountFromServer(viewsRef)).data().count;
+
+    // Active Today (simple estimation or real query)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayQ = query(collection(db, 'page_views'), where('created_at', '>=', Timestamp.fromDate(today)));
+    const activeToday = (await getCountFromServer(todayQ)).data().count;
+
+    return {
+        totalRestaurants,
+        totalViews,
+        activeToday,
+    };
+}
+
+export async function getGlobalAnnouncements() {
+    const q = query(collection(db, 'announcements'), orderBy('created_at', 'desc'), limit(10));
+    const snap = await getDocs(q);
+    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+export async function createGlobalAnnouncement(title: string, content: string, type: 'info' | 'warning' | 'success' = 'info') {
+    return addDoc(collection(db, 'announcements'), {
+        title,
+        content,
+        type,
+        created_at: serverTimestamp(),
+        active: true
+    });
+}
+
+export async function deleteAnnouncement(id: string) {
+    return deleteDoc(doc(db, 'announcements', id));
+}
+
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from './firebase';
 

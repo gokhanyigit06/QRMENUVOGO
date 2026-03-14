@@ -128,7 +128,7 @@ export interface Product {
 export interface SiteSettings {
   id?: string;
   restaurantId?: string;
-  themeId?: 'default' | 'modern' | 'minimal' | 'elegant' | 'elite' | 'elegance' | 'vibrant' | 'neon' | 'rustic' | 'paper' | 'custom';
+  themeId?: 'default' | 'elegant' | 'elite' | 'elegance' | 'vibrant' | 'rustic' | 'paper' | 'custom';
   menuLayout?: 'accordion' | 'list' | 'grid' | 'tabs' | 'masonry' | 'cards' | 'minimal-list' | 'paper' | 'elite';
   themeColor: 'black' | 'red' | 'blue' | 'green' | 'orange' | 'white';
   fontFamily?: string;

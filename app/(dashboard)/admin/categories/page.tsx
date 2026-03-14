@@ -19,20 +19,28 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Edit2, GripVertical, Plus, Trash2 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { Edit2, GripVertical, Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import React, { useState } from 'react';
 import { CategoryModal } from './CategoryModal';
 
 function SortableItem({
     id,
     category,
     onEdit,
-    onDelete
+    onDelete,
+    onMoveUp,
+    onMoveDown,
+    isFirst,
+    isLast,
 }: {
     id: string;
     category: Category;
     onEdit: (cat: Category) => void;
     onDelete: (id: string) => void;
+    onMoveUp: (id: string) => void;
+    onMoveDown: (id: string) => void;
+    isFirst: boolean;
+    isLast: boolean;
 }) {
     const {
         attributes,
@@ -101,7 +109,27 @@ function SortableItem({
                 </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+                {/* Up/Down Order Buttons */}
+                <div className="flex flex-col gap-0.5 mr-1">
+                    <button
+                        onClick={() => onMoveUp(id)}
+                        disabled={isFirst}
+                        title="Yukarı Taşı"
+                        className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                    >
+                        <ChevronUp className="h-4 w-4" />
+                    </button>
+                    <button
+                        onClick={() => onMoveDown(id)}
+                        disabled={isLast}
+                        title="Aşağı Taşı"
+                        className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                    >
+                        <ChevronDown className="h-4 w-4" />
+                    </button>
+                </div>
+
                 <button
                     onClick={() => onEdit(category)}
                     className="rounded-lg p-2 text-gray-400 hover:bg-gray-50 hover:text-amber-600 transition-colors"
@@ -118,6 +146,9 @@ function SortableItem({
         </div>
     );
 }
+
+
+
 
 export default function CategoriesPage() {
     const { categories, updateCategories, addCategory, updateCategory, deleteCategory } = useMenu();
@@ -143,6 +174,18 @@ export default function CategoriesPage() {
             }
         }
     }
+
+    const handleMoveUp = (id: string) => {
+        const index = categories.findIndex((c) => c.id === id);
+        if (index <= 0) return;
+        updateCategories(arrayMove(categories, index, index - 1));
+    };
+
+    const handleMoveDown = (id: string) => {
+        const index = categories.findIndex((c) => c.id === id);
+        if (index >= categories.length - 1) return;
+        updateCategories(arrayMove(categories, index, index + 1));
+    };
 
     const handleAddNew = () => {
         setEditingCategory(undefined);
@@ -206,13 +249,17 @@ export default function CategoriesPage() {
                         strategy={verticalListSortingStrategy}
                     >
                         <div className="space-y-3">
-                            {categories.map((category) => (
+                            {categories.map((category, index) => (
                                 <SortableItem
                                     key={category.id}
                                     id={category.id}
                                     category={category}
                                     onEdit={handleEdit}
                                     onDelete={handleDelete}
+                                    onMoveUp={handleMoveUp}
+                                    onMoveDown={handleMoveDown}
+                                    isFirst={index === 0}
+                                    isLast={index === categories.length - 1}
                                 />
                             ))}
                         </div>

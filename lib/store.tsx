@@ -320,8 +320,8 @@ export function MenuProvider({ children, initialMockData }: { children: React.Re
             deleteCategory,
             uploadImage,
             refreshData: () => refreshData(),
-            setInitialData
-        }}>
+            setInitialData 
+         }}>
             {children}
         </MenuContext.Provider>
     );
