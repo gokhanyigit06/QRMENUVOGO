@@ -379,6 +379,10 @@ export async function createCategory(category: Partial<Category>) {
         station_name: category.station_name || 'Mutfak',
         created_at: serverTimestamp()
     };
+
+    // Remove undefined properties to prevent Firestore errors
+    Object.keys(dbData).forEach(key => (dbData as any)[key] === undefined && delete (dbData as any)[key]);
+
     const docRef = await addDoc(collection(db, 'categories'), dbData);
     return { id: docRef.id, ...dbData };
 }
@@ -457,6 +461,10 @@ export async function createProduct(product: Partial<Product>) {
         sort_order: product.sortOrder || 0,
         created_at: serverTimestamp()
     };
+
+    // Remove undefined properties to prevent Firestore errors
+    Object.keys(dbData).forEach(key => (dbData as any)[key] === undefined && delete (dbData as any)[key]);
+
     const docRef = await addDoc(collection(db, 'products'), dbData);
     return { id: docRef.id, ...dbData };
 }
@@ -514,6 +522,7 @@ export async function getSettings(restaurantId: string) {
         siteName: data.site_name,
         siteDescription: data.site_description,
         menuTitleText: data.menu_title_text,
+        storeActive: data.store_active !== false, // default is true
         defaultProductImage: data.default_product_image,
         categoryFontSize: data.category_font_size || 'large',
         categoryFontWeight: data.category_font_weight || 'black',
@@ -526,9 +535,6 @@ export async function getSettings(restaurantId: string) {
         customBgColor: data.custom_bg_color || '',
         customTextColor: data.custom_text_color || '',
         customAccentColor: data.custom_accent_color || '',
-        productTitleColor: data.product_title_color || '#111827',
-        productDescriptionColor: data.product_description_color || '#6b7280',
-        productPriceColor: data.product_price_color || '#d97706',
         productTitleSize: data.product_title_size || 'large',
         productDescriptionSize: data.product_description_size || 'medium',
         productPriceSize: data.product_price_size || 'large',
@@ -562,6 +568,7 @@ export async function updateSettings(restaurantId: string, settings: Partial<Sit
     if (settings.siteName !== undefined) dbUpdates.site_name = settings.siteName;
     if (settings.siteDescription !== undefined) dbUpdates.site_description = settings.siteDescription;
     if (settings.menuTitleText !== undefined) dbUpdates.menu_title_text = settings.menuTitleText;
+    if (settings.storeActive !== undefined) dbUpdates.store_active = settings.storeActive;
     if (settings.defaultProductImage !== undefined) dbUpdates.default_product_image = settings.defaultProductImage;
     if (settings.categoryFontSize !== undefined) dbUpdates.category_font_size = settings.categoryFontSize;
     if (settings.categoryFontWeight !== undefined) dbUpdates.category_font_weight = settings.categoryFontWeight;
@@ -571,9 +578,6 @@ export async function updateSettings(restaurantId: string, settings: Partial<Sit
     if (settings.categoryFontFamily !== undefined) dbUpdates.category_font_family = settings.categoryFontFamily;
     if (settings.categoryLetterSpacing !== undefined) dbUpdates.category_letter_spacing = settings.categoryLetterSpacing;
     if (settings.categoryCharConvert !== undefined) dbUpdates.category_char_convert = settings.categoryCharConvert;
-    if (settings.productTitleColor !== undefined) dbUpdates.product_title_color = settings.productTitleColor;
-    if (settings.productDescriptionColor !== undefined) dbUpdates.product_description_color = settings.productDescriptionColor;
-    if (settings.productPriceColor !== undefined) dbUpdates.product_price_color = settings.productPriceColor;
     if (settings.productTitleSize !== undefined) dbUpdates.product_title_size = settings.productTitleSize;
     if (settings.productDescriptionSize !== undefined) dbUpdates.product_description_size = settings.productDescriptionSize;
     if (settings.productPriceSize !== undefined) dbUpdates.product_price_size = settings.productPriceSize;

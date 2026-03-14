@@ -129,7 +129,7 @@ export interface SiteSettings {
   id?: string;
   restaurantId?: string;
   themeId?: 'default' | 'modern' | 'minimal' | 'elegant' | 'elite' | 'elegance' | 'vibrant' | 'neon' | 'rustic' | 'paper' | 'custom';
-  menuLayout?: 'accordion' | 'list' | 'grid' | 'tabs' | 'masonry' | 'cards' | 'minimal-list' | 'paper';
+  menuLayout?: 'accordion' | 'list' | 'grid' | 'tabs' | 'masonry' | 'cards' | 'minimal-list' | 'paper' | 'elite';
   themeColor: 'black' | 'red' | 'blue' | 'green' | 'orange' | 'white';
   fontFamily?: string;
   darkMode: boolean;
@@ -162,11 +162,9 @@ export interface SiteSettings {
   categoryCharConvert?: boolean;
 
   menuTitleText?: string;
+  storeActive?: boolean; // Mağaza Genel Görünürlüğü (Aktif/Pasif)
 
   // Product Styling
-  productTitleColor?: string;
-  productDescriptionColor?: string;
-  productPriceColor?: string;
   productTitleSize?: 'medium' | 'large' | 'xl';
   productDescriptionSize?: 'small' | 'medium' | 'large';
   productPriceSize?: 'medium' | 'large' | 'xl';
@@ -182,6 +180,7 @@ export interface SiteSettings {
 
 export const defaultSettings: SiteSettings = {
   themeColor: 'black',
+  storeActive: true,
   darkMode: false,
   bannerActive: false,
   bannerUrls: [],

@@ -43,9 +43,9 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
     const displayDescription = language === 'en' && product.descriptionEn ? product.descriptionEn : product.description;
 
     // Theme Color Logic replaced by dynamic settings
-    const priceColor = settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor;
-    const titleColor = settings.themeId === 'custom' ? settings.customTextColor : settings.productTitleColor;
-    const descColor = settings.themeId === 'custom' ? settings.customTextColor : settings.productDescriptionColor;
+    const priceColor = settings.themeId === 'custom' ? settings.customAccentColor : 'var(--theme-primary)';
+    const titleColor = settings.themeId === 'custom' ? settings.customTextColor : 'var(--theme-text)';
+    const descColor = settings.themeId === 'custom' ? settings.customTextColor : 'var(--theme-muted-text)';
 
     // Image Source Logic
     const imageSrc = (product.image && product.image.length > 5)
@@ -56,18 +56,7 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
 
     // Theme Background Logic
     const getModalStyles = () => {
-        const base = "relative w-full max-w-lg overflow-hidden rounded-2xl shadow-2xl transition-all duration-300 transform ";
-        switch (settings.themeId) {
-            case 'minimal': return base + (settings.darkMode ? "bg-zinc-950 text-zinc-100" : "bg-zinc-100 text-zinc-900");
-            case 'elegance': return base + (settings.darkMode ? "bg-rose-950 text-rose-50" : "bg-rose-50 text-rose-950");
-            case 'modern': return base + (settings.darkMode ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900");
-            case 'vibrant': return base + (settings.darkMode ? "bg-amber-950 text-amber-50" : "bg-amber-50 text-amber-950");
-            case 'neon': return base + (settings.darkMode ? "bg-black text-fuchsia-100" : "bg-zinc-900 text-fuchsia-200");
-            case 'rustic': return base + (settings.darkMode ? "bg-[#1a1410] text-[#e8dccb]" : "bg-[#f4efe6] text-[#4a3623]");
-            case 'paper': return base + (settings.darkMode ? "bg-stone-900 text-stone-200" : "bg-[#f9f6f0] text-stone-900");
-            case 'custom': return base + "border border-black/10"; // Custom handles colors via style tags
-            default: return base + (settings.darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900");
-        }
+        return "relative w-full max-w-lg overflow-hidden rounded-2xl shadow-2xl transition-all duration-300 transform bg-[var(--theme-card-bg)] text-[var(--theme-card-text)] border border-[var(--theme-border)]";
     };
 
     // Text Fallback (if not handled by parent class)
@@ -102,7 +91,7 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
                 </button>
 
                 {/* Product Image */}
-                <div className="relative aspect-square w-full bg-gray-100">
+                <div className="relative aspect-square w-full bg-[var(--theme-muted)]">
                     <Image
                         src={imageSrc}
                         alt={displayName}
@@ -124,15 +113,15 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
                         ) : (
                             product.discountPrice ? (
                                 <>
-                                    <span className={cn("text-3xl font-bold")} style={{ color: priceColor }}>
+                                    <span className={cn("text-3xl font-bold text-[var(--theme-primary)]")} style={{ color: priceColor }}>
                                         ₺{product.discountPrice}
                                     </span>
-                                    <span className="text-lg text-gray-400 line-through font-medium">
+                                    <span className="text-lg text-[var(--theme-muted-text)] line-through font-medium opacity-60">
                                         ₺{product.price}
                                     </span>
                                 </>
                             ) : (
-                                <span className={cn("text-3xl font-bold")} style={{ color: priceColor }}>
+                                <span className={cn("text-3xl font-bold text-[var(--theme-primary)]")} style={{ color: priceColor }}>
                                     ₺{product.price}
                                 </span>
                             )
@@ -147,11 +136,11 @@ export default function ProductModal({ isOpen, onClose, product, language }: Pro
 
                     {/* Variants if any */}
                     {product.variants && product.variants.length > 0 && (
-                        <div className="mt-6 space-y-3 p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5">
+                        <div className="mt-6 space-y-3 p-4 rounded-xl bg-[var(--theme-muted)]/50 border border-[var(--theme-border)]">
                             {product.variants.map((variant, idx) => (
                                 <div key={idx} className="flex items-center justify-between text-base">
-                                    <span className="font-bold opacity-90" style={{ color: titleColor }}>{variant.name}</span>
-                                    <span className={cn("font-bold text-lg")} style={{ color: priceColor }}>
+                                    <span className="font-bold opacity-90 text-[var(--theme-text)]" style={{ color: titleColor }}>{variant.name}</span>
+                                    <span className={cn("font-bold text-lg text-[var(--theme-primary)]")} style={{ color: priceColor }}>
                                         {variant.price} ₺
                                     </span>
                                 </div>

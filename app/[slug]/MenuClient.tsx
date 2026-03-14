@@ -17,28 +17,24 @@ import Footer from '@/components/Footer';
 import { cn } from '@/lib/utils';
 import CategoryTabs from '@/components/CategoryTabs';
 import CategoryList from '@/components/CategoryList';
-import EliteTheme from '@/components/EliteTheme';
+import EliteLayout from '@/components/EliteLayout'; 
+import DynamicThemeProvider from '@/components/DynamicThemeProvider';
 
 export default function Home({ initialData }: { initialData?: any }) {
-  const { products: storeProducts, categories: storeCategories, settings: storeSettings, restaurant: storeRestaurant, setInitialData } = useMenu(); // Use global state
-
-  // Choose data source (Prop if provided, otherwise store)
-  const categories = initialData?.categories || storeCategories;
-  const products = initialData?.products || storeProducts;
-  const settings = initialData?.settings || storeSettings;
-  const restaurant = initialData?.restaurant || storeRestaurant;
+  const { products, categories, settings, restaurant, setInitialData } = useMenu();
 
   const [loading, setLoading] = useState(!initialData);
   const [language, setLanguage] = useState<'tr' | 'en'>('tr');
   const [viewTracked, setViewTracked] = useState(false);
   const [isAllergenModalOpen, setIsAllergenModalOpen] = useState(false);
 
-  // Sync initial data to store if provided
+  // Sync initial SSR data into store immediately (runs before any refreshData from slug init)
   useEffect(() => {
     if (initialData && setInitialData) {
       setInitialData(initialData);
     }
-  }, [initialData, setInitialData]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
 
   // Apply Dark Mode to body
   useEffect(() => {
@@ -107,49 +103,10 @@ export default function Home({ initialData }: { initialData?: any }) {
     green: 'text-green-700'
   };
 
-  const accentColor = themeColors[settings.themeColor || 'black'] || 'text-gray-900';
+  const accentColor = 'text-[var(--theme-primary)]'; // Use variables
 
   return (
-    <div className={cn(
-      "min-h-screen pb-24 transition-colors duration-500",
-      settings.themeId === 'elite' && !settings.darkMode ? 'bg-white font-minister-sans' : '',
-
-      // Default / Standard Theme
-      (settings.themeId === 'default' || !settings.themeId) && settings.darkMode ? 'bg-gray-950 text-white' : '',
-      (settings.themeId === 'default' || !settings.themeId) && !settings.darkMode ? 'bg-gray-50 text-gray-900' : '',
-
-      // Minimal Theme
-      settings.themeId === 'minimal' && settings.darkMode ? 'bg-zinc-950 text-zinc-100' : '',
-      settings.themeId === 'minimal' && !settings.darkMode ? 'bg-zinc-100 text-zinc-900' : '',
-
-      // Elegance Theme
-      settings.themeId === 'elegance' && settings.darkMode ? 'bg-rose-950 text-rose-50' : '',
-      settings.themeId === 'elegance' && !settings.darkMode ? 'bg-rose-50 text-rose-950' : '',
-
-      // Modern Theme
-      settings.themeId === 'modern' && settings.darkMode ? 'bg-slate-950 text-slate-100' : '',
-      settings.themeId === 'modern' && !settings.darkMode ? 'bg-slate-50 text-slate-900' : '',
-
-      // Vibrant Theme
-      settings.themeId === 'vibrant' && settings.darkMode ? 'bg-amber-950 text-amber-50' : '',
-      settings.themeId === 'vibrant' && !settings.darkMode ? 'bg-amber-50 text-amber-950' : '',
-
-      // Neon Theme
-      settings.themeId === 'neon' && settings.darkMode ? 'bg-black text-fuchsia-100' : '',
-      settings.themeId === 'neon' && !settings.darkMode ? 'bg-zinc-900 text-fuchsia-200' : '', // Neon is implicitly always dark but just in case
-
-      // Rustic Theme
-      settings.themeId === 'rustic' && settings.darkMode ? 'bg-[#1a1410] text-[#e8dccb]' : '',
-      settings.themeId === 'rustic' && !settings.darkMode ? 'bg-[#f4efe6] text-[#4a3623]' : '',
-
-      // Paper Theme
-      settings.themeId === 'paper' && settings.darkMode ? 'bg-stone-900 text-stone-200 border-double' : '',
-      settings.themeId === 'paper' && !settings.darkMode ? 'bg-stone-50 text-stone-900 border-double' : ''
-    )} style={{
-      fontFamily: settings.themeId === 'elite' ? undefined : (settings.fontFamily || 'Inter, sans-serif'),
-      backgroundColor: settings.themeId === 'custom' ? (settings.customBgColor || '#f9fafb') : undefined,
-      color: settings.themeId === 'custom' ? (settings.customTextColor || '#111827') : undefined
-    }}>
+    <DynamicThemeProvider settings={settings} className="min-h-screen pb-24">
       {/* 
          Pop-up Component 
          Checks 'popupActive' from settings
@@ -166,7 +123,7 @@ export default function Home({ initialData }: { initialData?: any }) {
       />
 
       {/* Header / Brand Area */}
-      <div className={`bg-white px-4 pb-4 pt-8 shadow-sm sticky top-0 z-30 ${settings.darkMode ? 'dark:bg-gray-900 dark:border-b dark:border-gray-800' : ''}`}>
+      <div className="px-4 pb-4 pt-8 shadow-sm sticky top-0 z-30 transition-colors duration-500 border-b border-[var(--theme-border)]" style={{ backgroundColor: 'var(--theme-card-bg)', color: 'var(--theme-card-text)' }}>
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
             {loading ? (
@@ -181,10 +138,10 @@ export default function Home({ initialData }: { initialData?: any }) {
                 />
               ) : (
                 <>
-                  <h1 className={`text-2xl font-black tracking-tight ${settings.darkMode ? 'dark:text-white' : 'text-gray-900'}`}>
-                    {settings.siteName || restaurant?.name || "LOGO"} <span className={`${accentColor} text-3xl leading-3`}>.</span>
+                  <h1 className="text-2xl font-black tracking-tight" style={{ color: 'var(--theme-text)' }}>
+                    {settings.siteName || restaurant?.name || "LOGO"} <span className="text-3xl leading-3" style={{ color: 'var(--theme-primary)' }}>.</span>
                   </h1>
-                  <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">
+                  <span className="text-[10px] font-bold tracking-widest uppercase opacity-60">
                     {settings.siteDescription || "QR Menü Sistemi"}
                   </span>
                 </>
@@ -197,15 +154,13 @@ export default function Home({ initialData }: { initialData?: any }) {
             <div className="w-[1px] h-4 bg-gray-200 hidden xs:block" />
             <button
               onClick={() => setIsAllergenModalOpen(true)}
-              className={cn("text-xs font-bold uppercase tracking-wide hover:opacity-70 transition-colors hidden sm:block", settings.themeId === 'custom' ? '' : 'text-gray-900 dark:text-gray-100')}
-              style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}
+              className="text-xs font-bold uppercase tracking-wide hover:opacity-70 transition-colors hidden sm:block opacity-80"
             >
               {language === 'en' ? 'Allergens' : 'Alerjenler'}
             </button>
             <button
               onClick={() => setLanguage(language === 'tr' ? 'en' : 'tr')}
-              className={cn("flex items-center gap-2 text-xs font-bold uppercase tracking-wide hover:opacity-70 transition-colors", settings.themeId === 'custom' ? '' : 'text-gray-900 dark:text-gray-100')}
-              style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide hover:opacity-70 transition-colors opacity-80"
             >
               {language === 'tr' ? (
                 <><span className="text-sm">🇬🇧</span></>
@@ -217,8 +172,18 @@ export default function Home({ initialData }: { initialData?: any }) {
         </div>
       </div>
 
-      {settings.themeId === 'elite' ? (
-        <EliteTheme
+      {settings.storeActive === false ? (
+        <main className="px-4 py-32 max-w-xl mx-auto text-center flex flex-col items-center justify-center min-h-[50vh]">
+          <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6 bg-[var(--theme-card-bg)] shadow-md border border-[var(--theme-border)]">
+            <span className="text-4xl opacity-80">😴</span>
+          </div>
+          <h2 className="text-3xl font-black mb-4 tracking-tight" style={{ color: 'var(--theme-primary)' }}>Şu an kapalıyız.</h2>
+          <p className="opacity-70 text-sm max-w-xs mx-auto leading-relaxed">
+            Mağazamız şu anda hizmet vermemektedir. Lütfen daha sonra tekrar ziyaret ediniz.
+          </p>
+        </main>
+      ) : settings.menuLayout === 'elite' ? (
+        <EliteLayout
           categories={categories}
           products={products}
           language={language}
@@ -252,11 +217,11 @@ export default function Home({ initialData }: { initialData?: any }) {
               {/* Title before list */}
               <div className="mb-4 flex items-center justify-between px-1">
                 {settings.menuTitleText ? (
-                  <p className="text-xs font-medium opacity-60 text-center w-full uppercase tracking-wider py-2" style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
+                  <p className="text-xs font-medium opacity-60 text-center w-full uppercase tracking-wider py-2">
                     {settings.menuTitleText}
                   </p>
                 ) : (
-                  <h2 className="text-lg font-bold" style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
+                  <h2 className="text-lg font-bold">
                     {language === 'en' ? 'Menu' : 'Menü'}
                   </h2>
                 )}
@@ -302,6 +267,6 @@ export default function Home({ initialData }: { initialData?: any }) {
         <ArrowUp className="h-6 w-6" />
       </button>
 
-    </div>
+    </DynamicThemeProvider>
   );
 }
