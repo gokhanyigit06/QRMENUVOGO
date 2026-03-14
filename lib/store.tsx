@@ -25,7 +25,7 @@ interface MenuContextType {
     updateCategory: (id: string, category: Partial<Category>) => Promise<void>;
     addCategory: (category: Partial<Category>) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
-    uploadImage: (file: File) => Promise<string>;
+    uploadImage: (file: File, path?: string) => Promise<string>;
     refreshData: () => Promise<void>;
     setInitialData: (data: any) => void;
 }
@@ -260,8 +260,9 @@ export function MenuProvider({ children, initialMockData }: { children: React.Re
         }
     };
 
-    const uploadImage = async (file: File) => {
-        return await Services.uploadImage(file, `${restaurant?.id || 'general'}/images`);
+    const uploadImage = async (file: File, path: string = 'images') => {
+        const folderName = restaurant?.slug || restaurant?.id || 'general';
+        return await Services.uploadImage(file, `restaurants/${folderName}/${path}`);
     };
 
     const setInitialData = (data: any) => {

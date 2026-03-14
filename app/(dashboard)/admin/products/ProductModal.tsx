@@ -318,7 +318,7 @@ function ProductModal({ isOpen, onClose, onSave, product }: ProductModalProps) {
                                                     if (file) {
                                                         setIsUploading(true);
                                                         try {
-                                                            const url = await uploadImage(file);
+                                                            const url = await uploadImage(file, 'products');
                                                             setFormData(prev => ({ ...prev, image: url }));
                                                         } catch (error) { console.error(error); alert("Hata oluştu."); } finally { setIsUploading(false); }
                                                     }

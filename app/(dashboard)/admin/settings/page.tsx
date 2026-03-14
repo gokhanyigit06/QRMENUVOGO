@@ -4,7 +4,7 @@
 import { useMenu } from '@/lib/store';
 import * as Services from '@/lib/services';
 
-import { Eye, EyeOff, Save, Upload, Globe, Palette, Layout, Lock } from 'lucide-react';
+import { Eye, EyeOff, Save, Upload, Globe, Palette, Layout, Lock, FileImage, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
@@ -114,7 +114,7 @@ export default function SettingsPage() {
         if (!file) return;
         setIsUploading(true);
         try {
-            const url = await uploadImage(file);
+            const url = await uploadImage(file, 'settings');
             setLocalSettings(prev => ({ ...prev, [field]: url }));
         } catch (error) {
             alert('Resim yüklenirken hata oluştu.');
@@ -170,7 +170,7 @@ export default function SettingsPage() {
         if (!file) return;
         setIsUploading(true);
         try {
-            const url = await uploadImage(file);
+            const url = await uploadImage(file, 'settings');
             if (type === 'desktop') {
                 handleBannerUrlChange(index, url);
             } else {
@@ -270,6 +270,108 @@ export default function SettingsPage() {
                 <div className="flex-1 max-w-4xl min-w-0">
                     {activeTab === 'appearance' && (
                         <div className="space-y-6 animate-in fade-in duration-300">
+                            {/* Logo & Slogan */}
+                            <Card className="shadow-sm border-gray-200">
+                                <CardHeader>
+                                    <CardTitle className="text-lg flex items-center gap-2">
+                                        <FileImage className="h-5 w-5 text-gray-600" />
+                                        Tanıtım & Marka
+                                    </CardTitle>
+                                    <CardDescription>Menünüzün üst kısmında görünecek işletme adı ve logo.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="flex flex-col md:flex-row gap-6 items-start">
+                                        {/* Logo Column */}
+                                        <div className="flex flex-col items-center justify-center gap-4 border-2 border-dashed rounded-xl p-6 w-full md:w-1/3 min-w-[200px] bg-gray-50/50">
+                                            {localSettings.logoUrl ? (
+                                                <div className="relative w-28 h-28 flex items-center justify-center bg-white rounded-xl shadow-sm border p-2">
+                                                    <img src={localSettings.logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
+                                                    <button
+                                                        onClick={() => handleChange('logoUrl', '')}
+                                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 shadow-md hover:bg-red-600 transition"
+                                                    >
+                                                        <Trash2 className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="w-28 h-28 flex items-center justify-center bg-white border border-gray-200 rounded-xl text-gray-300 shadow-sm">
+                                                    <FileImage className="w-8 h-8 opacity-50" />
+                                                </div>
+                                            )}
+                                            <div className="flex flex-col items-center gap-2">
+                                                <label className="cursor-pointer bg-white border px-4 py-2 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 flex items-center shadow-sm transition-colors w-full justify-center">
+                                                    {isUploading ? 'Yükleniyor...' : 'Logo Yükle'}
+                                                    <input 
+                                                        type="file" 
+                                                        className="hidden" 
+                                                        accept="image/*"
+                                                        onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'logoUrl')} 
+                                                        disabled={isUploading}
+                                                    />
+                                                </label>
+                                                <span className="text-[10px] text-gray-400 font-medium">Önerilen: Karesel PNG/JPG</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Site Name and Description Column */}
+                                        <div className="flex-1 space-y-4 w-full">
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-bold text-gray-700">İşletme Adı (Site Adı)</Label>
+                                                <Input 
+                                                    value={localSettings.siteName || ''} 
+                                                    onChange={(e) => handleChange('siteName', e.target.value)} 
+                                                    placeholder="Örn: Mickey's Cafe" 
+                                                    className="h-11"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-bold text-gray-700">Slogan (Alt Başlık)</Label>
+                                                <Input 
+                                                    value={localSettings.siteDescription || ''} 
+                                                    onChange={(e) => handleChange('siteDescription', e.target.value)} 
+                                                    placeholder="Örn: Dünyanın en iyi kahvesi" 
+                                                    className="h-11"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="shadow-sm border-gray-200">
+                                <CardHeader>
+                                    <CardTitle className="text-lg">Font & Tema Ayarları</CardTitle>
+                                    <CardDescription>Genel stil tercihleriniz.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="grid gap-6 md:grid-cols-2">
+                                        <div className="space-y-3">
+                                            <Label className="text-sm font-bold text-gray-700">Yazı Fontu</Label>
+                                            <Select value={localSettings.fontFamily || 'Inter'} onValueChange={(val) => handleChange('fontFamily', val)}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Font Seçin" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Inter" style={{ fontFamily: 'Inter, sans-serif' }}>Inter (Standard)</SelectItem>
+                                                    <SelectItem value="Montserrat" style={{ fontFamily: 'Montserrat, sans-serif' }}>Montserrat (Modern)</SelectItem>
+                                                    <SelectItem value="Playfair Display" style={{ fontFamily: '"Playfair Display", serif' }}>Playfair (Elegant)</SelectItem>
+                                                    <SelectItem value="Brodo" style={{ fontFamily: 'Brodo, sans-serif' }}>Brodo (Stylish)</SelectItem>
+                                                    <SelectItem value="Source Sans Pro" style={{ fontFamily: '"Source Sans Pro", sans-serif' }}>Source Sans (Elite)</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="flex items-center justify-between rounded-xl bg-gray-50/50 p-4 border border-gray-100">
+                                            <div className="space-y-0.5">
+                                                <Label className="font-bold text-gray-900">Koyu Mod</Label>
+                                                <p className="text-[10px] text-gray-500">Karanlık tema.</p>
+                                            </div>
+                                            <Switch checked={localSettings.darkMode} onCheckedChange={() => handleToggle('darkMode')} />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
                             {/* Premium Themes Selection */}
                             <Card className="shadow-sm border-amber-200 bg-amber-50/20">
                                 <CardHeader>
@@ -297,42 +399,50 @@ export default function SettingsPage() {
                                             { id: 'rustic', name: 'Rustic', desc: 'Doğal Kafe', color: 'from-[#8b5a2b] to-[#4a3623]' },
                                             { id: 'paper', name: 'Paper', desc: 'Lüks Kağıt Menü', color: 'from-[#f9f6f0] to-[#e8dec0] border border-stone-300' },
                                             { id: 'custom', name: 'Özel Tasarım', desc: 'Kendi Paletinizi Yaratın', color: 'from-purple-400 via-pink-400 to-amber-400 border border-purple-200' },
-                                        ].map((t) => (
-                                            <button
-                                                key={t.id}
-                                                onClick={() => {
-                                                    const isPremiumTheme = !['default', 'minimal'].includes(t.id);
-                                                    if (isPremiumTheme && !canUsePremiumThemes) {
-                                                        alert('Bu tema PRO veya PLUS paket gerektirir. Paketinizi yükseltiniz.');
-                                                        return;
-                                                    }
-                                                    handleThemeChange(t.id);
-                                                }}
-                                                className={cn(
-                                                    "relative group rounded-xl border-2 transition-all p-1 bg-white",
-                                                    localSettings.themeId === t.id ? 'border-amber-500 ring-2 ring-amber-200' : 'border-gray-100 hover:border-gray-200',
-                                                    !['default', 'minimal'].includes(t.id) && !canUsePremiumThemes ? 'opacity-60 grayscale' : ''
-                                                )}
-                                            >
-                                                <div className={cn("aspect-[4/5] rounded-lg bg-gradient-to-br flex flex-col items-center justify-center gap-2 p-4 mb-2", t.color)}>
-                                                    <div className="w-full h-2 bg-white/60 rounded" />
-                                                    <div className="w-2/3 h-2 bg-white/40 rounded" />
-                                                    <div className="w-full aspect-square bg-white/80 rounded-md shadow-sm mt-2" />
-                                                </div>
-                                                <div className="text-left px-2 pb-2">
-                                                    <div className="text-xs font-black text-gray-900 leading-none flex items-center gap-1">
-                                                        {t.name}
-                                                        {!['default', 'minimal'].includes(t.id) && !canUsePremiumThemes && <Lock className="w-3 h-3 text-red-500" />}
+                                        ].map((t) => {
+                                            const isAvailable = ['default', 'elite'].includes(t.id);
+                                            return (
+                                                <button
+                                                    key={t.id}
+                                                    onClick={() => {
+                                                        if (!isAvailable) {
+                                                            alert('Bu tema yakında eklenecektir.');
+                                                            return;
+                                                        }
+                                                        handleChange('themeId', t.id);
+                                                    }}
+                                                    className={cn(
+                                                        "relative group rounded-xl border-2 transition-all p-1 bg-white",
+                                                        localSettings.themeId === t.id ? 'border-amber-500 ring-2 ring-amber-200' : 'border-gray-100 hover:border-gray-200',
+                                                        !isAvailable ? 'opacity-60 cursor-not-allowed grayscale' : ''
+                                                    )}
+                                                >
+                                                    <div className={cn("aspect-[4/5] rounded-lg bg-gradient-to-br flex flex-col items-center justify-center gap-2 p-4 mb-2", t.color)}>
+                                                        <div className="w-full h-2 bg-white/60 rounded" />
+                                                        <div className="w-2/3 h-2 bg-white/40 rounded" />
+                                                        <div className="w-full aspect-square bg-white/80 rounded-md shadow-sm mt-2" />
                                                     </div>
-                                                    <div className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tighter">{t.desc}</div>
-                                                </div>
-                                                {localSettings.themeId === t.id && (
-                                                    <div className="absolute -top-2 -right-2 bg-amber-500 text-white p-1 rounded-full shadow-lg">
-                                                        <Save className="h-3 w-3" />
+                                                    <div className="text-left px-2 pb-2">
+                                                        <div className="text-xs font-black text-gray-900 leading-none flex items-center gap-1">
+                                                            {t.name}
+                                                        </div>
+                                                        <div className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tighter">{t.desc}</div>
                                                     </div>
-                                                )}
-                                            </button>
-                                        ))}
+                                                    {!isAvailable && (
+                                                        <div className="absolute inset-x-0 bottom-1/2 translate-y-1/2 flex justify-center">
+                                                            <div className="bg-black/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider whitespace-nowrap">
+                                                                Yakında
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {localSettings.themeId === t.id && isAvailable && (
+                                                        <div className="absolute -top-2 -right-2 bg-amber-500 text-white p-1 rounded-full shadow-lg">
+                                                            <Save className="h-3 w-3" />
+                                                        </div>
+                                                    )}
+                                                </button>
+                                            )
+                                        })}
                                     </div>
 
                                     {localSettings.themeId === 'custom' && (
@@ -404,7 +514,12 @@ export default function SettingsPage() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="shadow-sm border-gray-200">
+                            <Card className="shadow-sm border-gray-200 relative overflow-hidden">
+                                <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-20 flex flex-col items-center justify-center rounded-xl p-4 text-center">
+                                    <Lock className="w-8 h-8 text-amber-500 mb-2" />
+                                    <p className="text-lg font-bold text-gray-900">Menü Yerleşimi Çok Yakında!</p>
+                                    <p className="text-sm text-gray-600 mt-1">Farklı menü görünümleri için çalışmalarımız sürüyor.</p>
+                                </div>
                                 <CardHeader>
                                     <CardTitle className="text-lg flex items-center gap-2">
                                         <Layout className="h-5 w-5 text-gray-600" />
@@ -412,7 +527,7 @@ export default function SettingsPage() {
                                     </CardTitle>
                                     <CardDescription>Ürünlerin nasıl listeleneceğini seçin.</CardDescription>
                                 </CardHeader>
-                                <CardContent>
+                                <CardContent className="opacity-40 grayscale pointer-events-none select-none">
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         {[
                                             { id: 'accordion', name: 'Akordiyon', icon: '↔️' },
@@ -423,86 +538,19 @@ export default function SettingsPage() {
                                             { id: 'cards', name: 'Kutu Kart', icon: '🎴' },
                                             { id: 'minimal-list', name: 'Sade (Liste)', icon: '📝' },
                                             { id: 'paper', name: 'Lüks Kağıt', icon: '📜' },
-                                        ].map((l) => {
-                                            const isAdvanced = ['masonry', 'cards', 'paper', 'grid'].includes(l.id);
-                                            return (
-                                                <button
+                                        ].map((l) => (
+                                                <div
                                                     key={l.id}
-                                                    onClick={() => {
-                                                        if (isAdvanced && !canUseAdvancedLayouts) {
-                                                            alert('Bu yerleşim PRO paket gerektirir.');
-                                                            return;
-                                                        }
-                                                        handleChange('menuLayout', l.id);
-                                                    }}
-                                                    className={cn(
-                                                        "flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all relative",
-                                                        localSettings.menuLayout === l.id ? 'border-black bg-black text-white' : 'border-gray-100 bg-gray-50 hover:bg-gray-100',
-                                                        isAdvanced && !canUseAdvancedLayouts ? 'opacity-60 grayscale' : ''
-                                                    )}
+                                                    className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-100 bg-gray-50"
                                                 >
-                                                    {isAdvanced && !canUseAdvancedLayouts && <Lock className="absolute top-2 right-2 w-3 h-3 text-red-500" />}
                                                     <span className="text-2xl">{l.icon}</span>
                                                     <span className="text-[10px] font-black uppercase tracking-widest text-center">{l.name}</span>
-                                                </button>
-                                            );
-                                        })}
+                                                </div>
+                                        ))}
                                     </div>
                                 </CardContent>
                             </Card>
 
-                            <Card className="shadow-sm border-gray-200">
-                                <CardHeader>
-                                    <CardTitle className="text-lg">Renk & Font Ayarları</CardTitle>
-                                    <CardDescription>Genel stil tercihleriniz.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                        <div className="space-y-3">
-                                            <Label className="text-sm font-bold text-gray-700">Ana Renk</Label>
-                                            <div className="flex flex-wrap gap-2">
-                                                {themeColors.map(color => (
-                                                    <button
-                                                        key={color.value}
-                                                        onClick={() => handleChange('themeColor', color.value)}
-                                                        className={cn(
-                                                            "h-10 w-10 rounded-full border-2 transition-all",
-                                                            localSettings.themeColor === color.value ? 'border-gray-900 scale-110' : 'border-transparent shadow-sm'
-                                                        )}
-                                                        title={color.name}
-                                                    >
-                                                        <div className={cn("h-full w-full rounded-full", color.class)} />
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-3">
-                                            <Label className="text-sm font-bold text-gray-700">Yazı Fontu</Label>
-                                            <Select value={localSettings.fontFamily || 'Inter'} onValueChange={(val) => handleChange('fontFamily', val)}>
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Font Seçin" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="Inter" style={{ fontFamily: 'Inter, sans-serif' }}>Inter (Standard)</SelectItem>
-                                                    <SelectItem value="Montserrat" style={{ fontFamily: 'Montserrat, sans-serif' }}>Montserrat (Modern)</SelectItem>
-                                                    <SelectItem value="Playfair Display" style={{ fontFamily: '"Playfair Display", serif' }}>Playfair (Elegant)</SelectItem>
-                                                    <SelectItem value="Brodo" style={{ fontFamily: 'Brodo, sans-serif' }}>Brodo (Stylish)</SelectItem>
-                                                    <SelectItem value="Source Sans Pro" style={{ fontFamily: '"Source Sans Pro", sans-serif' }}>Source Sans (Elite)</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-
-                                        <div className="flex items-center justify-between rounded-xl bg-gray-50/50 p-4 border border-gray-100">
-                                            <div className="space-y-0.5">
-                                                <Label className="font-bold text-gray-900">Koyu Mod</Label>
-                                                <p className="text-[10px] text-gray-500">Karanlık tema.</p>
-                                            </div>
-                                            <Switch checked={localSettings.darkMode} onCheckedChange={() => handleToggle('darkMode')} />
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
                         </div>
                     )}
 

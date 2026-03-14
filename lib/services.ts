@@ -19,7 +19,7 @@ import {
     getCountFromServer,
     Timestamp
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
 import { Category, Product, SiteSettings, Restaurant, Order, OrderItem, WebsiteSettings } from './data';
 
 // --- ANALYTICS TRACKING (Hit based) ---
@@ -171,10 +171,99 @@ export async function createRestaurant(name: string, slug: string, password: str
 }
 
 export async function deleteRestaurant(id: string) {
-    // Manually delete related documents (optional, Firestore doesn't have cascade)
-    // In production, use Cloud Functions or a recursive delete
-    await deleteDoc(doc(db, 'settings', id));
-    await deleteDoc(doc(db, 'restaurants', id));
+    let currentBatch = writeBatch(db);
+    let batchCount = 0;
+    
+    // Klasörleri silebilmek için restoran slug'ını önceden alalım
+    let slugToDelete = '';
+    const rDoc = await getDoc(doc(db, 'restaurants', id));
+    if (rDoc.exists()) {
+        slugToDelete = rDoc.data()?.slug || '';
+    }
+    
+    const commitBatchIfFull = async () => {
+        if (batchCount >= 450) {
+            await currentBatch.commit();
+            currentBatch = writeBatch(db);
+            batchCount = 0;
+        }
+    };
+
+    const deleteByRestaurantId = async (collectionName: string) => {
+        const q = query(collection(db, collectionName), where('restaurant_id', '==', id));
+        const snap = await getDocs(q);
+        for (const docSnap of snap.docs) {
+            currentBatch.delete(docSnap.ref);
+            batchCount++;
+            await commitBatchIfFull();
+        }
+    };
+
+    // 1. Restorana ait basit verileri sil
+    await deleteByRestaurantId('categories');
+    await deleteByRestaurantId('products');
+    await deleteByRestaurantId('page_views');
+    await deleteByRestaurantId('product_views');
+    
+    // 2. Siparişleri ve sipariş kalemlerini sil
+    const ordersQ = query(collection(db, 'orders'), where('restaurant_id', '==', id));
+    const ordersSnap = await getDocs(ordersQ);
+    for (const orderDoc of ordersSnap.docs) {
+        const itemsQ = query(collection(db, 'order_items'), where('order_id', '==', orderDoc.id));
+        const itemsSnap = await getDocs(itemsQ);
+        for (const itemDoc of itemsSnap.docs) {
+            currentBatch.delete(itemDoc.ref);
+            batchCount++;
+            await commitBatchIfFull();
+        }
+        currentBatch.delete(orderDoc.ref);
+        batchCount++;
+        await commitBatchIfFull();
+    }
+
+    // 3. Ayarları ve Ana Restoranı Sil
+    currentBatch.delete(doc(db, 'settings', id));
+    batchCount++;
+    await commitBatchIfFull();
+    
+    currentBatch.delete(doc(db, 'restaurants', id));
+    batchCount++;
+    
+    // Kalan batch isteklerini de gönder (işlem bitiş)
+    if (batchCount > 0) {
+        await currentBatch.commit();
+    }
+    
+    // 4. Firebase Storage'daki restoran klasörünü sil (Eski klasörler ve yeni hiyerarşik yapı)
+    const deleteFolderRecursive = async (folderPath: string) => {
+        try {
+            const folderRef = ref(storage, folderPath);
+            const result = await listAll(folderRef);
+            
+            // Klasördeki tüm dosyaları teker teker sil
+            const deleteFilePromises = result.items.map((fileRef) => deleteObject(fileRef));
+            await Promise.all(deleteFilePromises);
+
+            // Alt klasörleri de rekürsif olarak sil
+            const deleteFolderPromises = result.prefixes.map((subFolderRef) => deleteFolderRecursive(subFolderRef.fullPath));
+            await Promise.all(deleteFolderPromises);
+            
+            console.log(`Successfully deleted storage folder: ${folderPath}`);
+        } catch (error: any) {
+            if (error.code !== 'storage/object-not-found') {
+                console.error(`Error deleting storage folder ${folderPath}:`, error);
+            }
+        }
+    };
+
+    // Eski yapılar
+    await deleteFolderRecursive(`${id}/images`);
+    if (slugToDelete) {
+        await deleteFolderRecursive(`${slugToDelete}/images`);
+        // Yeni yapı (restaurants/slug tabanlı)
+        await deleteFolderRecursive(`restaurants/${slugToDelete}`);
+    }
+    await deleteFolderRecursive(`restaurants/${id}`);
 }
 
 // --- BRANCH MANAGEMENT ---
