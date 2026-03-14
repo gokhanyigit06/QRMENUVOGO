@@ -172,7 +172,7 @@ export default function Home({ initialData }: { initialData?: any }) {
         </div>
       </div>
 
-      {settings.storeActive === false ? (
+      {settings.storeActive === false || restaurant?.is_active === false ? (
         <main className="px-4 py-32 max-w-xl mx-auto text-center flex flex-col items-center justify-center min-h-[50vh]">
           <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6 bg-[var(--theme-card-bg)] shadow-md border border-[var(--theme-border)]">
             <span className="text-4xl opacity-80">😴</span>

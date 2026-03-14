@@ -35,6 +35,7 @@ export interface Restaurant {
   plan_type?: 'BASIC' | 'PRO' | 'PLUS';
   plan_expires_at?: string | null; // VIP üyelik bitiş tarihi
   parent_id?: string | null; // Boş ise Marka Sahibi, Dolu ise bir Şube
+  is_active?: boolean; // Firma panel ve menü erişimi aktif/pasif mi
 }
 
 export const PLAN_LIMITS = {

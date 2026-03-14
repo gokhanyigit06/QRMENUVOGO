@@ -329,6 +329,12 @@ export async function updateRestaurantPlan(restaurantId: string, planType: 'BASI
     });
 }
 
+export async function toggleRestaurantStatus(restaurantId: string, isActive: boolean) {
+    await updateDoc(doc(db, 'restaurants', restaurantId), {
+        is_active: isActive
+    });
+}
+
 export async function syncBranchData(sourceId: string, targetId: string) {
 
     // 1. Get Source Data

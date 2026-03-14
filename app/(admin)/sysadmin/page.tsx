@@ -15,7 +15,10 @@ import {
     Trash2,
     Info,
     AlertTriangle,
-    CheckCircle2
+    CheckCircle2,
+    ExternalLink,
+    Power,
+    Shield
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -126,6 +129,34 @@ export default function SysAdminPage() {
             setAnnouncements(prev => prev.filter(a => a.id !== id));
         } catch (error) {
             console.error("Duyuru silinemedi:", error);
+        }
+    };
+
+    const handleToggleActive = async (id: string, currentStatus: boolean) => {
+        try {
+            const nextStatus = !currentStatus;
+            await Services.toggleRestaurantStatus(id, nextStatus);
+            setRestaurants(prev => prev.map(r => r.id === id ? { ...r, is_active: nextStatus } : r));
+        } catch (error) {
+            console.error(error);
+            alert("Durum güncellenirken hata oluştu!");
+        }
+    };
+
+    const handleDirectLogin = (slug: string, id: string, name: string) => {
+        // Save temporary admin session bypassing real auth
+        localStorage.setItem('qr_admin_session', JSON.stringify({ slug, restaurantId: id, name }));
+        window.open('/admin', '_blank');
+    };
+
+    const handleChangePlan = async (id: string, newPlan: 'BASIC' | 'PRO' | 'PLUS') => {
+        if (!confirm(`Paketi ${newPlan} olarak değiştirmek istediğinize emin misiniz?`)) return;
+        try {
+            await Services.updateRestaurantPlan(id, newPlan);
+            setRestaurants(prev => prev.map(r => r.id === id ? { ...r, plan_type: newPlan } : r));
+        } catch (error) {
+            console.error(error);
+            alert("Paket güncellenirken hata oluştu!");
         }
     };
 
@@ -396,12 +427,10 @@ export default function SysAdminPage() {
                                                     {filteredRestaurants.map(r => (
                                                         <RestaurantRow 
                                                             key={r.id}
-                                                            id={r.slug} 
-                                                            name={r.name} 
-                                                            status={r.plan_type ? 'Aktif' : 'Pasif'} 
-                                                            date={r.created_at ? new Date(r.created_at.seconds * 1000).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Bilinmiyor'} 
-                                                            plan={r.plan_type || 'Ücretsiz'} 
-                                                            url={r.slug}
+                                                            r={r}
+                                                            onToggleActive={handleToggleActive}
+                                                            onDirectLogin={handleDirectLogin}
+                                                            onChangePlan={handleChangePlan}
                                                         />
                                                     ))}
                                                     {filteredRestaurants.length === 0 && (
@@ -597,31 +626,62 @@ function TableRow({ name, status, plan, date }: any) {
 }
 
 // Detailed Restaurant Table Row
-function RestaurantRow({ id, name, status, date, plan, url }: any) {
+function RestaurantRow({ r, onToggleActive, onDirectLogin, onChangePlan }: any) {
+    const isActive = r.is_active !== false; // Varsayılan true
+    const date = r.created_at ? new Date(r.created_at.seconds * 1000).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Bilinmiyor';
+
     return (
-        <tr className="hover:bg-[#F9F9F9] transition-colors">
+        <tr className={cn("hover:bg-[#F9F9F9] transition-colors group", !isActive && "opacity-60")}>
             <td className="px-6 py-4">
                 <div className="flex flex-col">
-                    <span className="text-sm font-bold text-[#0D0D0D]">{name}</span>
-                    <span className="text-xs text-[#8C8C8C]">@{id}</span>
+                    <span className="text-sm font-bold text-[#0D0D0D]">{r.name}</span>
+                    <span className="text-xs text-[#8C8C8C]">@{r.slug}</span>
                 </div>
             </td>
             <td className="px-6 py-4">
-                <span className={cn(
-                    "text-[10px] font-bold uppercase px-2 py-1 rounded",
-                    status === 'Aktif' ? "bg-[#D9704A]/10 text-[#D9704A]" : "bg-[#8C8C8C]/10 text-[#8C8C8C]"
-                )}>
-                    {status}
-                </span>
+                <button 
+                    onClick={() => onToggleActive(r.id, isActive)}
+                    className={cn(
+                        "text-[10px] font-bold uppercase px-2 py-1 rounded flex items-center gap-1 transition-colors border",
+                        isActive 
+                            ? "bg-[#D9704A]/10 text-[#D9704A] border-transparent hover:border-[#D9704A]" 
+                            : "bg-[#8C8C8C]/10 text-[#8C8C8C] border-transparent hover:border-[#8C8C8C]"
+                    )}
+                    title={isActive ? "Firma Aktif (Pasif Yap)" : "Firma Pasif (Aktif Yap)"}
+                >
+                    <Power className="h-3 w-3" />
+                    {isActive ? 'Aktif' : 'Pasif'}
+                </button>
             </td>
             <td className="px-6 py-4">
                 <span className="text-xs text-[#8C8C8C]">{date}</span>
             </td>
-            <td className="px-6 py-4">
-                <span className="text-xs font-semibold text-[#8C8C8C]">{plan}</span>
+            <td className="px-6 py-4 cursor-pointer">
+                <select 
+                    value={r.plan_type || 'BASIC'} 
+                    onChange={(e) => onChangePlan(r.id, e.target.value as any)}
+                    className="text-xs font-semibold text-[#8C8C8C] bg-transparent border-none focus:outline-none cursor-pointer hover:bg-black/5 p-1 rounded"
+                >
+                    <option value="BASIC">BASIC</option>
+                    <option value="PRO">PRO</option>
+                    <option value="PLUS">PLUS</option>
+                </select>
             </td>
             <td className="px-6 py-4 text-right">
-                <a href={`/${url}`} target="_blank" className="text-xs font-bold text-[#F2561D] hover:text-[#D9704A]">Görüntüle</a>
+                <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button 
+                        onClick={() => onDirectLogin(r.slug, r.id, r.name)}
+                        className="text-xs font-bold text-[#8C8C8C] hover:text-[#0D0D0D] flex items-center gap-1"
+                        title="Admin Paneline Sız (Yetkili)"
+                    >
+                        <Shield className="h-3.5 w-3.5" />
+                        Admin
+                    </button>
+                    <a href={`/${r.slug}`} target="_blank" className="text-xs font-bold text-[#F2561D] hover:text-[#D9704A] flex items-center gap-1">
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        Menü
+                    </a>
+                </div>
             </td>
         </tr>
     );

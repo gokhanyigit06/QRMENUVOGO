@@ -36,6 +36,10 @@ export default function LoginPage() {
                 throw new Error('Restoran bulunamadı.');
             }
 
+            if (restaurant.is_active === false) {
+                throw new Error('İşletme hesabı askıya alınmıştır. Lütfen sistem yöneticisiyle iletişime geçin.');
+            }
+
             if ((restaurant as any).password !== password) {
                 throw new Error('Hatalı şifre.');
             }
