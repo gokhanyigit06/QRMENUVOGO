@@ -379,8 +379,12 @@ export async function createCategory(category: Partial<Category>) {
         station_name: category.station_name || 'Mutfak',
         created_at: serverTimestamp()
     };
-    const docRef = await addDoc(collection(db, 'categories'), dbData);
-    return { id: docRef.id, ...dbData };
+    
+    // Remove undefined values to prevent Firebase errors
+    const cleanData = Object.fromEntries(Object.entries(dbData).filter(([_, v]) => v !== undefined));
+
+    const docRef = await addDoc(collection(db, 'categories'), cleanData);
+    return { id: docRef.id, ...cleanData };
 }
 
 export async function updateCategory(id: string, updates: Partial<Category>) {
@@ -457,8 +461,12 @@ export async function createProduct(product: Partial<Product>) {
         sort_order: product.sortOrder || 0,
         created_at: serverTimestamp()
     };
-    const docRef = await addDoc(collection(db, 'products'), dbData);
-    return { id: docRef.id, ...dbData };
+
+    // Remove undefined values to prevent Firebase errors
+    const cleanData = Object.fromEntries(Object.entries(dbData).filter(([_, v]) => v !== undefined));
+
+    const docRef = await addDoc(collection(db, 'products'), cleanData);
+    return { id: docRef.id, ...cleanData };
 }
 
 export async function updateProduct(id: string, updates: Partial<Product>) {
