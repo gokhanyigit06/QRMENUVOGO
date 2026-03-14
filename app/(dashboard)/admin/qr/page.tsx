@@ -21,7 +21,7 @@ export default function QRGeneratorPage() {
             setQrUrl(`https://${restaurant.custom_domain}`);
         } else {
             // Backup url if somehow custom_domain is missing
-            setQrUrl(`https://qrmenu.vogolab.com/${restaurant.slug}`);
+            setQrUrl(`https://vogopos.com/${restaurant.slug}`);
         }
     }, [restaurant]);
 

@@ -32,38 +32,38 @@ export default function Footer() {
 
                             {/* VOGOLAB Branding (Clickable) */}
                             <a
-                                href="https://vogolab.com"
+                                href="https://vogopos.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex flex-col items-center justify-center gap-1 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
                             >
                                 <img
                                     src={LOGO_BASE64}
-                                    alt="Vogolab Logo"
+                                    alt="VogoPos Logo"
                                     className="h-6 w-auto object-contain dark:invert"
                                 />
                                 <p className="text-[10px] font-bold text-gray-800 dark:text-gray-400 tracking-widest uppercase">
-                                    VOGOLAB <span className="text-gray-400 dark:text-gray-600 font-light mx-0.5">|</span> QR MENU
+                                    VOGOPOS <span className="text-gray-400 dark:text-gray-600 font-light mx-0.5">|</span> QR MENU
                                 </p>
                             </a>
                         </div>
                     )}
 
                     {!settings.logoUrl && (
-                        /* Fallback VOGOLAB Branding if no main logo exists (Clickable) */
+                        /* Fallback VOGOPOS Branding if no main logo exists (Clickable) */
                         <a
-                            href="https://vogolab.com"
+                            href="https://vogopos.com"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex flex-col items-center justify-center gap-1 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
                         >
                             <img
                                 src={LOGO_BASE64}
-                                alt="Vogolab Logo"
+                                alt="VogoPos Logo"
                                 className="h-6 w-auto object-contain dark:invert"
                             />
                             <p className="text-[10px] font-bold text-gray-800 dark:text-gray-400 tracking-widest uppercase">
-                                VOGOLAB <span className="text-gray-400 dark:text-gray-600 font-light mx-0.5">|</span> QR MENU
+                                VOGOPOS <span className="text-gray-400 dark:text-gray-600 font-light mx-0.5">|</span> QR MENU
                             </p>
                         </a>
                     )}

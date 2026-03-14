@@ -26,6 +26,8 @@ export default function middleware(req: NextRequest) {
         'localhost',
         'qrmenu.vogolab.com',
         'www.qrmenu.vogolab.com',
+        'vogopos.com',
+        'www.vogopos.com',
     ];
 
     const isMainDomain =

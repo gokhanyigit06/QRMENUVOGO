@@ -7,6 +7,11 @@
   */
 @custom-variant dark (&:is(.dark *));
 
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 :root {
   --geist-sans: "Outfit", "Geist Sans", sans-serif;
   --geist-mono: "Geist Mono", monospace;

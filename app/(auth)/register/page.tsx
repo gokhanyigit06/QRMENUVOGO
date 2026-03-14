@@ -178,7 +178,7 @@ export default function RegisterPage() {
                                         <Label>Sistem Linki (Slug) <span className="text-amber-500">*</span></Label>
                                         <div className="flex rounded-lg overflow-hidden border border-white/10 bg-black/50 h-12 focus-within:ring-2 focus-within:ring-amber-500">
                                             <div className="flex items-center px-4 bg-white/5 border-r border-white/10 text-gray-400 text-sm">
-                                                qrmenu.com/
+                                                vogopos.com/
                                             </div>
                                             <input
                                                 className="flex-1 bg-transparent px-3 text-white outline-none placeholder:text-gray-600 text-sm"
@@ -201,7 +201,7 @@ export default function RegisterPage() {
                                             />
                                         </div>
                                         <p className="text-xs text-gray-500 mt-2">
-                                            Opsiyonel. Boş bırakırsanız otomatik olarak <strong className="text-white">{form.slug ? `${form.slug}-id-qrmenu.vogolab.com` : 'restoranid-qrmenu.vogolab.com'}</strong> adresi atanacaktır.
+                                            Opsiyonel. Boş bırakırsanız otomatik olarak <strong className="text-white">{form.slug ? `${form.slug}-id-vogopos.com` : 'restoranid-vogopos.com'}</strong> adresi atanacaktır.
                                         </p>
                                     </div>
 
