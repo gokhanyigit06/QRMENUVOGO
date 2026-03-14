@@ -294,34 +294,45 @@ export default function BulkOperationsPage() {
         try {
             // PRODUCTS
             for (const p of products) {
-                if (p.image && !p.image.includes('firebasestorage.googleapis.com')) {
+                // Taşıma Şartı: 1) Dışarıdan geliyorsa, VEYA 2) Firebase'de ama 'restaurants/' klasöründe değilse
+                if (p.image && (!p.image.includes('firebasestorage.googleapis.com') || !p.image.includes('restaurants%2F'))) {
+                    console.log(`Taşınacak Ürün Resmi Bulundu: ${p.name}`);
                     try {
-                        const response = await fetch(p.image);
-                        if (!response.ok) continue;
+                        const response = await fetch(p.image, { mode: 'cors' });
+                        if (!response.ok) {
+                            console.warn(`Fetch başarısız: ${p.image} - Status: ${response.status}`);
+                            continue;
+                        }
                         const blob = await response.blob();
                         const file = new File([blob], `product_${p.id}.jpg`, { type: blob.type || 'image/jpeg' });
-                        const newUrl = await Services.uploadImage(file, `${restaurant?.id || 'unknown'}/products`);
+                        const newUrl = await Services.uploadImage(file, `restaurants/${restaurant?.slug || restaurant?.id || 'unknown'}/products`);
                         await Services.updateProduct(p.id, { image: newUrl });
                         migratedProducts++;
+                        console.log(`Ürün başarıyla taşındı: ${p.name}`);
                     } catch (e) {
-                        console.error(`Ürün (${p.name}) görseli taşınamadı:`, e);
+                        console.error(`Ürün (${p.name}) görseli taşınamadı. URL: ${p.image}`, e);
                     }
                 }
             }
 
             // CATEGORIES
             for (const c of categories) {
-                if (c.image && !c.image.includes('firebasestorage.googleapis.com')) {
+                if (c.image && (!c.image.includes('firebasestorage.googleapis.com') || !c.image.includes('restaurants%2F'))) {
+                    console.log(`Taşınacak Kategori Resmi Bulundu: ${c.name}`);
                     try {
-                        const response = await fetch(c.image);
-                        if (!response.ok) continue;
+                        const response = await fetch(c.image, { mode: 'cors' });
+                        if (!response.ok) {
+                            console.warn(`Fetch başarısız: ${c.image} - Status: ${response.status}`);
+                            continue;
+                        }
                         const blob = await response.blob();
                         const file = new File([blob], `cat_${c.id}.jpg`, { type: blob.type || 'image/jpeg' });
-                        const newUrl = await Services.uploadImage(file, `${restaurant?.id || 'unknown'}/categories`);
+                        const newUrl = await Services.uploadImage(file, `restaurants/${restaurant?.slug || restaurant?.id || 'unknown'}/categories`);
                         await Services.updateCategory(c.id, { image: newUrl });
                         migratedCategories++;
+                        console.log(`Kategori başarıyla taşındı: ${c.name}`);
                     } catch (e) {
-                        console.error(`Kategori (${c.name}) görseli taşınamadı:`, e);
+                        console.error(`Kategori (${c.name}) görseli taşınamadı. URL: ${c.image}`, e);
                     }
                 }
             }

@@ -4,7 +4,7 @@
 import { useMenu } from '@/lib/store';
 import * as Services from '@/lib/services';
 
-import { Eye, EyeOff, Save, Upload, Globe, Palette, Layout, Lock } from 'lucide-react';
+import { Eye, EyeOff, Save, Upload, Globe, Palette, Layout, Lock, FileImage, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
@@ -114,7 +114,7 @@ export default function SettingsPage() {
         if (!file) return;
         setIsUploading(true);
         try {
-            const url = await uploadImage(file);
+            const url = await uploadImage(file, 'settings');
             setLocalSettings(prev => ({ ...prev, [field]: url }));
         } catch (error) {
             alert('Resim yüklenirken hata oluştu.');
@@ -170,7 +170,7 @@ export default function SettingsPage() {
         if (!file) return;
         setIsUploading(true);
         try {
-            const url = await uploadImage(file);
+            const url = await uploadImage(file, 'settings');
             if (type === 'desktop') {
                 handleBannerUrlChange(index, url);
             } else {
@@ -209,8 +209,6 @@ export default function SettingsPage() {
             alert("Ayarlar kaydedilirken hata oluştu!");
         }
     };
-
-
 
     const canUsePremiumThemes = hasFeatureAccess(restaurant?.plan_type, 'premiumThemes');
     const canUseAdvancedLayouts = hasFeatureAccess(restaurant?.plan_type, 'advancedLayouts');
@@ -263,6 +261,74 @@ export default function SettingsPage() {
                 <div className="flex-1 max-w-4xl min-w-0">
                     {activeTab === 'appearance' && (
                         <div className="space-y-6 animate-in fade-in duration-300">
+                             {/* Logo & Slogan */}
+                             <Card className="shadow-sm border-gray-200">
+                                <CardHeader>
+                                    <CardTitle className="text-lg flex items-center gap-2">
+                                        <FileImage className="h-5 w-5 text-gray-600" />
+                                        Tanıtım & Marka
+                                    </CardTitle>
+                                    <CardDescription>Menünüzün üst kısmında görünecek işletme adı ve logo.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="flex flex-col md:flex-row gap-6 items-start">
+                                        {/* Logo Column */}
+                                        <div className="flex flex-col items-center justify-center gap-4 border-2 border-dashed rounded-xl p-6 w-full md:w-1/3 min-w-[200px] bg-gray-50/50">
+                                            {localSettings.logoUrl ? (
+                                                <div className="relative w-28 h-28 flex items-center justify-center bg-white rounded-xl shadow-sm border p-2">
+                                                    <img src={localSettings.logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
+                                                    <button
+                                                        onClick={() => handleChange('logoUrl', '')}
+                                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 shadow-md hover:bg-red-600 transition"
+                                                    >
+                                                        <Trash2 className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="w-28 h-28 flex items-center justify-center bg-white border border-gray-200 rounded-xl text-gray-300 shadow-sm">
+                                                    <FileImage className="w-8 h-8 opacity-50" />
+                                                </div>
+                                            )}
+                                            <div className="flex flex-col items-center gap-2">
+                                                <label className="cursor-pointer bg-white border px-4 py-2 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 flex items-center shadow-sm transition-colors w-full justify-center">
+                                                    {isUploading ? 'Yükleniyor...' : 'Logo Yükle'}
+                                                    <input 
+                                                        type="file" 
+                                                        className="hidden" 
+                                                        accept="image/*"
+                                                        onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'logoUrl')} 
+                                                        disabled={isUploading}
+                                                    />
+                                                </label>
+                                                <span className="text-[10px] text-gray-400 font-medium">Önerilen: Karesel PNG/JPG</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Site Name and Description Column */}
+                                        <div className="flex-1 space-y-4 w-full">
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-bold text-gray-700">İşletme Adı (Site Adı)</Label>
+                                                <Input 
+                                                    value={localSettings.siteName || ''} 
+                                                    onChange={(e) => handleChange('siteName', e.target.value)} 
+                                                    placeholder="Örn: Mickey's Cafe" 
+                                                    className="h-11"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-bold text-gray-700">Slogan (Alt Başlık)</Label>
+                                                <Input 
+                                                    value={localSettings.siteDescription || ''} 
+                                                    onChange={(e) => handleChange('siteDescription', e.target.value)} 
+                                                    placeholder="Örn: Dünyanın en iyi kahvesi" 
+                                                    className="h-11"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
                             {/* Premium Themes Selection */}
                             <Card className="shadow-sm border-amber-200 bg-amber-50/20">
                                 <CardHeader>

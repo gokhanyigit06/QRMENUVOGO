@@ -18,10 +18,27 @@ export default function IconComponent({ name, className, style }: IconComponentP
     if (!name) return null;
 
     // 1. Normalize name (remove Lucide prefix, lowercase, remove special chars)
-    const normalized = name
+    let normalized = name
         .replace(/^Lucide/i, '')
         .replace(/[^a-zA-Z0-9]/g, '')
         .toLowerCase();
+
+    // Alias mapping for old Supabase / Lucide icon names to minimal icons
+    const ALIASES: Record<string, string> = {
+        'martini': 'cocktail',
+        'glasswater': 'glass',
+        'snowflake': 'drink',
+        'ham': 'meat',
+        'drumstick': 'meat',
+        'citrus': 'drink',
+        'bean': 'soup',
+        'cookingpot': 'pasta',
+        'chef': 'chefhat'
+    };
+
+    if (ALIASES[normalized]) {
+        normalized = ALIASES[normalized];
+    }
 
     // 2. Try to find in manual registry
     // The keys in MANUAL_ICONS are like 'pizza', 'burger' etc.

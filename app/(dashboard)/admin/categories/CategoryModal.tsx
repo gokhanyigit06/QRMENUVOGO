@@ -239,7 +239,7 @@ export function CategoryModal({ isOpen, onClose, onSave, category }: CategoryMod
                                                     const f = e.target.files?.[0];
                                                     if (f) {
                                                         setIsUploading(true);
-                                                        try { const url = await uploadImage(f); setFormData(p => ({ ...p, image: url })); }
+                                                        try { const url = await uploadImage(f, 'categories'); setFormData(p => ({ ...p, image: url })); }
                                                         finally { setIsUploading(false); }
                                                     }
                                                 }} />
