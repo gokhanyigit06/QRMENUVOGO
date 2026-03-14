@@ -62,7 +62,7 @@ export default function CategoryTabs({ categories, products, language }: Categor
             />
 
             {/* Sticky Tabs Bar */}
-            <div className="sticky top-[80px] z-20 -mx-2 px-2 bg-inherit/95 backdrop-blur-md py-4 border-b border-gray-100 dark:border-gray-800">
+            <div className="sticky top-[80px] z-20 -mx-2 px-2 bg-inherit/95 backdrop-blur-md py-4 border-b border-[var(--theme-border)]">
                 <div
                     ref={tabsRef}
                     className="flex gap-2 overflow-x-auto hide-scrollbar px-2"
@@ -80,8 +80,8 @@ export default function CategoryTabs({ categories, products, language }: Categor
                                 className={cn(
                                     "flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap text-sm font-bold transition-all border shadow-sm",
                                     isActive
-                                        ? "bg-black text-white border-black scale-105"
-                                        : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-400"
+                                        ? "bg-[var(--theme-primary)] text-[var(--theme-primary-text)] border-[var(--theme-primary)] scale-105"
+                                        : "bg-[var(--theme-card-bg)] text-[var(--theme-muted-text)] border-[var(--theme-border)] hover:bg-[var(--theme-muted)]"
                                 )}
                             >
                                 {category.icon && !isActive && (
@@ -97,11 +97,11 @@ export default function CategoryTabs({ categories, products, language }: Categor
             {/* Active Category Header */}
             {activeCategory && (
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 px-2">
-                    <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-1">
+                    <h2 className="text-2xl font-black text-[var(--theme-text)] mb-1">
                         {language === 'en' && activeCategory.nameEn ? activeCategory.nameEn : activeCategory.name}
                     </h2>
                     {activeCategory.description && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{activeCategory.description}</p>
+                        <p className="text-sm text-[var(--theme-muted-text)]">{activeCategory.description}</p>
                     )}
                 </div>
             )}

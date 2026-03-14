@@ -17,25 +17,28 @@ export default function BulkOperationsPage() {
     } | null>(null);
 
     // Unified Headers for consistency
-    const HEADERS = ['ID', 'Name', 'Name_EN', 'Description', 'Description_EN', 'Price', 'DiscountPrice', 'Image', 'CategoryId', 'Badge', 'Active'];
+    const HEADERS = ['ID', 'Name', 'Name_EN', 'Description', 'Description_EN', 'Price', 'DiscountPrice', 'Image', 'CategoryName', 'CategoryId', 'Badge', 'Active'];
 
     // EXPORT FUNCTION
     const handleExport = () => {
         try {
-            // Prepare data for export
-            const dataToExport = products.map(p => ({
-                ID: p.id,
-                Name: p.name,
-                Name_EN: p.nameEn || '',
-                Description: p.description,
-                Description_EN: p.descriptionEn || '',
-                Price: p.price,
-                DiscountPrice: p.discountPrice || '',
-                Image: p.image,
-                CategoryId: p.categoryId,
-                Badge: p.badge || '',
-                Active: p.isActive === false ? 'Hayır' : 'Evet'
-            }));
+            const dataToExport = products.map(p => {
+                const category = categories.find(c => c.id === p.categoryId);
+                return {
+                    ID: p.id,
+                    Name: p.name,
+                    Name_EN: p.nameEn || '',
+                    Description: p.description,
+                    Description_EN: p.descriptionEn || '',
+                    Price: p.price,
+                    DiscountPrice: p.discountPrice || '',
+                    Image: p.image,
+                    CategoryName: category?.name || '',
+                    CategoryId: p.categoryId,
+                    Badge: p.badge || '',
+                    Active: p.isActive === false ? 'Hayır' : 'Evet'
+                };
+            });
 
             const wb = XLSX.utils.book_new();
 
@@ -126,6 +129,7 @@ export default function BulkOperationsPage() {
                 for (const catName of Array.from(newCategoryNames)) {
                     try {
                         const newCat = await Services.createCategory({
+                            restaurantId: restaurant?.id, // Added restaurantId
                             name: catName,
                             slug: catName.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')
                         });
@@ -165,14 +169,23 @@ export default function BulkOperationsPage() {
 
                 // Category ID Resolution
                 const catNameInRow = row.Category || row.Kategori || row['Category Name'] || row.CategoryName;
-                let catId = row.CategoryId || row['Category ID'];
+                let catId = (row.CategoryId || row['Category ID'])?.toString().trim();
 
-                if (!catId && catNameInRow && typeof catNameInRow === 'string') {
-                    catId = categoryMap.get(catNameInRow.trim().toLowerCase());
+                const parsedCatName = (catNameInRow || catId || '').toString().trim().toLowerCase();
+                
+                // Eğer catId bir isimse (örn. "İçecekler") ve UUID değilse onu yakala
+                if (parsedCatName && categoryMap.has(parsedCatName)) {
+                    catId = categoryMap.get(parsedCatName);
+                } else if (!categories.some(c => c.id === catId)) {
+                    // Eğer verilen ID mevcut kategorilerden birisi değilse, isimden çıkartmaya çalış
+                    if (parsedCatName) {
+                        catId = categoryMap.get(parsedCatName) || catId;
+                    }
                 }
 
                 // Prepare Product Data
                 const productData: Partial<Product> = {
+                    restaurantId: restaurant?.id, // Added restaurantId
                     name: name,
                     nameEn: row.Name_EN || row.NameEn,
                     description: row.Description || row.Aciklama,
@@ -205,6 +218,19 @@ export default function BulkOperationsPage() {
 
             // 3. Refresh & Finish
             await refreshData();
+
+            // Clear Next.js Cache so live menu updates immediately
+            if (restaurant?.slug) {
+                try {
+                    await fetch('/api/revalidate', {
+                        method: 'POST',
+                        body: JSON.stringify({ slug: restaurant.slug }),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                } catch (e) {
+                    console.error('Failed to revalidate cache:', e);
+                }
+            }
 
             setImportStatus({
                 type: 'success',
@@ -385,7 +411,8 @@ export default function BulkOperationsPage() {
                                     Price: 150,
                                     DiscountPrice: 120,
                                     Image: "https://example.com/image.jpg",
-                                    CategoryId: categories[0]?.id || "kategori-id",
+                                    CategoryName: categories[0]?.name || "Örnek Kategori",
+                                    CategoryId: categories[0]?.id || "",
                                     Badge: "Yeni",
                                     Active: "Evet"
                                 }], { header: HEADERS });

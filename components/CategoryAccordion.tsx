@@ -205,7 +205,7 @@ export default function CategoryAccordion({ categories, products, language }: Ca
                             <div
                                 key={category.id}
                                 id={`category-${category.id}`}
-                                className="overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300"
+                                className="overflow-hidden rounded-2xl bg-[var(--theme-card-bg)] border border-[var(--theme-border)] shadow-sm transition-all duration-300"
                             >
                                 {/* ... header button ... */}
                                 <button
@@ -323,7 +323,7 @@ export default function CategoryAccordion({ categories, products, language }: Ca
                                     )}
                                 >
                                     <div className="overflow-hidden">
-                                        <div className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3 bg-white">
+                                        <div className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3 bg-[var(--theme-card-bg)]">
                                             {categoryProducts.map((product) => (
                                                 <ProductCard
                                                     key={product.id}

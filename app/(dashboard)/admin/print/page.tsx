@@ -24,8 +24,9 @@ export default function PrintCenterPage() {
 
             // Dev HTML alanını ekrandan yakala
             const canvas = await html2canvas(printRef.current, {
-                scale: 1.5, // 1.5x scale (70x50 cm çok büyük olduğu için 1.5 yeterli)
+                scale: 1, // 1 scale (Önceki 1.5 çok yüksek bellek kullanımına yol açıyordu)
                 useCORS: true,
+                allowTaint: false,
                 backgroundColor: '#ffffff'
             });
 
@@ -43,9 +44,9 @@ export default function PrintCenterPage() {
 
             pdf.save(`${restaurant?.slug || 'menu'}-70x50-poster.pdf`);
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("PDF Generate Error", error);
-            alert("PDF çıkartılırken hata oluştu. Tarayıcınız çok büyük PDF işlemlerini engelliyor olabilir.");
+            alert("PDF çıkartılırken hata oluştu: " + (error.message || "Bilinmeyen hata. Tarayıcınız işlemi engelliyor olabilir."));
         } finally {
             setIsGenerating(false);
         }
@@ -102,7 +103,7 @@ export default function PrintCenterPage() {
                     }}
                 >
                     {/* Header: Logo and Site Name */}
-                    <div className="flex flex-row items-center justify-center gap-10 border-b-[4px] border-gray-200 pb-10 mb-10">
+                    <div className="flex flex-row items-center justify-center gap-10 border-b-[4px] pb-10 mb-10" style={{ borderColor: '#e5e7eb' }}>
                         {settings?.logoUrl && (
                             <div className="relative w-[250px] h-[250px]">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -110,16 +111,15 @@ export default function PrintCenterPage() {
                                     src={settings.logoUrl}
                                     alt="Logo"
                                     className="w-full h-full object-contain"
-                                    crossOrigin="anonymous"
                                 />
                             </div>
                         )}
                         <div className="flex flex-col">
-                            <h1 className="text-[125px] font-black text-gray-900 tracking-tight leading-none uppercase">
+                            <h1 className="text-[125px] font-black tracking-tight leading-none uppercase" style={{ color: '#111827' }}>
                                 {settings?.siteName || restaurant.name}
                             </h1>
                             {settings?.siteDescription && (
-                                <p className="text-[40px] text-gray-500 mt-3 font-medium">{settings.siteDescription}</p>
+                                <p className="text-[40px] mt-3 font-medium" style={{ color: '#6b7280' }}>{settings.siteDescription}</p>
                             )}
                         </div>
                     </div>
@@ -131,19 +131,19 @@ export default function PrintCenterPage() {
                             if (catProducts.length === 0) return null;
 
                             return (
-                                <div key={cat.id} className="break-inside-avoid mb-[50px] bg-gray-50 p-8 rounded-[40px] border-[3px] border-gray-100">
-                                    <h2 className="text-[60px] font-black text-amber-600 mb-8 uppercase tracking-tight border-b-[3px] border-amber-200 pb-4">{cat.name}</h2>
+                                <div key={cat.id} className="break-inside-avoid mb-[50px] p-8 rounded-[40px] border-[3px]" style={{ backgroundColor: '#f9fafb', borderColor: '#f3f4f6' }}>
+                                    <h2 className="text-[60px] font-black mb-8 uppercase tracking-tight border-b-[3px] pb-4" style={{ color: '#d97706', borderColor: '#fde68a' }}>{cat.name}</h2>
                                     <div className="space-y-8">
                                         {catProducts.map(prod => (
                                             <div key={prod.id} className="flex flex-col gap-3">
                                                 <div className="flex justify-between items-start gap-6">
-                                                    <h3 className="text-[40px] font-bold text-gray-900 leading-tight flex-1">{prod.name}</h3>
-                                                    <div className="text-[42px] font-black shrink-0 whitespace-nowrap text-amber-600">
+                                                    <h3 className="text-[40px] font-bold leading-tight flex-1" style={{ color: '#111827' }}>{prod.name}</h3>
+                                                    <div className="text-[42px] font-black shrink-0 whitespace-nowrap" style={{ color: '#d97706' }}>
                                                         {prod.price} <span className="text-[28px]">₺</span>
                                                     </div>
                                                 </div>
                                                 {prod.description && (
-                                                    <p className="text-[25px] text-gray-500 leading-snug w-[90%]">{prod.description}</p>
+                                                    <p className="text-[25px] leading-snug w-[90%]" style={{ color: '#6b7280' }}>{prod.description}</p>
                                                 )}
                                             </div>
                                         ))}
@@ -154,7 +154,7 @@ export default function PrintCenterPage() {
                     </div>
 
                     {/* Footer / Branding */}
-                    <div className="mt-16 text-center text-gray-400 text-[30px] border-t-[4px] border-gray-100 pt-8">
+                    <div className="mt-16 text-center text-[30px] border-t-[4px] pt-8" style={{ color: '#9ca3af', borderColor: '#f3f4f6' }}>
                         Bu menü VogoLab QRSaaS tarafından otomatik oluşturulmuştur.
                     </div>
                 </div>

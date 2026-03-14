@@ -74,27 +74,27 @@ export default function CategoryList({ categories, products, language }: Categor
                     <section key={category.id} id={`cat-${category.id}`} className="space-y-6">
                         {/* THEME DISTINCTIVE CATEGORY HEADERS */}
                         {settings.themeId === 'minimal' && (
-                            <div className="px-2 pb-2 mb-6 border-b border-zinc-200 dark:border-zinc-800">
-                                <h2 className="text-2xl font-light tracking-[0.2em] uppercase text-zinc-900 dark:text-zinc-100">
+                            <div className="px-2 pb-2 mb-6 border-b border-[var(--theme-border)]">
+                                <h2 className="text-2xl font-light tracking-[0.2em] uppercase text-[var(--theme-text)]">
                                     {language === 'en' && category.nameEn ? category.nameEn : category.name}
                                 </h2>
                             </div>
                         )}
                         {settings.themeId === 'elegance' && (
                             <div className="flex items-center gap-6 px-4 py-8 mb-4">
-                                <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-rose-900/30 dark:to-rose-100/30" />
-                                <h2 className="text-3xl font-serif italic text-rose-950 dark:text-rose-50 tracking-wider">
+                                <div className="h-[1px] flex-1 bg-[var(--theme-primary)] opacity-30" />
+                                <h2 className="text-3xl font-serif italic text-[var(--theme-text)] tracking-wider">
                                     {language === 'en' && category.nameEn ? category.nameEn : category.name}
                                 </h2>
-                                <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-rose-900/30 dark:to-rose-100/30" />
+                                <div className="h-[1px] flex-1 bg-[var(--theme-primary)] opacity-30" />
                             </div>
                         )}
                         {settings.themeId === 'modern' && (
                             <div className="px-2 mb-6 flex items-center justify-between">
-                                <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                                <h2 className="text-3xl font-black text-[var(--theme-text)] uppercase tracking-tight">
                                     {language === 'en' && category.nameEn ? category.nameEn : category.name}
                                 </h2>
-                                <div className="h-2 w-12 bg-sky-500 rounded-full" />
+                                <div className="h-2 w-12 bg-[var(--theme-primary)] rounded-full" />
                             </div>
                         )}
                         {settings.themeId === 'neon' && (
@@ -108,23 +108,23 @@ export default function CategoryList({ categories, products, language }: Categor
                         )}
                         {settings.themeId === 'paper' && (
                             <div className="text-center px-4 py-6 mb-2">
-                                <h2 className="text-2xl font-serif font-bold text-stone-900 dark:text-stone-200 uppercase tracking-widest border-y border-stone-300 dark:border-stone-700 py-3 inline-block">
+                                <h2 className="text-2xl font-serif font-bold text-[var(--theme-text)] uppercase tracking-widest border-y border-[var(--theme-border)] py-3 inline-block">
                                     ~ {language === 'en' && category.nameEn ? category.nameEn : category.name} ~
                                 </h2>
                             </div>
                         )}
                         {settings.themeId === 'rustic' && (
                             <div className="flex items-center gap-4 px-2 mb-6">
-                                <div className="h-1 flex-1 bg-amber-900/10 dark:bg-amber-100/10 rounded-full" />
-                                <h2 className="text-2xl font-serif font-bold text-[#4a3623] dark:text-[#e8dccb] uppercase">
+                                <div className="h-1 flex-1 bg-[var(--theme-border)] rounded-full" />
+                                <h2 className="text-2xl font-serif font-bold text-[var(--theme-text)] uppercase">
                                     {language === 'en' && category.nameEn ? category.nameEn : category.name}
                                 </h2>
-                                <div className="h-1 flex-1 bg-amber-900/10 dark:bg-amber-100/10 rounded-full" />
+                                <div className="h-1 flex-1 bg-[var(--theme-border)] rounded-full" />
                             </div>
                         )}
                         {settings.themeId === 'vibrant' && (
                             <div className="px-2 mb-6 block text-center">
-                                <h2 className="inline-block px-6 py-2 bg-amber-500 text-white rounded-xl text-xl font-bold uppercase tracking-wide shadow-md">
+                                <h2 className="inline-block px-6 py-2 bg-[var(--theme-primary)] text-[var(--theme-primary-text)] rounded-xl text-xl font-bold uppercase tracking-wide shadow-md">
                                     {language === 'en' && category.nameEn ? category.nameEn : category.name}
                                 </h2>
                             </div>
@@ -132,11 +132,11 @@ export default function CategoryList({ categories, products, language }: Categor
                         {/* DEFAULT / CUSTOM FALLBACK HEADER */}
                         {(!settings.themeId || !['minimal', 'elegance', 'modern', 'neon', 'paper', 'rustic', 'vibrant'].includes(settings.themeId)) && (
                             <div className="flex items-center gap-4 px-2 mb-6">
-                                <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
-                                <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-widest" style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
+                                <div className="h-px flex-1 bg-[var(--theme-border)]" />
+                                <h2 className="text-xl font-black text-[var(--theme-text)] uppercase tracking-widest">
                                     {language === 'en' && category.nameEn ? category.nameEn : category.name}
                                 </h2>
-                                <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
+                                <div className="h-px flex-1 bg-[var(--theme-border)]" />
                             </div>
                         )}
 
