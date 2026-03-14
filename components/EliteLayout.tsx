@@ -10,13 +10,13 @@ import { trackProductView } from '@/lib/services';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
-interface EliteThemeProps {
+interface EliteLayoutProps {
     categories: Category[];
     products: Product[];
     language: 'tr' | 'en';
 }
 
-export default function EliteTheme({ categories, products, language }: EliteThemeProps) {
+export default function EliteLayout({ categories, products, language }: EliteLayoutProps) {
     const { settings, restaurant } = useMenu();
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,7 +67,7 @@ export default function EliteTheme({ categories, products, language }: EliteThem
         : [];
 
     return (
-        <div className="font-minister-sans min-h-screen bg-white max-w-2xl mx-auto shadow-xl">
+        <div className="font-minister-sans min-h-screen bg-[var(--theme-card-bg)] max-w-2xl mx-auto shadow-xl transition-colors duration-500">
             <ProductModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
@@ -76,26 +76,26 @@ export default function EliteTheme({ categories, products, language }: EliteThem
             />
 
             {/* Segment Switcher (YEMEKLER | İÇECEKLER) */}
-            <nav className="flex justify-center items-center gap-6 py-8 bg-white/95 sticky top-0 z-40 backdrop-blur-sm border-b border-gray-100">
+            <nav className="flex justify-center items-center gap-6 py-8 bg-[var(--theme-card-bg)]/95 sticky top-0 z-40 backdrop-blur-sm border-b border-[var(--theme-border)] transition-colors duration-500">
                 <button
                     onClick={() => setActiveSegment('food')}
                     className={cn(
                         "text-base tracking-widest uppercase transition-all duration-300 font-minister-title",
                         activeSegment === 'food'
-                            ? "font-black text-brand border-b-2 border-brand"
-                            : "font-semibold text-gray-400 hover:text-gray-600"
+                            ? "font-black text-[var(--theme-primary)] border-b-2 border-[var(--theme-primary)]"
+                            : "font-semibold text-[var(--theme-muted-text)] hover:text-[var(--theme-text)]"
                     )}
                 >
                     {language === 'en' ? 'FOOD' : 'YEMEKLER'}
                 </button>
-                <span className="text-2xl text-gray-300">•</span>
+                <span className="text-2xl text-[var(--theme-muted-text)] opacity-30">•</span>
                 <button
                     onClick={() => setActiveSegment('drink')}
                     className={cn(
                         "text-base tracking-widest uppercase transition-all duration-300 font-minister-title",
                         activeSegment === 'drink'
-                            ? "font-black text-brand border-b-2 border-brand"
-                            : "font-semibold text-gray-400 hover:text-gray-600"
+                            ? "font-black text-[var(--theme-primary)] border-b-2 border-[var(--theme-primary)]"
+                            : "font-semibold text-[var(--theme-muted-text)] hover:text-[var(--theme-text)]"
                     )}
                 >
                     {language === 'en' ? 'DRINKS' : 'İÇECEKLER'}
@@ -111,8 +111,8 @@ export default function EliteTheme({ categories, products, language }: EliteThem
                         className={cn(
                             "px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider border transition-all duration-300 font-minister-sans whitespace-nowrap flex-shrink-0",
                             activeCategory?.id === cat.id
-                                ? "bg-brand text-white border-brand shadow-md"
-                                : "bg-white text-brand border-brand hover:bg-gray-50"
+                                ? "bg-[var(--theme-primary)] text-[var(--theme-primary-text)] border-[var(--theme-primary)] shadow-md"
+                                : "bg-[var(--theme-card-bg)] text-[var(--theme-primary)] border-[var(--theme-primary)] hover:bg-[var(--theme-muted)]"
                         )}
                     >
                         {language === 'en' && cat.nameEn ? cat.nameEn : cat.name}
@@ -123,10 +123,10 @@ export default function EliteTheme({ categories, products, language }: EliteThem
             {/* Category Header */}
             {activeCategory && (
                 <div className="text-center mb-8 px-4">
-                    <h2 className="text-2xl font-bold uppercase tracking-widest text-[#273938] font-minister-title">
+                    <h2 className="text-2xl font-bold uppercase tracking-widest text-[var(--theme-text)] font-minister-title">
                         {language === 'en' && activeCategory.nameEn ? activeCategory.nameEn : activeCategory.name}
                     </h2>
-                    <div className="w-24 h-[1px] bg-brand mt-2 mx-auto" />
+                    <div className="w-24 h-[1px] bg-[var(--theme-primary)] mt-2 mx-auto" />
                 </div>
             )}
 
@@ -149,7 +149,7 @@ export default function EliteTheme({ categories, products, language }: EliteThem
                                     onClick={() => handleProductClick(product)}
                                 >
                                     {/* Image Container - Square, Minimal */}
-                                    <div className="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 bg-brand rounded-none overflow-hidden shadow-sm relative border border-gray-100">
+                                    <div className="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 bg-[var(--theme-muted)] rounded-none overflow-hidden shadow-sm relative border border-[var(--theme-border)]">
                                         {product.image ? (
                                             <img
                                                 src={product.image}
@@ -157,7 +157,7 @@ export default function EliteTheme({ categories, products, language }: EliteThem
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
                                         ) : (
-                                            <div className="w-full h-full bg-brand flex items-center justify-center text-white/20">
+                                            <div className="w-full h-full bg-[var(--theme-primary)] flex items-center justify-center text-[var(--theme-primary-text)]/50">
                                                 <span className="text-[10px] font-bold">MINISTER</span>
                                             </div>
                                         )}
@@ -166,10 +166,10 @@ export default function EliteTheme({ categories, products, language }: EliteThem
                                     {/* Product Details */}
                                     <div className="flex-1 flex flex-col justify-between py-1">
                                         <div>
-                                            <h3 className="text-lg font-bold text-[#2d2d2d] leading-tight mb-1 font-minister-title tracking-tight">
+                                            <h3 className="text-lg font-bold text-[var(--theme-text)] leading-tight mb-1 font-minister-title tracking-tight">
                                                 {language === 'en' && product.nameEn ? product.nameEn : product.name}
                                             </h3>
-                                            <p className="text-xs text-gray-500 leading-snug line-clamp-2 md:line-clamp-3 font-minister-sans italic">
+                                            <p className="text-xs text-[var(--theme-muted-text)] leading-snug line-clamp-2 md:line-clamp-3 font-minister-sans italic">
                                                 {language === 'en' && product.descriptionEn ? product.descriptionEn : product.description}
                                             </p>
 
@@ -177,8 +177,8 @@ export default function EliteTheme({ categories, products, language }: EliteThem
                                             {product.variants && product.variants.length > 0 && (
                                                 <div className="mt-3 flex flex-wrap gap-2">
                                                     {product.variants.map((v, i) => (
-                                                        <div key={i} className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-md text-xs font-bold text-[#273938] font-minister-sans shadow-sm">
-                                                            {v.name}: <span className="text-brand font-black ml-1">{v.price} ₺</span>
+                                                        <div key={i} className="px-3 py-1 bg-[var(--theme-muted)] border border-[var(--theme-border)] rounded-md text-xs font-bold text-[var(--theme-text)] font-minister-sans shadow-sm">
+                                                            {v.name}: <span className="text-[var(--theme-primary)] font-black ml-1">{v.price} ₺</span>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -188,11 +188,11 @@ export default function EliteTheme({ categories, products, language }: EliteThem
                                         {/* Main Price Badge - Only show if price > 0 or no variants */}
                                         {((product.price && product.price > 0) || !product.variants || product.variants.length === 0) && (
                                             <div className="mt-2 flex items-center gap-3">
-                                                <span className="inline-block px-4 py-1.5 border border-brand bg-brand text-white rounded-full text-sm font-bold font-minister-sans">
+                                                <span className="inline-block px-4 py-1.5 border border-[var(--theme-primary)] bg-[var(--theme-primary)] text-[var(--theme-primary-text)] rounded-full text-sm font-bold font-minister-sans">
                                                     {product.discountPrice || product.price} ₺
                                                 </span>
                                                 {product.discountPrice && (
-                                                    <span className="text-xs text-gray-400 line-through">
+                                                    <span className="text-xs text-[var(--theme-muted-text)] line-through">
                                                         {product.price} ₺
                                                     </span>
                                                 )}

@@ -2,7 +2,6 @@
 import { getRestaurantBySlug, getCategories, getProducts, getSettings } from "@/lib/services";
 import MenuClient from "./MenuClient";
 import { notFound } from "next/navigation";
-import { getDemoData } from "@/lib/demoData";
 
 // --- ISR: Beher saatte bir yenile (3600 saniye) ---
 export const revalidate = 3600;
@@ -20,29 +19,21 @@ export default async function Page({ params }: PageProps) {
     let products;
     let settings;
 
-    if (slug.startsWith('demo-')) {
-        const demoData = getDemoData(slug);
-        restaurant = demoData.restaurant;
-        categories = demoData.categories;
-        products = demoData.products;
-        settings = demoData.settings;
-    } else {
-        restaurant = await getRestaurantBySlug(slug);
+    restaurant = await getRestaurantBySlug(slug);
 
-        if (!restaurant) {
-            notFound();
-        }
-
-        // 2. Fetch all other data in parallel for speed
-        const [fetchedCategories, fetchedProducts, fetchedSettings] = await Promise.all([
-            getCategories(restaurant.id),
-            getProducts(restaurant.id),
-            getSettings(restaurant.id)
-        ]);
-        categories = fetchedCategories;
-        products = fetchedProducts;
-        settings = fetchedSettings;
+    if (!restaurant) {
+        notFound();
     }
+
+    // 2. Fetch all other data in parallel for speed
+    const [fetchedCategories, fetchedProducts, fetchedSettings] = await Promise.all([
+        getCategories(restaurant.id),
+        getProducts(restaurant.id),
+        getSettings(restaurant.id)
+    ]);
+    categories = fetchedCategories;
+    products = fetchedProducts;
+    settings = fetchedSettings;
 
     // 3. Pass to Client Component
     // We'll also pass this to the MenuProvider via local hydration or props

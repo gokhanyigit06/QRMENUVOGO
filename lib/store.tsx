@@ -34,11 +34,14 @@ const MenuContext = createContext<MenuContextType | undefined>(undefined);
 
 export function MenuProvider({ children, initialMockData }: { children: React.ReactNode, initialMockData?: any }) {
     const params = useParams();
-    const [restaurantId, setRestaurantId] = useState<string | null>(null);
+    const [restaurantId, setRestaurantId] = useState<string | null>(initialMockData?.restaurant?.id || null);
     const [products, setProducts] = useState<Product[]>(initialMockData?.products || []);
     const [categories, setCategories] = useState<Category[]>(initialMockData?.categories || []);
-    const [settings, setSettings] = useState<SiteSettings>(initialMockData?.settings || defaultSettings);
-    const [restaurant, setRestaurant] = useState<import('./data').Restaurant | null>(null);
+    const [settings, setSettings] = useState<SiteSettings>(initialMockData?.settings ? { ...defaultSettings, ...initialMockData.settings } : defaultSettings);
+    const [restaurant, setRestaurant] = useState<import('./data').Restaurant | null>(initialMockData?.restaurant || null);
+
+    // Track if SSR-initialData was already loaded so we skip store's own refresh on slug pages
+    const hasSSRData = !!(initialMockData?.settings);
 
     const [loading, setLoading] = useState(initialMockData ? false : true);
     const [domainType, setDomainType] = useState<'MENU' | 'WEBSITE' | null>(initialMockData?.domainType || null);
@@ -62,6 +65,21 @@ export function MenuProvider({ children, initialMockData }: { children: React.Re
             if (fetchedSettings) {
                 setSettings({ ...defaultSettings, ...fetchedSettings });
             }
+
+            // Otomatik Cache Temizliği (Next.js ISR Busting)
+            // Herhangi bir CRUD işlemi sonrası store güncellenince canlı sayfayı da yenile.
+            if (restaurant?.slug) {
+                try {
+                    fetch('/api/revalidate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ slug: restaurant.slug })
+                    }).catch(console.error);
+                } catch (e) {
+                    console.error('Auto-revalidate failed:', e);
+                }
+            }
+
         } catch (error) {
             console.error("Failed to fetch menu data:", error);
         } finally {
@@ -121,9 +139,14 @@ export function MenuProvider({ children, initialMockData }: { children: React.Re
                 if (restaurant) {
                     setRestaurantId(restaurant.id);
                     setRestaurant(restaurant);
-                    setDomainType('MENU'); // Slug access is always MENU
+                    setDomainType('MENU');
                     setWebsiteSettings(restaurant.website_settings);
-                    refreshData(restaurant.id);
+                    // Skip extra fetch if SSR already provided fresh data to avoid flash
+                    if (!hasSSRData) {
+                        refreshData(restaurant.id);
+                    } else {
+                        setLoading(false);
+                    }
                 } else {
                     console.error("Restaurant not found:", slug);
                     setLoading(false);
@@ -267,7 +290,7 @@ export function MenuProvider({ children, initialMockData }: { children: React.Re
     const setInitialData = (data: any) => {
         if (data.products) setProducts(data.products);
         if (data.categories) setCategories(data.categories);
-        if (data.settings) setSettings(data.settings);
+        if (data.settings) setSettings({ ...defaultSettings, ...data.settings });
         if (data.restaurant) {
             setRestaurant(data.restaurant);
             setRestaurantId(data.restaurant.id);

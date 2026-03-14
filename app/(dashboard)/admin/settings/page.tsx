@@ -124,7 +124,7 @@ export default function SettingsPage() {
         }
     };
 
-    const handleToggle = (key: 'bannerActive' | 'popupActive' | 'darkMode') => {
+    const handleToggle = (key: 'bannerActive' | 'popupActive' | 'darkMode' | 'storeActive') => {
         setLocalSettings(prev => ({ ...prev, [key]: !prev[key] }));
     };
 
@@ -134,14 +134,14 @@ export default function SettingsPage() {
 
     const handleThemeChange = (themeId: string) => {
         const themePresets: Record<string, any> = {
-            minimal: { fontFamily: 'Montserrat', darkMode: true, productTitleColor: '#f4f4f5', productDescriptionColor: '#a1a1aa', productPriceColor: '#ffffff' },
-            elegance: { fontFamily: 'Playfair Display', darkMode: true, productTitleColor: '#fff1f2', productDescriptionColor: '#fda4af', productPriceColor: '#fbbf24' },
-            modern: { fontFamily: 'Inter', darkMode: true, productTitleColor: '#f8fafc', productDescriptionColor: '#94a3b8', productPriceColor: '#38bdf8' },
-            vibrant: { fontFamily: 'Inter', darkMode: false, productTitleColor: '#78350f', productDescriptionColor: '#92400e', productPriceColor: '#ea580c' },
-            neon: { fontFamily: 'Inter', darkMode: true, productTitleColor: '#fae8ff', productDescriptionColor: '#e879f9', productPriceColor: '#22d3ee' },
-            rustic: { fontFamily: 'Playfair Display', darkMode: false, productTitleColor: '#4a3623', productDescriptionColor: '#8b5a2b', productPriceColor: '#c2410c' },
-            paper: { fontFamily: 'Playfair Display', darkMode: false, productTitleColor: '#1c1917', productDescriptionColor: '#57534e', productPriceColor: '#000000' },
-            default: { fontFamily: 'Inter', darkMode: false, productTitleColor: '#111827', productDescriptionColor: '#6b7280', productPriceColor: '#10b981' },
+            minimal: { fontFamily: 'Montserrat', darkMode: true },
+            elegance: { fontFamily: 'Playfair Display', darkMode: true },
+            modern: { fontFamily: 'Inter', darkMode: true },
+            vibrant: { fontFamily: 'Inter', darkMode: false },
+            neon: { fontFamily: 'Inter', darkMode: true },
+            rustic: { fontFamily: 'Playfair Display', darkMode: false },
+            paper: { fontFamily: 'Playfair Display', darkMode: false },
+            default: { fontFamily: 'Inter', darkMode: false },
             custom: {} // Preserve whatever they already entered for Custom colors
         };
         const preset = themePresets[themeId] || themePresets.default;
@@ -210,14 +210,7 @@ export default function SettingsPage() {
         }
     };
 
-    const themeColors = [
-        { name: 'Siyah (Varsayılan)', value: 'black', class: 'bg-black' },
-        { name: 'Beyaz', value: 'white', class: 'bg-white border border-gray-200' },
-        { name: 'Mavi', value: 'blue', class: 'bg-blue-600' },
-        { name: 'Turuncu', value: 'orange', class: 'bg-orange-500' },
-        { name: 'Kırmızı', value: 'red', class: 'bg-red-600' },
-        { name: 'Yeşil', value: 'green', class: 'bg-green-600' },
-    ];
+
 
     const canUsePremiumThemes = hasFeatureAccess(restaurant?.plan_type, 'premiumThemes');
     const canUseAdvancedLayouts = hasFeatureAccess(restaurant?.plan_type, 'advancedLayouts');
@@ -458,24 +451,6 @@ export default function SettingsPage() {
                                 </CardHeader>
                                 <CardContent className="space-y-6">
                                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                        <div className="space-y-3">
-                                            <Label className="text-sm font-bold text-gray-700">Ana Renk</Label>
-                                            <div className="flex flex-wrap gap-2">
-                                                {themeColors.map(color => (
-                                                    <button
-                                                        key={color.value}
-                                                        onClick={() => handleChange('themeColor', color.value)}
-                                                        className={cn(
-                                                            "h-10 w-10 rounded-full border-2 transition-all",
-                                                            localSettings.themeColor === color.value ? 'border-gray-900 scale-110' : 'border-transparent shadow-sm'
-                                                        )}
-                                                        title={color.name}
-                                                    >
-                                                        <div className={cn("h-full w-full rounded-full", color.class)} />
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
 
                                         <div className="space-y-3">
                                             <Label className="text-sm font-bold text-gray-700">Yazı Fontu</Label>
@@ -483,12 +458,29 @@ export default function SettingsPage() {
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Font Seçin" />
                                                 </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="Inter" style={{ fontFamily: 'Inter, sans-serif' }}>Inter (Standard)</SelectItem>
+                                                <SelectContent className="max-h-80">
+                                                    {/* Temel */}
+                                                    <SelectItem value="Inter" style={{ fontFamily: 'Inter, sans-serif' }}>Inter (Standart)</SelectItem>
+                                                    <SelectItem value="Lato" style={{ fontFamily: 'Lato, sans-serif' }}>Lato (Profesyonel)</SelectItem>
+                                                    <SelectItem value="Open Sans" style={{ fontFamily: '"Open Sans", sans-serif' }}>Open Sans (Okunabilir)</SelectItem>
+                                                    <SelectItem value="Source Sans Pro" style={{ fontFamily: '"Source Sans Pro", sans-serif' }}>Source Sans Pro (Elite)</SelectItem>
+                                                    {/* Modern */}
                                                     <SelectItem value="Montserrat" style={{ fontFamily: 'Montserrat, sans-serif' }}>Montserrat (Modern)</SelectItem>
-                                                    <SelectItem value="Playfair Display" style={{ fontFamily: '"Playfair Display", serif' }}>Playfair (Elegant)</SelectItem>
-                                                    <SelectItem value="Brodo" style={{ fontFamily: 'Brodo, sans-serif' }}>Brodo (Stylish)</SelectItem>
-                                                    <SelectItem value="Source Sans Pro" style={{ fontFamily: '"Source Sans Pro", sans-serif' }}>Source Sans (Elite)</SelectItem>
+                                                    <SelectItem value="Poppins" style={{ fontFamily: 'Poppins, sans-serif' }}>Poppins (Geometrik)</SelectItem>
+                                                    <SelectItem value="Outfit" style={{ fontFamily: 'Outfit, sans-serif' }}>Outfit (Çağdaş)</SelectItem>
+                                                    <SelectItem value="DM Sans" style={{ fontFamily: '"DM Sans", sans-serif' }}>DM Sans (Minimal)</SelectItem>
+                                                    <SelectItem value="Raleway" style={{ fontFamily: 'Raleway, sans-serif' }}>Raleway (Zarif & İnce)</SelectItem>
+                                                    <SelectItem value="Josefin Sans" style={{ fontFamily: '"Josefin Sans", sans-serif' }}>Josefin Sans (Retro Butik)</SelectItem>
+                                                    <SelectItem value="Barlow" style={{ fontFamily: 'Barlow, sans-serif' }}>Barlow (Endüstriyel)</SelectItem>
+                                                    <SelectItem value="Cabin" style={{ fontFamily: 'Cabin, sans-serif' }}>Cabin (Kafe Hissi)</SelectItem>
+                                                    <SelectItem value="Nunito" style={{ fontFamily: 'Nunito, sans-serif' }}>Nunito (Samimi & Yuvarlak)</SelectItem>
+                                                    <SelectItem value="Quicksand" style={{ fontFamily: 'Quicksand, sans-serif' }}>Quicksand (Sevimli)</SelectItem>
+                                                    <SelectItem value="Exo 2" style={{ fontFamily: '"Exo 2", sans-serif' }}>Exo 2 (Futuristik)</SelectItem>
+                                                    {/* Serif / Lüks */}
+                                                    <SelectItem value="Playfair Display" style={{ fontFamily: '"Playfair Display", serif' }}>Playfair Display (Zarif Serif)</SelectItem>
+                                                    <SelectItem value="Cormorant Garamond" style={{ fontFamily: '"Cormorant Garamond", serif' }}>Cormorant Garamond (Klasik)</SelectItem>
+                                                    <SelectItem value="Cinzel" style={{ fontFamily: 'Cinzel, serif' }}>Cinzel (Antik Lüks)</SelectItem>
+                                                    <SelectItem value="Bebas Neue" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>Bebas Neue (Güçlü Başlık)</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -499,6 +491,14 @@ export default function SettingsPage() {
                                                 <p className="text-[10px] text-gray-500">Karanlık tema.</p>
                                             </div>
                                             <Switch checked={localSettings.darkMode} onCheckedChange={() => handleToggle('darkMode')} />
+                                        </div>
+
+                                        <div className="flex items-center justify-between rounded-xl bg-gray-50/50 p-4 border border-gray-100">
+                                            <div className="space-y-0.5">
+                                                <Label className="font-bold text-gray-900">Mağaza Aktifliği</Label>
+                                                <p className="text-[10px] text-gray-500">Müşteriye kapat/aç.</p>
+                                            </div>
+                                            <Switch checked={localSettings.storeActive !== false} onCheckedChange={() => handleToggle('storeActive')} />
                                         </div>
                                     </div>
                                 </CardContent>
@@ -568,32 +568,7 @@ export default function SettingsPage() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="shadow-sm border-gray-200">
-                                <CardHeader>
-                                    <CardTitle className="text-lg">Ürün Kartı Renkleri</CardTitle>
-                                    <CardDescription>Ürün Başlığı, Açıklama ve Fiyat renkleri.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="grid gap-6 md:grid-cols-3">
-                                    <div className="space-y-3">
-                                        <Label className="text-xs font-black uppercase text-gray-500">BAŞLIK RENK</Label>
-                                        <div className="flex items-center gap-2">
-                                            <Input type="color" value={localSettings.productTitleColor || '#000000'} onChange={(e) => handleChange('productTitleColor', e.target.value)} className="h-10 w-full p-1" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-xs font-black uppercase text-gray-500">AÇIKLAMA RENK</Label>
-                                        <div className="flex items-center gap-2">
-                                            <Input type="color" value={localSettings.productDescriptionColor || '#666666'} onChange={(e) => handleChange('productDescriptionColor', e.target.value)} className="h-10 w-full p-1" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-xs font-black uppercase text-gray-500">FİYAT RENK</Label>
-                                        <div className="flex items-center gap-2">
-                                            <Input type="color" value={localSettings.productPriceColor || '#d97706'} onChange={(e) => handleChange('productPriceColor', e.target.value)} className="h-10 w-full p-1" />
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+
                         </div>
                     )}
 

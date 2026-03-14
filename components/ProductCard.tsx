@@ -73,17 +73,17 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
     };
 
     const getThemeCardStyles = () => {
-        const base = "group flex flex-col overflow-hidden transition-all duration-300 cursor-pointer ";
+        const base = "group flex flex-col overflow-hidden transition-all duration-300 cursor-pointer text-[var(--theme-card-text)] ";
         switch (settings.themeId) {
-            case 'minimal': return base + "rounded-none border-b border-zinc-200 dark:border-zinc-800 bg-transparent hover:bg-zinc-50 dark:hover:bg-zinc-900/50";
-            case 'elegance': return base + "rounded-2xl border border-rose-900/10 shadow-lg backdrop-blur-sm bg-white/90 dark:bg-black/50 hover:shadow-xl hover:border-rose-900/30";
-            case 'modern': return base + "rounded-3xl border-transparent shadow-xl bg-white dark:bg-slate-900 hover:shadow-2xl hover:-translate-y-1";
-            case 'vibrant': return base + "rounded-xl border border-amber-500/30 shadow-[0_4px_15px_-3px_rgba(245,158,11,0.2)] bg-white dark:bg-amber-950/20 hover:scale-[1.02] hover:border-amber-500/60";
-            case 'neon': return base + "rounded-xl border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.2)] bg-zinc-950 hover:shadow-[0_0_25px_rgba(217,70,239,0.5)]";
-            case 'rustic': return base + "rounded-none border-y-2 border-amber-900/10 bg-[#fdfbf7] dark:bg-[#2c241b] shadow-sm hover:shadow-md";
-            case 'paper': return base + "border-b border-stone-200/50 hover:bg-black/5 dark:hover:bg-white/5 bg-transparent";
-            case 'custom': return base + "rounded-xl border border-black/5 hover:border-black/10 shadow-sm hover:shadow-md bg-white/50 backdrop-blur-sm";
-            default: return base + "rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md";
+            case 'minimal': return base + "rounded-none border-b border-[var(--theme-border)] bg-transparent hover:bg-[var(--theme-muted)]";
+            case 'elegance': return base + "rounded-2xl border border-[var(--theme-border)] shadow-lg backdrop-blur-sm bg-[var(--theme-card-bg)]/90 hover:shadow-xl hover:border-[var(--theme-primary)]";
+            case 'modern': return base + "rounded-3xl border border-transparent shadow-xl bg-[var(--theme-card-bg)] hover:shadow-2xl hover:-translate-y-1";
+            case 'vibrant': return base + "rounded-xl border border-[var(--theme-border)] shadow-[0_4px_15px_-3px_var(--theme-primary)] bg-[var(--theme-card-bg)] hover:scale-[1.02] hover:border-[var(--theme-primary)]";
+            case 'neon': return base + "rounded-xl border border-[var(--theme-border)] shadow-[0_0_15px_var(--theme-primary)] bg-[var(--theme-card-bg)] hover:shadow-[0_0_25px_var(--theme-primary)]";
+            case 'rustic': return base + "rounded-none border-y-2 border-[var(--theme-border)] bg-[var(--theme-card-bg)] shadow-sm hover:shadow-md";
+            case 'paper': return base + "border-b border-[var(--theme-border)] hover:bg-[var(--theme-muted)] bg-transparent";
+            case 'custom': return base + "rounded-xl border border-[var(--theme-border)] hover:border-[var(--theme-primary)] shadow-sm hover:shadow-md bg-[var(--theme-card-bg)]/50 backdrop-blur-sm";
+            default: return base + "rounded-xl bg-[var(--theme-card-bg)] border border-[var(--theme-border)] shadow-sm hover:shadow-md";
         }
     };
 
@@ -94,22 +94,22 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                 onClick={onClick}
                 className={cn(getThemeCardStyles(), "py-4 flex flex-col items-center justify-center text-center")}
             >
-                <h3 className={cn("font-serif tracking-widest uppercase mb-1", titleSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productTitleColor }}>
+                <h3 className={cn("font-serif tracking-widest uppercase mb-1", titleSize)}>
                     {formatTitle(displayName)}
                 </h3>
                 {displayDescription && (
-                    <p className={cn("italic font-serif opacity-70 max-w-[80%] mx-auto mb-2", descriptionSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productDescriptionColor }}>
+                    <p className={cn("italic font-serif opacity-70 max-w-[80%] mx-auto mb-2", descriptionSize)}>
                         {displayDescription}
                     </p>
                 )}
                 {(product.price !== undefined && product.price !== null && (!product.variants || product.variants.length === 0)) && (
                     product.discountPrice ? (
                         <div className="flex items-center gap-3 mt-1">
-                            <span className={cn("font-serif line-through opacity-50", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>{product.price}₺</span>
-                            <span className={cn("font-serif font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>{product.discountPrice}₺</span>
+                            <span className={cn("font-serif line-through opacity-50", priceSize)}>{product.price}₺</span>
+                            <span className={cn("font-serif font-bold", priceSize)}>{product.discountPrice}₺</span>
                         </div>
                     ) : (
-                        <span className={cn("font-serif mt-1", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>
+                        <span className={cn("font-serif mt-1", priceSize)}>
                             {product.price} ₺
                         </span>
                     )
@@ -123,22 +123,22 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
         return (
             <div
                 onClick={onClick}
-                className={cn(getThemeCardStyles(), "py-3 border-b border-black/5 dark:border-white/5 last:border-0 rounded-none bg-transparent hover:bg-black/5")}
+                className={cn(getThemeCardStyles(), "py-3 border-b border-[var(--theme-border)] last:border-0 rounded-none bg-transparent hover:bg-[var(--theme-muted)]")}
             >
                 <div className="flex justify-between items-baseline w-full">
-                    <h3 className={cn("font-medium tracking-tight", titleSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productTitleColor }}>
+                    <h3 className={cn("font-medium tracking-tight", titleSize)}>
                         {displayName}
                     </h3>
-                    <div className="flex-1 mx-4 border-b border-dotted border-black/20 dark:border-white/20"></div>
+                    <div className="flex-1 mx-4 border-b border-dotted border-[var(--theme-border)]"></div>
                     <div className="flex items-baseline shrink-0">
                         {(product.price !== undefined && product.price !== null && (!product.variants || product.variants.length === 0)) && (
                             product.discountPrice ? (
                                 <>
-                                    <span className={cn("line-through opacity-50 mr-2 text-xs")} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>{product.price}₺</span>
-                                    <span className={cn("font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>{product.discountPrice}₺</span>
+                                    <span className={cn("line-through opacity-50 mr-2 text-xs")}>{product.price}₺</span>
+                                    <span className={cn("font-bold", priceSize)}>{product.discountPrice}₺</span>
                                 </>
                             ) : (
-                                <span className={cn("font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productPriceColor }}>
+                                <span className={cn("font-bold", priceSize)}>
                                     {product.price} ₺
                                 </span>
                             )
@@ -146,7 +146,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                     </div>
                 </div>
                 {displayDescription && (
-                    <p className={cn("mt-1 opacity-60 text-left", descriptionSize)} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : settings.productDescriptionColor }}>
+                    <p className={cn("mt-1 opacity-60 text-left", descriptionSize)}>
                         {displayDescription}
                     </p>
                 )}
@@ -161,7 +161,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                 onClick={onClick}
                 className={getThemeCardStyles()}
             >
-                <div className="relative aspect-video w-full bg-gray-100">
+                <div className="relative aspect-video w-full bg-[var(--theme-muted)]">
                     <Image
                         src={imageSrc}
                         alt={displayName}
@@ -178,11 +178,11 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                         {(product.price !== undefined && product.price !== null && (!product.variants || product.variants.length === 0)) && (
                             product.discountPrice ? (
                                 <div className="flex items-center gap-2">
-                                    <span className={cn("font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor }}>{product.discountPrice} ₺</span>
+                                    <span className={cn("font-bold", priceSize)}>{product.discountPrice} ₺</span>
                                     <span className="text-sm line-through opacity-70">{product.price} ₺</span>
                                 </div>
                             ) : (
-                                <span className={cn("font-bold", priceSize)} style={{ color: settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor }}>{product.price} ₺</span>
+                                <span className={cn("font-bold", priceSize)}>{product.price} ₺</span>
                             )
                         )}
                     </div>
@@ -201,7 +201,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                 <div className="flex items-center justify-between gap-4">
                     <h3
                         className={cn("font-bold leading-tight tracking-wide", titleSize)}
-                        style={{ color: settings.productTitleColor }}
+
                     >
                         {formatTitle(displayName.toLocaleUpperCase('tr-TR'))}
                     </h3>
@@ -212,7 +212,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                                     <span className="text-xs text-gray-400 line-through">₺{product.price}</span>
                                     <span
                                         className={cn("font-bold", priceSize)}
-                                        style={{ color: settings.productPriceColor }}
+
                                     >
                                         ₺{product.discountPrice}
                                     </span>
@@ -220,7 +220,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                             ) : (
                                 <span
                                     className={cn("font-bold", priceSize)}
-                                    style={{ color: settings.productPriceColor }}
+
                                 >
                                     ₺{product.price}
                                 </span>
@@ -231,7 +231,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                 {displayDescription && (
                     <p
                         className={cn("mt-2 leading-relaxed opacity-80", descriptionSize)}
-                        style={{ color: settings.productDescriptionColor }}
+
                     >
                         {displayDescription}
                     </p>
@@ -249,8 +249,8 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
             >
                 {/* Header */}
                 <h3
-                    className={cn("font-bold leading-tight tracking-wide mb-3 pb-3 border-b border-gray-100 border-dashed", titleSize)}
-                    style={{ color: settings.productTitleColor }}
+                    className={cn("font-bold leading-tight tracking-wide mb-3 pb-3 border-b border-[var(--theme-border)] border-dashed", titleSize)}
+
                 >
                     {formatTitle(displayName.toLocaleUpperCase('tr-TR'))}
                 </h3>
@@ -260,7 +260,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                     <div className="space-y-2">
                         {product.variants.map((variant, idx) => (
                             <div key={idx} className="flex items-center justify-between">
-                                <span className={cn("text-sm font-medium flex items-center gap-2", settings.themeId === 'custom' ? '' : 'text-gray-600 dark:text-gray-400')} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>
+                                <span className={cn("text-sm font-medium flex items-center gap-2", settings.themeId === 'custom' ? '' : 'text-[var(--theme-muted-text)]')}>
                                     {/* Simple Icon Logic based on variant name keywords */}
                                     {(variant.name.toLowerCase().includes('kadeh') || variant.name.toLowerCase().includes('glass') || variant.name.includes('cl')) && (
                                         <svg className="w-3 h-3 opacity-50" viewBox="0 0 24 24" fill="currentColor"><path d="M11 21h2v-2h-2v2zm1-18c-2.76 0-5 2.24-5 5v5c0 1.29.39 2.49 1.05 3.48L7 19v2h10v-2l-1.05-2.52C16.61 15.49 17 14.29 17 11V6c0-2.76-2.24-5-5-5z" /></svg>
@@ -270,7 +270,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                                     )}
                                     {variant.name}
                                 </span>
-                                <span className={cn("font-bold")} style={{ color: settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor }}>
+                                <span className={cn("font-bold")}>
                                     {variant.price} ₺
                                 </span>
                             </div>
@@ -285,7 +285,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                                     <span className="text-xs text-gray-400 line-through">₺{product.price}</span>
                                     <span
                                         className={cn("font-bold", priceSize)}
-                                        style={{ color: settings.productPriceColor }}
+
                                     >
                                         ₺{product.discountPrice}
                                     </span>
@@ -293,7 +293,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                             ) : (
                                 <span
                                     className={cn("font-bold", priceSize)}
-                                    style={{ color: settings.productPriceColor }}
+
                                 >
                                     ₺{product.price}
                                 </span>
@@ -313,7 +313,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
         >
 
             {/* Large Top Image */}
-            <div className="relative aspect-square w-full bg-gray-100 dark:bg-[#1a1a2e]">
+            <div className="relative aspect-square w-full bg-[var(--theme-muted)]">
                 <Image
                     src={imageSrc}
                     alt={displayName}
@@ -334,7 +334,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                 <div className="mb-2 flex items-start justify-between gap-4">
                     <h3
                         className={cn("font-bold leading-tight tracking-wide", titleSize)}
-                        style={{ color: settings.productTitleColor }}
+
                     >
                         {formatTitle(displayName.toLocaleUpperCase('tr-TR'))}
                     </h3>
@@ -345,7 +345,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                                     <span className="text-xs text-gray-400 line-through">₺{product.price}</span>
                                     <span
                                         className={cn("font-bold", priceSize)}
-                                        style={{ color: settings.productPriceColor }}
+
                                     >
                                         ₺{product.discountPrice}
                                     </span>
@@ -353,7 +353,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                             ) : (
                                 <span
                                     className={cn("font-bold", priceSize)}
-                                    style={{ color: settings.productPriceColor }}
+
                                 >
                                     ₺{product.price}
                                 </span>
@@ -365,7 +365,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                 {/* Description */}
                 <p
                     className={cn("mb-4 leading-relaxed", descriptionSize)}
-                    style={{ color: settings.productDescriptionColor }}
+
                 >
                     {displayDescription}
                 </p>
@@ -380,7 +380,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                             return (
                                 <div
                                     key={allergenId}
-                                    className="flex items-center justify-center rounded-full bg-gray-100 p-1.5 text-gray-500"
+                                    className="flex items-center justify-center rounded-full bg-[var(--theme-muted)] p-1.5 text-[var(--theme-muted-text)]"
                                     title={language === 'en' ? allergen.nameEn : allergen.nameTr}
                                 >
                                     <Icon className={cn("h-4 w-4", allergen.color)} />
@@ -392,13 +392,13 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
 
                 {/* Variants List */}
                 {product.variants && product.variants.length > 0 && (
-                    <div className="mb-4 mt-2 space-y-2 border-t border-dashed border-gray-200 pt-3">
+                    <div className="mb-4 mt-2 space-y-2 border-t border-dashed border-[var(--theme-border)] pt-3">
                         {product.variants.map((variant, idx) => (
                             <div key={idx} className="flex items-center justify-between text-sm">
-                                <span className={cn("font-bold", settings.themeId === 'custom' ? '' : 'text-gray-700 dark:text-gray-300')} style={{ color: settings.themeId === 'custom' ? settings.customTextColor : undefined }}>{variant.name}</span>
+                                <span className={cn("font-bold", settings.themeId === 'custom' ? '' : 'text-[var(--theme-text)]')}>{variant.name}</span>
                                 <span
                                     className={cn("font-bold text-base")}
-                                    style={{ color: settings.themeId === 'custom' ? settings.customAccentColor : settings.productPriceColor }}
+
                                 >
                                     {variant.price} ₺
                                 </span>
@@ -415,7 +415,7 @@ export default function ProductCard({ product, language, onClick, layoutMode = '
                                 key={tag.id}
                                 className={cn(
                                     "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
-                                    tag.color || "bg-gray-100 text-gray-600"
+                                    tag.color || "bg-[var(--theme-muted)] text-[var(--theme-muted-text)]"
                                 )}
                             >
                                 {getIcon(tag.icon)}
